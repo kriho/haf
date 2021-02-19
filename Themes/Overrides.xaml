@@ -1,0 +1,250 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:HAF.Controls"
+                    xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation">
+
+    <!-- Telerik controls ############################################################################################################### -->
+    
+    <Style TargetType="telerik:RadToolBar" BasedOn="{StaticResource RadToolBarStyle}">
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="{telerik:Windows8Resource ResourceKey=BasicBrush}"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="ItemContainerStyleSelector">
+            <Setter.Value>
+                <telerik:ToolBarContainerStyleSelector>
+                    <telerik:ToolBarContainerStyle TypeName="RadButton">
+                        <Style TargetType="telerik:RadButton" BasedOn="{StaticResource ToolBarRadButtonStyle}">
+                            <Setter Property="Padding" Value="5,3" />
+                            <Setter Property="FontSize" Value="15"/>
+                        </Style>
+                    </telerik:ToolBarContainerStyle>
+                    <telerik:ToolBarContainerStyle TypeName="RadToolBarSeparator" ContainerStyle="{StaticResource RadToolBarSeparatorStyle}"/>
+                    <telerik:ToolBarContainerStyle TypeName="TextBlock" ContainerStyle="{StaticResource ToolBarTextBlockStyle}"/>
+                    <telerik:ToolBarContainerStyle TypeName="TextBox" ContainerStyle="{StaticResource ToolBarTextBoxStyle}"/>
+                    <telerik:ToolBarContainerStyle TypeName="Button" ContainerStyle="{StaticResource ToolBarButtonStyle}"/>
+                    <telerik:ToolBarContainerStyle TypeName="ToggleButton" ContainerStyle="{StaticResource ToolBarToggleButtonStyle}"/>
+                    <telerik:ToolBarContainerStyle TypeName="CheckBox">
+                        <Style TargetType="CheckBox" BasedOn="{StaticResource ToolBarCheckBoxStyle}">
+                            <Setter Property="Padding" Value="5,3" />
+                            <Setter Property="FontSize" Value="15"/>
+                        </Style>
+                    </telerik:ToolBarContainerStyle>
+                    <telerik:ToolBarContainerStyle TypeName="RadioButton" ContainerStyle="{StaticResource ToolBarRadioButtonStyle}"/>
+                    <telerik:ToolBarContainerStyle TypeName="RadToggleButton" ContainerStyle="{StaticResource ToolBarRadToggleButtonStyle}"/>
+                    <telerik:ToolBarContainerStyle TypeName="RadRadioButton" ContainerStyle="{StaticResource ToolBarRadRadioButtonStyle}"/>
+                    <telerik:ToolBarContainerStyle TypeName="RadDropDownButton">
+                        <Style TargetType="telerik:RadDropDownButton" BasedOn="{StaticResource ToolBarRadDropDownButtonStyle}">
+                            <Setter Property="Padding" Value="5,3" />
+                            <Setter Property="FontSize" Value="15"/>
+                        </Style>
+                    </telerik:ToolBarContainerStyle>
+                    <telerik:ToolBarContainerStyle TypeName="RadSplitButton" ContainerStyle="{StaticResource ToolBarRadSplitButtonStyle}"/>
+                    <telerik:ToolBarContainerStyle TypeName="RadComboBox">
+                        <Style TargetType="telerik:RadComboBox" BasedOn="{StaticResource RadComboBoxStyle}">
+                            <Setter Property="Padding" Value="5,3" />
+                            <Setter Property="FontSize" Value="15"/>
+                        </Style>
+                    </telerik:ToolBarContainerStyle>
+                    <telerik:ToolBarContainerStyle TypeName="RadPathButton">
+                        <Style TargetType="telerik:RadPathButton" BasedOn="{StaticResource RadPathButtonStyle}">
+                            <Setter Property="Padding" Value="5,3" />
+                            <Setter Property="FontSize" Value="15"/>
+                        </Style>
+                    </telerik:ToolBarContainerStyle>
+                    <telerik:ToolBarContainerStyle TypeName="RadSplitButton">
+                        <Style TargetType="telerik:RadSplitButton" BasedOn="{StaticResource RadSplitButtonStyle}">
+                            <Setter Property="Padding" Value="5,3" />
+                            <Setter Property="FontSize" Value="15"/>
+                        </Style>
+                    </telerik:ToolBarContainerStyle>
+                </telerik:ToolBarContainerStyleSelector>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="ScrollViewer" BasedOn="{StaticResource ScrollViewerStyle}">
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="{telerik:Windows8Resource ResourceKey=BasicBrush}"/>
+    </Style>
+
+    <Style TargetType="telerik:GridViewHeaderCell" BasedOn="{StaticResource GridViewHeaderCellStyle}">
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+    </Style>
+
+    <Style TargetType="TextBlock">
+        <Setter Property="LineStackingStrategy" Value="BlockLineHeight"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="FontSize" Value="15"/>
+    </Style>
+
+    <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxStyle}">
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="FontSize" Value="15"/>
+    </Style>
+
+    <Style TargetType="Separator" BasedOn="{StaticResource SeperatorStyle}">
+        <Setter Property="Margin" Value="5"/>
+    </Style>
+
+    <Style TargetType="telerik:RadWatermarkTextBox" BasedOn="{StaticResource RadWatermarkTextBoxStyle}">
+        <Setter Property="FontSize" Value="15"/>
+    </Style>
+
+    <Style TargetType="telerik:RadMaskedTextInput" BasedOn="{StaticResource RadMaskedTextInputStyle}">
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="IsClearButtonVisible" Value="False"/>
+    </Style>
+
+    <Style TargetType="telerik:RadNumericUpDown" BasedOn="{StaticResource RadNumericUpDownStyle}">
+        <Setter Property="FontSize" Value="15"/>
+    </Style>
+
+    <Style TargetType="telerik:RadComboBox" BasedOn="{StaticResource RadComboBoxStyle}">
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="TextBoxStyle">
+            <Setter.Value>
+                <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxStyle}">
+                    <Setter Property="FontFamily" Value="Segoe UI"/>
+                    <Setter Property="FontSize" Value="15"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Style>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="telerik:RadComboBoxItem" BasedOn="{StaticResource RadComboBoxItemStyle}">
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+    </Style>
+
+    <Style TargetType="telerik:RadButton" BasedOn="{StaticResource RadButtonStyle}">
+        <Setter Property="Padding" Value="5,3" />
+        <Setter Property="FontSize" Value="15"/>
+    </Style>
+
+    <Style TargetType="telerik:RadPathButton" BasedOn="{StaticResource RadPathButtonStyle}">
+        <Setter Property="Padding" Value="10,5" />
+        <Setter Property="FontSize" Value="15"/>
+    </Style>
+
+    <Style TargetType="{x:Type telerik:RadDocking}" BasedOn="{StaticResource RadDockingStyle}">
+        <Setter Property="HasDocumentHost" Value="False"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Margin" Value="3"/>
+    </Style>
+
+    <Style TargetType="telerik:RadPaneGroup" BasedOn="{StaticResource RadPaneGroupStyle}">
+        <Setter Property="Padding" Value="0"/>
+    </Style>
+
+    <Style TargetType="telerik:RadToggleButton" BasedOn="{StaticResource RadToggleButtonStyle}">
+        <Setter Property="Foreground" Value="{telerik:Windows8Resource ResourceKey=StrongBrush}"/>
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Foreground" Value="{telerik:Windows8Resource ResourceKey=BasicBrush}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="telerik:RadTabItem" BasedOn="{StaticResource RadTabItemStyle}">
+        <Setter Property="Foreground" Value="{telerik:Windows8Resource ResourceKey=StrongBrush}"/>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Foreground" Value="{telerik:Windows8Resource ResourceKey=BasicBrush}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="telerik:RadPane" BasedOn="{StaticResource RadPaneStyle}">
+        <Setter Property="ContextMenuTemplate" Value="{x:Null}"/>
+        <Setter Property="CanUserClose" Value="False"/>
+        <Setter Property="CanUserPin" Value="False"/>
+        <Setter Property="Padding" Value="5,3"/>
+        <Setter Property="TitleTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <DockPanel Margin="0,2">
+                        <TextBlock Text="{Binding}" FontSize="15"/>
+                    </DockPanel>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- HAF controls ############################################################################################################### -->
+
+    <!-- this style must be explixitly used since styles are not implicetly used for derviced types -->
+    <Style x:Key="ObservableChromeWindowStyle" TargetType="{x:Type controls:ObservableChromeWindow}">
+        <Setter Property="WindowStyle" Value="None"/>
+        <Setter Property="WindowChrome.WindowChrome">
+            <Setter.Value>
+                <WindowChrome CaptionHeight="28" ResizeBorderThickness="5"/>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Header">
+            <Setter.Value>
+                <DockPanel>
+                    <Image Source="{Binding Icon, ElementName=window}" Width="20" Margin="8,4"/>
+                    <TextBlock Text="{Binding Title, ElementName=window}" Foreground="{telerik:Windows8Resource ResourceKey=MarkerBrush}" VerticalAlignment="Center"/>
+                </DockPanel>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:ObservableChromeWindow}">
+                    <Border x:Name="PART_Border" Padding="0">
+                        <Grid Background="{TemplateBinding Background}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="28"/>
+                                <RowDefinition Height="1*"/>
+                            </Grid.RowDefinitions>
+                            <DockPanel>
+                                <DockPanel.Background>
+                                    <SolidColorBrush Color="{TemplateBinding Foreground}" Opacity="0.07"/>
+                                </DockPanel.Background>
+                                <Button x:Name="PART_Close" DockPanel.Dock="Right" WindowChrome.IsHitTestVisibleInChrome="True" Padding="0" BorderThickness="0" Focusable="False">
+                                    <Path Width="38" Height="28" Data="M 14,9 23,18 M 14,18 23,9" Stroke="{TemplateBinding Foreground}" StrokeThickness="1"/>
+                                </Button>
+                                <Button x:Name="PART_Maximize" DockPanel.Dock="Right" WindowChrome.IsHitTestVisibleInChrome="True" Padding="0" BorderThickness="0" Focusable="False">
+                                    <Path Width="38" Height="28" Data="M 14.5,8.5 H 23.5 V 17.5 H 14.5 Z" Stroke="{TemplateBinding Foreground}" StrokeThickness="1"/>
+                                </Button>
+                                <Button x:Name="PART_Restore" DockPanel.Dock="Right" Visibility="Collapsed" WindowChrome.IsHitTestVisibleInChrome="True" Padding="0" BorderThickness="0" Focusable="False">
+                                    <Path Width="38" Height="28" Data="M 14.5,10.5 H 21.5 V 17.5 H 14.5 Z M 16.5,10.5 V 8.5 H 23.5 V 15.5 H 21.5" Stroke="{TemplateBinding Foreground}" StrokeThickness="1"/>
+                                </Button>
+                                <Button x:Name="PART_Minimize" DockPanel.Dock="Right" WindowChrome.IsHitTestVisibleInChrome="True" Padding="0" BorderThickness="0" Focusable="False">
+                                    <Path Width="38" Height="28" Data="M 14,15 H 24" Stroke="{TemplateBinding Foreground}" StrokeThickness="1"/>
+                                </Button>
+                                <ContentPresenter Content="{TemplateBinding Header}"/>
+                            </DockPanel>
+                            <ContentPresenter Grid.Row="1"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="WindowState" Value="Maximized">
+                            <Setter TargetName="PART_Maximize" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="PART_Restore" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="PART_Border" Property="Padding" Value="7"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Validation ############################################################################################################### -->
+
+    <Style x:Key="ValidationTooltip" TargetType="TextBox">
+        <Style.Triggers>
+            <Trigger Property="Validation.HasError" Value="true">
+                <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+</ResourceDictionary>
