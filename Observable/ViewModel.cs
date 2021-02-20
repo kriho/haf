@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using System.Windows;
 
 namespace HAF {
-  [Export(typeof(ViewModel))]
   public class ViewModel : ValidatableObservableObject {
   }
 }
