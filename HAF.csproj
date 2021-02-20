@@ -92,7 +92,7 @@
     <Compile Include="Behaviors\Attached\IsFocused.cs" />
     <Compile Include="Behaviors\Attached\IgnoreMouseWheel.cs" />
     <Compile Include="Behaviors\SelectedItems.cs" />
-    <Compile Include="CommandLineArguments.cs" />
+    <Compile Include="Helpers\CommandLineArguments.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\WeakAction.cs" />
     <Compile Include="Commands\WeakFunc.cs" />
@@ -154,9 +154,9 @@
     <Compile Include="Logging\Report.cs" />
     <Compile Include="Logging\Reporter.cs" />
     <Compile Include="Messages\ProjectChanged.cs" />
-    <Compile Include="ValidatableView.cs" />
-    <Compile Include="ViewModel.cs" />
-    <Compile Include="ValidatableObservableObject.cs" />
+    <Compile Include="Observable\ValidatableView.cs" />
+    <Compile Include="Observable\ViewModel.cs" />
+    <Compile Include="Observable\ValidatableObservableObject.cs" />
     <Compile Include="Services\IService.cs" />
     <Compile Include="Messanger.cs" />
     <Compile Include="Models\Theme.cs" />
@@ -165,11 +165,11 @@
     <Compile Include="Models\WindowLayout.cs" />
     <Compile Include="Models\PaneMeta.cs" />
     <Compile Include="ObjectCloner.cs" />
-    <Compile Include="View.cs" />
-    <Compile Include="ViewModelLocator.cs" />
-    <Compile Include="Window.cs" />
+    <Compile Include="Observable\View.cs" />
+    <Compile Include="Observable\ViewModelLocator.cs" />
+    <Compile Include="Observable\Window.cs" />
     <Compile Include="Converters\ValueConverter.cs" />
-    <Compile Include="ObservableObject.cs" />
+    <Compile Include="Observable\ObservableObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IMainWindowService.cs" />
     <Compile Include="Services\IProjectsService.cs" />
