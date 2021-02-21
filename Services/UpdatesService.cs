@@ -16,19 +16,9 @@ namespace HAF {
   [Export(typeof(IUpdatesService)), PartCreationPolicy(CreationPolicy.Shared)]
   public class UpdatesService : Service, IUpdatesService {
 
-    public enum Dependencies {
-      CanUpdate,
-    }
+    public ServiceDependency CanUpdate { get; private set; } = new ServiceDependency();
 
-    public enum Events {
-      AvailableVersionChanged,
-    }
-
-    public override int Id {
-      get {
-        return (int)ServiceId.Updates;
-      }
-    }
+    public ServiceEvent OnAvailableVersionChanged { get; private set; } = new ServiceEvent();
 
     private bool supportsUpdates = false;
     public bool SupportsUpdates {
@@ -83,7 +73,7 @@ namespace HAF {
       get { return this.avaliableVersion; }
       set {
         if (this.SetValue(ref this.avaliableVersion, value)) {
-          this.FireEvent(Events.AvailableVersionChanged);
+          this.OnAvailableVersionChanged.Fire();
         }
       }
     }
@@ -118,13 +108,13 @@ namespace HAF {
           ApplicationDeployment.CurrentDeployment.UpdateAsync();
         });
       }, () => {
-        return this.isUpdateAvaliable && !this.isBusy && this.GetDependency(Dependencies.CanUpdate);
+        return this.isUpdateAvaliable && !this.isBusy && this.CanUpdate;
       });
       this._Apply = new RelayCommand(() => {
         System.Windows.Forms.Application.Restart();
         System.Windows.Application.Current.Shutdown();
       }, () => {
-        return this.isRestartRequired && !this.isBusy && this.GetDependency(Dependencies.CanUpdate);
+        return this.isRestartRequired && !this.isBusy && this.CanUpdate;
       });
       this._Cancel = new RelayCommand(() => {
         ApplicationDeployment.CurrentDeployment.UpdateAsyncCancel();
@@ -136,7 +126,7 @@ namespace HAF {
         ApplicationDeployment.CurrentDeployment.CheckForUpdateCompleted += (s, e) => {
           this.IsBusy = false;
           if (e.Error != null) {
-            this.Log(LogSeverity.Error, $"failed to get update description, {e.Error.Message}");
+            // TODO log $"failed to get update description, {e.Error.Message}"
             this.IsUpdateAvaliable = false;
           } else {
             this.IsUpdateAvaliable = e.UpdateAvailable;
@@ -162,9 +152,9 @@ namespace HAF {
         };
         this._Fetch.Execute(null);
       }
-      this.RegisterDependency(Dependencies.CanUpdate, () => {
-        this._Apply.RaiseCanExecuteChanged();
+      this.CanUpdate.RegisterUpdate(() => {
         this._Install.RaiseCanExecuteChanged();
+        this._Apply.RaiseCanExecuteChanged();
       });
     }
   }

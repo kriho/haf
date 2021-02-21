@@ -15,7 +15,7 @@ namespace HAF {
 
     public static string ExtensionsDirectory;
 
-    public static List<IService> SavedServices = new List<IService>();
+    public static List<IService> ConfiguratedServices = new List<IService>();
 
     public static void Initialize() {
       // create directories if needed
@@ -25,25 +25,25 @@ namespace HAF {
       if (!System.IO.Directory.Exists(Backend.ExtensionsDirectory)) {
         System.IO.Directory.CreateDirectory(Backend.ExtensionsDirectory);
       }
-      Backend.LoadSettings();
+      Backend.LoadConfiguration();
     }
 
-    public static void SaveSettings() {
-      var storage = new Settings("settings");
-      foreach (var service in Backend.SavedServices) {
-        service.Save(storage);
+    public static void SaveConfiguration() {
+      var storage = new Configuration("settings");
+      foreach (var service in Backend.ConfiguratedServices) {
+        service.SaveConfiguration(storage);
       }
       storage.SaveToFile(Path.Combine(Backend.ConfigurationDirectory, "settings.xml"));
     }
 
-    public static void LoadSettings() {
+    public static void LoadConfiguration() {
       var filePath = Path.Combine(Backend.ConfigurationDirectory, "settings.xml");
       if (!File.Exists(filePath)) {
-        Backend.SaveSettings();
+        Backend.SaveConfiguration();
       }
-      var storage = Settings.FromFile(filePath);
-      foreach (var service in Backend.SavedServices) {
-        service.Load(storage);
+      var configuration = Configuration.FromFile(filePath);
+      foreach (var service in Backend.ConfiguratedServices) {
+        service.LoadConfiguration(configuration);
       }
     }
   }

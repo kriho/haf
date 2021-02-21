@@ -15,31 +15,21 @@ namespace HAF {
   [Export(typeof(IProjectsService)), PartCreationPolicy(CreationPolicy.Shared)]
   public class ProjectsService : Service, IProjectsService {
 
-    public enum Dependencies {
-      CanChangeProject
-    }
+    public ServiceEvent OnProjectsChanged { get; private set; } = new ServiceEvent();
 
-    public enum Events {
-      ProjectsChanged
-    }
+    public ServiceDependency CanChangeProject { get; private set; } = new ServiceDependency();
 
-    public override int Id {
-      get {
-        return (int)ServiceId.Projects;
-      }
-    }
+    public RelayCommand RefreshCommand { get; private set; }
 
-    public RelayCommand _Refresh { get; private set; }
+    public RelayCommand<Project> LoadCommand { get; private set; }
 
-    public RelayCommand<Project> _Load { get; private set; }
+    public RelayCommand<Project> DeleteCommand { get; private set; }
 
-    public RelayCommand<Project> _Delete { get; private set; }
+    public RelayCommand<Project> SetDefaultCommand { get; private set; }
 
-    public RelayCommand<Project> _SetDefault { get; private set; }
+    public RangeObservableCollection<Project> Projects { get; private set; } = new RangeObservableCollection<Project>();
 
-    public RadObservableCollection<Project> Projects { get; private set; } = new RadObservableCollection<Project>();
-
-    public List<IService> SavedServices { get; private set; } = new List<IService>();
+    public List<IService> ConfiguredServices { get; private set; } = new List<IService>();
 
     private Project currentProject = null;
     public Project CurrentProject {
@@ -49,9 +39,9 @@ namespace HAF {
           foreach (var project in this.Projects) {
             project.IsCurrent = project == value;
           }
-          this._Load.RaiseCanExecuteChanged();
-          this._Delete.RaiseCanExecuteChanged();
-          Messenger.Default.Send(new Messages.ProjectChanged());
+          this.LoadCommand.RaiseCanExecuteChanged();
+          this.DeleteCommand.RaiseCanExecuteChanged();
+          this.OnProjectsChanged.Fire();
         }
       }
     }
@@ -64,31 +54,32 @@ namespace HAF {
           foreach (var project in this.Projects) {
             project.IsDefault = project == value;
           }
-          this._SetDefault.RaiseCanExecuteChanged();
-          Messenger.Default.Send(new Messages.ProjectChanged());
+          this.SetDefaultCommand.RaiseCanExecuteChanged();
+          this.OnProjectsChanged.Fire();
         }
       }
     }
 
     public void LoadProjects(string defaultProjectName) {
-      this.Projects.SuspendNotifications();
-      this.Projects.Clear();
       // get potential projects
       var projects = Directory.GetFiles(Backend.ConfigurationDirectory, "*.xml", SearchOption.TopDirectoryOnly)
+                     .Where(filePath => {
+                       // filter out non-project xmls
+                       try {
+                         var document = new XmlDocument();
+                         document.Load(filePath);
+                         if (document.SelectSingleNode("/project") != null) {
+                           return true;
+                         }
+                       } catch { }
+                       return false;
+                     })
                      .Select(p => new Project() {
                        Name = Path.GetFileNameWithoutExtension(p),
                        FilePath = p,
                      });
-      // filter out non-project xmls
-      foreach (var project in projects) {
-        try {
-          var document = new XmlDocument();
-          document.Load(project.FilePath);
-          if (document.SelectSingleNode("/project") != null) {
-            this.Projects.Add(project);
-          }
-        } catch { }
-      }
+      this.Projects.Clear();
+      this.Projects.AddRange(projects);
       Project defaultProject = null;
       // add default project if none exist
       if (this.Projects.Count == 0) {
@@ -105,54 +96,51 @@ namespace HAF {
       if (defaultProject == null) {
         defaultProject = this.Projects[0];
       }
-      this.Projects.ResumeNotifications();
       this.DefaultProject = defaultProject;
       this.LoadProject(defaultProject);
     }
 
     public ProjectsService() {
-      this._Load = new RelayCommand<Project>((project) => {
+      this.LoadCommand = new RelayCommand<Project>((project) => {
         // load new project
         this.LoadProject(project);
       }, (project) => {
-        return this.currentProject != project && this.GetDependency(Dependencies.CanChangeProject);
+        return this.currentProject != project && this.CanChangeProject;
       });
-      this._Delete = new RelayCommand<Project>((project) => {
+      this.DeleteCommand = new RelayCommand<Project>((project) => {
         this.DeleteProject(project);
       }, (project) => {
         return this.currentProject != project && this.Projects.Count > 1;
       });
-      this._SetDefault = new RelayCommand<Project>((project) => {
+      this.SetDefaultCommand = new RelayCommand<Project>((project) => {
         this.DefaultProject = project;
       }, (project) => {
         return this.defaultProject != project;
       });
-      this._Refresh = new RelayCommand(() => {
+      this.RefreshCommand = new RelayCommand(() => {
         // save changes to current project
         this.SaveProject(this.currentProject);
         // reload projects
         this.LoadProjects(this.defaultProject?.Name);
       }, () => {
-        return this.GetDependency(Dependencies.CanChangeProject);
+        return this.CanChangeProject;
       });
-      this.RegisterDependency((int)Dependencies.CanChangeProject, () => {
-        this._Load.RaiseCanExecuteChanged();
-        this._Delete.RaiseCanExecuteChanged();
-        this._Refresh.RaiseCanExecuteChanged();
+      this.CanChangeProject.RegisterUpdate(() => {
+        this.LoadCommand.RaiseCanExecuteChanged();
+        this.RefreshCommand.RaiseCanExecuteChanged();
       });
       this.Projects.CollectionChanged += (sender, e) => {
-        this._Delete.RaiseCanExecuteChanged();
-        this.FireEvent(Events.ProjectsChanged);
+        this.DeleteCommand.RaiseCanExecuteChanged();
+        this.OnProjectsChanged.Fire();
       };
-      this.FireEvent(Events.ProjectsChanged);
     }
 
     public void SaveProject(Project project) {
-      var storage = new Settings("project");
-      foreach (var service in this.SavedServices) {
-        service.Save(storage);
+      var configuration = new Configuration("project");
+      foreach (var service in this.ConfiguredServices) {
+        service.SaveConfiguration(configuration);
       }
-      storage.SaveToFile(project.FilePath);
+      configuration.SaveToFile(project.FilePath);
     }
 
     public void LoadProject(Project project) {
@@ -163,31 +151,29 @@ namespace HAF {
       if (this.currentProject != null) {
         this.SaveProject(this.currentProject);
       }
-      // clear project
-      this.ClearProject();
-      // load from storage
-      var storage = Settings.FromFile(project.FilePath);
-      foreach (var service in this.SavedServices) {
-        service.Load(storage);
+      // load from configuration
+      var configuration = Configuration.FromFile(project.FilePath);
+      foreach (var service in this.ConfiguredServices) {
+        service.LoadConfiguration(configuration);
       }
       // set current project
       this.CurrentProject = project;
     }
 
     public void ClearProject() {
-      foreach (var service in this.SavedServices) {
-        service.Clear();
+      foreach (var service in this.ConfiguredServices) {
+        service.ClearConfiguration();
       }
     }
 
-    public override void Load(Settings storage) {
-      var defaultProject = storage.ReadValue("defaultProject");
+    public override void LoadConfiguration(Configuration configuration) {
+      var defaultProject = configuration.ReadStringValue("defaultProject", null);
       this.LoadProjects(defaultProject);
     }
 
-    public override void Save(Settings storage) {
+    public override void SaveConfiguration(Configuration configuration) {
       if (this.defaultProject != null) {
-        storage.WriteValue("defaultProject", this.defaultProject.Name);
+        configuration.WriteValue("defaultProject", this.defaultProject.Name);
       }
       if (this.CurrentProject != null) {
         this.SaveProject(this.currentProject);

@@ -1,8 +1,7 @@
 ﻿namespace HAF {
   public interface IService {
-    int Id { get; }
-    void Clear();
-    void Load(Settings storage);
-    void Save(Settings storage);
+    void LoadConfiguration(Configuration configuration);
+    void SaveConfiguration(Configuration configuration);
+    void ClearConfiguration();
   }
 }

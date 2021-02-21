@@ -10,28 +10,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Xml;
-using Telerik.Windows.Data;
 
 namespace HAF {
 
   [Export(typeof(IThemesService)), PartCreationPolicy(CreationPolicy.Shared)]
   public class ThemesService : Service, IThemesService {
 
-    public enum Dependencies {
-      CanChangeTheme,
-    }
+    public ServiceDependency CanChangeTheme { get; private set; } = new ServiceDependency();
 
-    public enum Events {
-      ActiveThemeChanged,
-    }
+    public ServiceEvent OnActiveThemeChanged { get; private set; } = new ServiceEvent();
 
-    public override int Id {
-      get {
-        return (int)ServiceId.Themes;
-      }
-    }
-
-    public RadObservableCollection<Theme> AvailableThemes { get; private set; } = new RadObservableCollection<Theme>();
+    public ObservableCollection<Theme> AvailableThemes { get; private set; } = new ObservableCollection<Theme>();
 
     private Theme activeTheme;
     public Theme ActiveTheme {
@@ -48,7 +37,7 @@ namespace HAF {
           this.NotifyPropertyChanged(() => this.BasicColor);
           this.NotifyPropertyChanged(() => this.StrongColor);
           this.NotifyPropertyChanged(() => this.MarkerColor);
-          this.FireEvent(Events.ActiveThemeChanged);
+          this.OnActiveThemeChanged.Fire();
         }
       }
     }
@@ -76,16 +65,14 @@ namespace HAF {
     public RelayCommand<Theme> _SetTheme { get; private set; }
 
     public ThemesService() {
-      // commands
       this._SetTheme = new RelayCommand<Theme>(theme => {
         this.ActiveTheme = theme;
       }, (theme) => {
-        return theme != null && this.GetDependency(Dependencies.CanChangeTheme);
+        return theme != null && this.CanChangeTheme;
       });
-      this.RegisterDependency(Dependencies.CanChangeTheme, () => {
+      this.CanChangeTheme.RegisterUpdate(() => {
         this._SetTheme.RaiseCanExecuteChanged();
       });
-      // 
       // disable touch manager for increased performance 
       Telerik.Windows.Input.Touch.TouchManager.IsTouchEnabled = false;
       // set fixed font size

@@ -14,93 +14,79 @@ namespace HAF {
   [Export(typeof(IWindowLayoutService)), PartCreationPolicy(CreationPolicy.Shared)]
   public class WindowLayoutService : Service, IWindowLayoutService {
 
-    public enum Dependencies {
-      CanChangeWindowLayout
-    }
+    public ServiceDependency CanChangeWindowLayout { get; private set; } = new ServiceDependency();
 
-    public enum Events {
-      ActiveWindowLayoutChanged
-    }
-
-    public override int Id {
-      get {
-        return (int)ServiceId.WindowLayout;
-      }
-    }
-
-    private bool topmost;
-    public bool Topmost {
-      get { return this.topmost; }
-      set {
-        this.SetValue(ref this.topmost, value);
-        this.mainWindow.Topmost = value;
-      }
-    }
+    public ServiceEvent OnActiveWindowLayoutChanged { get; private set; } = new ServiceEvent();
 
     [Import]
-    private IMainWindowService mainWindow;
+    private IDockingWindowService dockingWindow;
 
-    public RelayCommand<Models.WindowLayout> _Load { get; private set; }
+    public RelayCommand<WindowLayout> LoadCommand { get; private set; }
 
-    public RelayCommand<Models.WindowLayout> _Save { get; private set; }
+    public RelayCommand<WindowLayout> SaveCommand { get; private set; }
 
-    public RelayCommand<Models.WindowLayout> _Delete { get; private set; }
+    public RelayCommand<WindowLayout> DeleteCommand { get; private set; }
 
-    public RelayCommand<Models.WindowLayout> _SetDefault { get; private set; }
+    public RelayCommand<WindowLayout> SetDefaultCommand { get; private set; }
 
-    public RelayCommand<PaneMeta> _ShowPane { get; private set; }
+    public RelayCommand<PaneMeta> ShowPaneCommand { get; private set; }
 
-    public RadObservableCollection<Models.WindowLayout> WindowLayouts { get; private set; } = new RadObservableCollection<Models.WindowLayout>();
-    public RadObservableCollection<Models.WindowLayout> DefaultWindowLayouts { get; private set; } = new RadObservableCollection<Models.WindowLayout>();
+    public RangeObservableCollection<WindowLayout> WindowLayouts { get; private set; } = new RangeObservableCollection<WindowLayout>();
+
+    public RangeObservableCollection<WindowLayout> DefaultWindowLayouts { get; private set; } = new RangeObservableCollection<WindowLayout>();
 
     public ObservableCollection<PaneMeta> AvailablePanes { get; private set; } = new ObservableCollection<PaneMeta>();
 
-    private Models.WindowLayout activeWindowLayout = null;
-    public Models.WindowLayout ActiveWindowLayout {
+    private WindowLayout activeWindowLayout = null;
+    public WindowLayout ActiveWindowLayout {
       get { return this.activeWindowLayout; }
       set {
         if (this.SetValue(ref this.activeWindowLayout, value)) {
           foreach (var windowLayout in this.WindowLayouts) {
             windowLayout.IsCurrent = windowLayout == value;
           }
-          this._Load.RaiseCanExecuteChanged();
-          this._Delete.RaiseCanExecuteChanged();
+          this.LoadCommand.RaiseCanExecuteChanged();
+          this.DeleteCommand.RaiseCanExecuteChanged();
+          this.OnActiveWindowLayoutChanged.Fire();
         }
       }
     }
 
-    private Models.WindowLayout defaultWindowLayout = null;
-    public Models.WindowLayout DefaultWindowLayout {
+    private WindowLayout defaultWindowLayout = null;
+    public WindowLayout DefaultWindowLayout {
       get { return this.defaultWindowLayout; }
       set {
         if (this.SetValue(ref this.defaultWindowLayout, value)) {
           foreach (var project in this.WindowLayouts) {
             project.IsDefault = project == value;
           }
-          this._SetDefault.RaiseCanExecuteChanged();
+          this.SetDefaultCommand.RaiseCanExecuteChanged();
         }
       }
     }
 
     public WindowLayoutService() {
-      this._Load = new RelayCommand<Models.WindowLayout>((windowLayout) => {
+      this.LoadCommand = new RelayCommand<Models.WindowLayout>((windowLayout) => {
         this.LoadWindowLayout(windowLayout);
       }, (windowLayout) => {
-        return this.GetDependency(Dependencies.CanChangeWindowLayout);
+        return this.CanChangeWindowLayout;
       });
-      this._Delete = new RelayCommand<Models.WindowLayout>((windowLayout) => {
+      this.DeleteCommand = new RelayCommand<Models.WindowLayout>((windowLayout) => {
         this.WindowLayouts.Remove(windowLayout);
       });
-      this._Save = new RelayCommand<Models.WindowLayout>((windowLayout) => {
-        windowLayout.Layout = this.mainWindow.GetWindowLayout();
+      this.SaveCommand = new RelayCommand<Models.WindowLayout>((windowLayout) => {
+        windowLayout.Layout = this.dockingWindow.GetWindowLayout();
       });
-      this._ShowPane = new RelayCommand<PaneMeta>((meta) => {
-        this.mainWindow.ShowPane(meta.Name, meta.Type, meta.CanUserClose);
+      this.ShowPaneCommand = new RelayCommand<PaneMeta>((meta) => {
+        this.dockingWindow.ShowPane(meta.Name, meta.Type, meta.CanUserClose);
       });
-      this._SetDefault = new RelayCommand<Models.WindowLayout>((windowLayout) => {
+      this.SetDefaultCommand = new RelayCommand<Models.WindowLayout>((windowLayout) => {
         this.DefaultWindowLayout = windowLayout;
       }, (windowLayout) => {
         return this.defaultWindowLayout != windowLayout;
+      });
+      this.CanChangeWindowLayout.RegisterUpdate(() => {
+        this.LoadCommand.RaiseCanExecuteChanged();
       });
 #if DEBUG
       if (this.IsInDesignMode) {
@@ -116,70 +102,55 @@ namespace HAF {
 #endif
     }
 
-    private void LoadWindowLayout(Models.WindowLayout windowLayout) {
-      this.mainWindow.SetWindowLayout(windowLayout.Layout);
+    private void LoadWindowLayout(WindowLayout windowLayout) {
+      this.dockingWindow.SetWindowLayout(windowLayout.Layout);
       // set as current
       this.ActiveWindowLayout = windowLayout;
-      // fire event
-      this.FireEvent(Events.ActiveWindowLayoutChanged);
     }
 
-    public override void Load(Settings storage) {
-      this.WindowLayouts.SuspendNotifications();
+    public override void LoadConfiguration(Configuration configuration) {
       this.WindowLayouts.Clear();
+      var windowLayouts = new List<WindowLayout>();
       this.DefaultWindowLayout = null;
       this.ActiveWindowLayout = null;
-      var entry = storage.ReadEntry("window");
-      if (entry != null) {
+      if (configuration.ReadEntry("window", out var entry)) {
         foreach (var windowLayoutEntry in entry.ReadEntries("layout")) {
-          this.WindowLayouts.Add(new Models.WindowLayout() {
-            Name = windowLayoutEntry.ReadAttribute("name"),
-            Layout = windowLayoutEntry.ReadAttribute("configuration"),
+          windowLayouts.Add(new Models.WindowLayout() {
+            Name = windowLayoutEntry.ReadStringAttribute("name", "unnamed"),
+            Layout = windowLayoutEntry.ReadStringAttribute("configuration", null),
           });
         }
-        var defaultWindowLayout = entry.ReadAttribute("defaultLayout");
-        var windowLayout = this.WindowLayouts.FirstOrDefault(w => w.Name == defaultWindowLayout);
-        if (windowLayout != null) {
-          this.DefaultWindowLayout = windowLayout;
-          this.LoadWindowLayout(windowLayout);
+        // add default layouts
+        foreach (var windowLayout in this.DefaultWindowLayouts) {
+          if (!windowLayouts.Any(w => w.Name == windowLayout.Name)) {
+            windowLayouts.Add(windowLayout);
+          }
+        }
+        this.WindowLayouts.AddRange(windowLayouts);
+        var defaultWindowLayoutName = entry.ReadStringAttribute("defaultLayout", null);
+        var defaultWindowLayout = this.WindowLayouts.FirstOrDefault(w => w.Name == defaultWindowLayoutName);
+        if (defaultWindowLayout != null) {
+          this.DefaultWindowLayout = defaultWindowLayout;
+          this.LoadWindowLayout(defaultWindowLayout);
         } else {
           this.DefaultWindowLayout = null;
           this.ActiveWindowLayout = null;
         }
-        if(int.TryParse(entry.ReadAttribute("width"), out var width)) {
-          this.mainWindow.Width = width;
-        }
-        if (int.TryParse(entry.ReadAttribute("height"), out var height)) {
-          this.mainWindow.Height = width;
-        }
-        if (bool.TryParse(entry.ReadAttribute("topmost"), out var topmost)) {
-          this.Topmost = topmost;
-        }
       }
-      // add default layouts
-      foreach (var windowLayout in this.DefaultWindowLayouts) {
-        if (!this.WindowLayouts.Any(w => w.Name == windowLayout.Name)) {
-          this.WindowLayouts.Add(windowLayout);
-        }
-      }
-      this.WindowLayouts.ResumeNotifications();
     }
 
-    public override void Save(Settings storage) {
+    public override void SaveConfiguration(Configuration configuration) {
       // apply current changes
       if (this.activeWindowLayout != null) {
-        this.activeWindowLayout.Layout = this.mainWindow.GetWindowLayout();
+        this.activeWindowLayout.Layout = this.dockingWindow.GetWindowLayout();
       }
       // save window layouts
-      var entry = storage.WriteEntry("window")
-        .WriteAttribute("width", this.mainWindow.Width)
-        .WriteAttribute("height", this.mainWindow.Height)
-        .WriteAttribute("topmost", this.Topmost);
+      var entry = configuration.WriteEntry("window", true);
       if (this.defaultWindowLayout != null) {
         entry.WriteAttribute("defaultLayout", this.defaultWindowLayout.Name);
       }
       foreach (var windowLayout in this.WindowLayouts) {
-        entry.WriteEntry("layout")
+        entry.WriteEntry("layout", false)
           .WriteAttribute("name", windowLayout.Name)
           .WriteAttribute("configuration", windowLayout.Layout);
       }
@@ -189,7 +160,7 @@ namespace HAF {
       var windowLayout = new Models.WindowLayout() {
         Name = name,
       };
-      windowLayout.Layout = this.mainWindow.GetWindowLayout();
+      windowLayout.Layout = this.dockingWindow.GetWindowLayout();
       this.WindowLayouts.Add(windowLayout);
       this.ActiveWindowLayout = windowLayout;
     }
