@@ -88,17 +88,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Behaviors\Attached\BringIntoViewWhenSelected.cs" />
+    <Compile Include="Behaviors\Attached\DisabledVisibility.cs" />
+    <Compile Include="Behaviors\Attached\ServiceLocator.cs" />
     <Compile Include="Behaviors\Attached\Watermark.cs" />
     <Compile Include="Behaviors\Attached\IsFocused.cs" />
     <Compile Include="Behaviors\Attached\IgnoreMouseWheel.cs" />
     <Compile Include="Behaviors\SelectedItems.cs" />
+    <Compile Include="Controls\FormGroup.cs" />
+    <Compile Include="Controls\HeaderedFormGroup.cs" />
+    <Compile Include="Services\IApplicationService.cs" />
+    <Compile Include="ServiceAwareCatalog.cs" />
     <Compile Include="Helpers\CommandLineArguments.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\WeakAction.cs" />
     <Compile Include="Commands\WeakFunc.cs" />
     <Compile Include="Controls\BindableRichTextBox.cs" />
     <Compile Include="Controls\Icon.cs" />
-    <Compile Include="Controls\ObservableChromeWindow.cs" />
+    <Compile Include="Controls\ChromeWindow.cs" />
     <Compile Include="Controls\StretchWrapPanel.cs" />
     <Compile Include="Converters\BitmapToImageSource.cs" />
     <Compile Include="Converters\BooleanToString.cs" />
@@ -140,7 +146,7 @@
     <Compile Include="ExtensionMethods\StringExtensions.cs" />
     <Compile Include="FtpClient.cs" />
     <Compile Include="HotkeyManager.cs" />
-    <Compile Include="Backend.cs" />
+    <Compile Include="Configuration.cs" />
     <Compile Include="Interactivity\InteractiveCommand.cs" />
     <Compile Include="Interactivity\InteractiveMethod.cs" />
     <Compile Include="Interactivity\InteractiveState.cs" />
@@ -155,6 +161,7 @@
     <Compile Include="Logging\Reporter.cs" />
     <Compile Include="Observable\RangeObservableCollection.cs" />
     <Compile Include="Observable\ValidatableView.cs" />
+    <Compile Include="Observable\Model.cs" />
     <Compile Include="Observable\ViewModel.cs" />
     <Compile Include="Observable\ValidatableObservableObject.cs" />
     <Compile Include="Services\HotkeysService.cs" />
@@ -191,7 +198,7 @@
     <Compile Include="Services\Service.cs" />
     <Compile Include="Splash\SplashManager.cs" />
     <Compile Include="Splash\SplashWindow.cs" />
-    <Compile Include="Helpers\Configuration.cs" />
+    <Compile Include="Services\ServiceConfiguration.cs" />
     <Compile Include="Storage\BinaryLiveStorageFile.cs" />
     <Compile Include="Storage\BinaryStorageFile.cs" />
     <Compile Include="Storage\EncryptedBinaryStorageFile.cs" />
@@ -242,6 +249,7 @@
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
