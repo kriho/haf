@@ -10,7 +10,7 @@ using Telerik.Windows.Data;
 
 namespace HAF {
 
-  public class ServiceDependency {
+  public class ServiceDependency : ObservableObject {
 
     private readonly List<WeakAction> callbacks = new List<WeakAction>();
     private readonly List<ServiceState> states = new List<ServiceState>();
@@ -21,7 +21,7 @@ namespace HAF {
     /// <remarks>
     /// when resolving the value of the dependency, this member is optional as the dependency supports an implicit cast to boolean
     /// </remarks>
-    public bool Value { get; private set; }
+    public bool Value { get; private set; } = true;
 
     public void Update() {
       // calculate new value
@@ -34,6 +34,7 @@ namespace HAF {
             callback.Execute();
           }
         }
+        this.NotifyPropertyChanged(() => this.Value);
       }
     }
 
@@ -46,19 +47,6 @@ namespace HAF {
     }
 
     /// <summary>
-    /// add state as a condition
-    /// </summary>
-    /// <remarks>
-    /// if one conditional state evaluates to false, the dependency is false
-    /// </remarks>
-    public void AddCondition(ServiceState state) {
-      if (!this.states.Contains(state)) {
-        this.states.Add(state);
-        state.RegisterDependency(this);
-      }
-    }
-
-    /// <summary>
     /// add states as conditions
     /// </summary>
     /// <remarks>
@@ -66,8 +54,12 @@ namespace HAF {
     /// </remarks>
     public void AddConditions(params ServiceState[] states) {
       foreach(var state in states) {
-        this.AddCondition(state);
+        if (!this.states.Contains(state)) {
+          this.states.Add(state);
+          state.RegisterDependency(this);
+        }
       }
+      this.Update();
     }
 
     public ServiceDependency(Action callback = null) {
