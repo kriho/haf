@@ -7,17 +7,17 @@ using System.Windows;
 using System.Windows.Controls;
 
 namespace HAF.Controls {
-  public class ObservableChromeWindow : Window {
+  public class ChromeWindow : Window {
 
     public object Header {
       get { return (object)GetValue(HeaderProperty); }
       set { SetValue(HeaderProperty, value); }
     }
 
-    public static readonly DependencyProperty HeaderProperty = DependencyProperty.Register("Header", typeof(object), typeof(ObservableChromeWindow ), new UIPropertyMetadata(null));
+    public static readonly DependencyProperty HeaderProperty = DependencyProperty.Register("Header", typeof(object), typeof(ChromeWindow ), new UIPropertyMetadata(null));
 
-    static ObservableChromeWindow () {
-      DefaultStyleKeyProperty.OverrideMetadata(typeof(ObservableChromeWindow ), new FrameworkPropertyMetadata(typeof(ObservableChromeWindow)));
+    static ChromeWindow () {
+      DefaultStyleKeyProperty.OverrideMetadata(typeof(ChromeWindow ), new FrameworkPropertyMetadata(typeof(ChromeWindow)));
     }
 
     public override void OnApplyTemplate() {
