@@ -9,9 +9,9 @@ using System.Windows.Input;
 using System.Windows.Interactivity;
 
 namespace HAF {
-  public partial class Behaviours {
+  public partial class Behaviors {
 
-    public static readonly DependencyProperty IgnoreMouseWheelProperty = DependencyProperty.RegisterAttached("IgnoreMouseWheel", typeof(bool), typeof(Behaviours), new UIPropertyMetadata(false, Behaviours.OnIgnoreMouseWheelPropertyChanged)); 
+    public static readonly DependencyProperty IgnoreMouseWheelProperty = DependencyProperty.RegisterAttached("IgnoreMouseWheel", typeof(bool), typeof(Behaviors), new UIPropertyMetadata(false, Behaviors.OnIgnoreMouseWheelPropertyChanged)); 
     
     public static bool GetIgnoreMouseWheel(DependencyObject obj) {
       return (bool)obj.GetValue(IgnoreMouseWheelProperty);

@@ -9,8 +9,8 @@ using System.Windows.Input;
 using System.Windows.Interactivity;
 
 namespace HAF {
-  public partial class Behaviours {
-    public static readonly DependencyProperty IsFocusedProperty = DependencyProperty.RegisterAttached("IsFocused", typeof(bool), typeof(Behaviours), new UIPropertyMetadata(false, OnIsFocusedPropertyChanged));
+  public partial class Behaviors {
+    public static readonly DependencyProperty IsFocusedProperty = DependencyProperty.RegisterAttached("IsFocused", typeof(bool), typeof(Behaviors), new UIPropertyMetadata(false, OnIsFocusedPropertyChanged));
 
     public static bool GetIsFocused(DependencyObject obj) {
       return (bool)obj.GetValue(IsFocusedProperty);

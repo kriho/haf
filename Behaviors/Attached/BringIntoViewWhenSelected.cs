@@ -9,8 +9,8 @@ using System.Windows.Input;
 using System.Windows.Interactivity;
 
 namespace HAF {
-  public partial class Behaviours {
-    public static readonly DependencyProperty BringIntoViewWhenSelectedProperty = DependencyProperty.RegisterAttached("BringIntoViewWhenSelected", typeof(bool), typeof(Behaviours), new UIPropertyMetadata(false, OnBringIntoViewWhenSelectedPropertyChanged));
+  public partial class Behaviors {
+    public static readonly DependencyProperty BringIntoViewWhenSelectedProperty = DependencyProperty.RegisterAttached("BringIntoViewWhenSelected", typeof(bool), typeof(Behaviors), new UIPropertyMetadata(false, OnBringIntoViewWhenSelectedPropertyChanged));
 
     public static bool GetBringIntoViewWhenSelected(DependencyObject obj) {
       return (bool)obj.GetValue(BringIntoViewWhenSelectedProperty);
