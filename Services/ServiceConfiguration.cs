@@ -8,15 +8,15 @@ using System.Xml.Linq;
 
 namespace HAF {
 
-  public class ConfigurationEntry {
+  public class ServiceConfigurationEntry {
 
     protected XElement context;
 
-    public ConfigurationEntry() {
+    public ServiceConfigurationEntry() {
       // needed for inheritance in class Configuration
     }
 
-    public ConfigurationEntry(XElement element) {
+    public ServiceConfigurationEntry(XElement element) {
       this.context = element;
     }
 
@@ -71,20 +71,20 @@ namespace HAF {
       return double.TryParse(this.ReadAttribute(name), out value);
     }
 
-    public ConfigurationEntry WriteAttribute(string name, string value) {
+    public ServiceConfigurationEntry WriteAttribute(string name, string value) {
       this.context.SetAttributeValue(name, value);
       return this;
     }
 
-    public ConfigurationEntry WriteAttribute(string name, bool value) {
+    public ServiceConfigurationEntry WriteAttribute(string name, bool value) {
       return this.WriteAttribute(name, value.ToString());
     }
 
-    public ConfigurationEntry WriteAttribute(string name, int value) {
+    public ServiceConfigurationEntry WriteAttribute(string name, int value) {
       return this.WriteAttribute(name, value.ToString());
     }
 
-    public ConfigurationEntry WriteAttribute(string name, double value) {
+    public ServiceConfigurationEntry WriteAttribute(string name, double value) {
       return this.WriteAttribute(name, value.ToString());
     }
 
@@ -141,22 +141,22 @@ namespace HAF {
       return double.TryParse(this.ReadValue(name), out value);
     }
 
-    public ConfigurationEntry WriteValue(string name, string value) {
+    public ServiceConfigurationEntry WriteValue(string name, string value) {
       var element = this.context.Element(name);
       element.Value = value;
       this.context.Add(element);
       return this;
     }
 
-    public ConfigurationEntry WriteValue(string name, bool value) {
+    public ServiceConfigurationEntry WriteValue(string name, bool value) {
       return this.WriteValue(name, value.ToString());
     }
 
-    public ConfigurationEntry WriteValue(string name, int value) {
+    public ServiceConfigurationEntry WriteValue(string name, int value) {
       return this.WriteValue(name, value.ToString());
     }
 
-    public ConfigurationEntry WriteValue(string name, double value) {
+    public ServiceConfigurationEntry WriteValue(string name, double value) {
       return this.WriteValue(name, value.ToString());
     }
 
@@ -164,24 +164,24 @@ namespace HAF {
 
     #region entry
 
-    public bool ReadEntry(string name, out ConfigurationEntry entry) {
+    public bool ReadEntry(string name, out ServiceConfigurationEntry entry) {
       var element = this.context.Descendants(name).FirstOrDefault();
       if(element != null) { 
-        entry = new ConfigurationEntry(element);
+        entry = new ServiceConfigurationEntry(element);
         return true;
       }
       entry = null;
       return false;
     }
 
-    public ConfigurationEntry WriteEntry(string name, bool reuseExisting) {
+    public ServiceConfigurationEntry WriteEntry(string name, bool reuseExisting) {
       if (reuseExisting) {
         var element = this.context.Descendants(name).FirstOrDefault();
         if(element != null) {
-          return new ConfigurationEntry(element);
+          return new ServiceConfigurationEntry(element);
         }
       }
-      return new ConfigurationEntry(this.context.Element(name));
+      return new ServiceConfigurationEntry(this.context.Element(name));
     }
 
     #endregion
@@ -190,29 +190,31 @@ namespace HAF {
       return this.context.Descendants(name).Select(d => d.Value);
     }
 
-    public IEnumerable<ConfigurationEntry> ReadEntries(string name) {
-      return this.context.Descendants(name).Select(d => new ConfigurationEntry(d));
+    public IEnumerable<ServiceConfigurationEntry> ReadEntries(string name) {
+      return this.context.Descendants(name).Select(d => new ServiceConfigurationEntry(d));
     }
 
   }
 
-  public class Configuration: ConfigurationEntry {
+  public class ServiceConfiguration: ServiceConfigurationEntry {
 
     private readonly XDocument document;
 
-    public Configuration(string name) {
-      this.document = new XDocument();
-      this.document.Add(new XProcessingInstruction("xml", "version=\"1.0\" encoding=\"UTF-8\""));
-      this.context = this.document.Element(name);
+    public ServiceConfiguration(string name) {
+      this.context = new XElement(name);
+      this.document = new XDocument(
+        new XDeclaration("1.0", "utf-8", "yes"),
+        this.context
+      );
     }
 
-    public Configuration(XDocument document) {
+    public ServiceConfiguration(XDocument document) {
       this.document = document;
       this.context = document.Root;
     }
 
-    public static Configuration FromFile(string filePath) {
-      return new Configuration(XDocument.Load(filePath));
+    public static ServiceConfiguration FromFile(string filePath) {
+      return new ServiceConfiguration(XDocument.Load(filePath));
     }
 
     public void SaveToFile(string filePath) {
