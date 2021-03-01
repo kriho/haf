@@ -1,4 +1,4 @@
-using HAF.Models;
+﻿using HAF.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -62,7 +62,7 @@ namespace HAF {
 
     public void LoadProjects(string defaultProjectName) {
       // get potential projects
-      var projects = Directory.GetFiles(Backend.ConfigurationDirectory, "*.xml", SearchOption.TopDirectoryOnly)
+      var projects = Directory.GetFiles(Configuration.ConfigurationDirectory, "*.xml", SearchOption.TopDirectoryOnly)
                      .Where(filePath => {
                        // filter out non-project xmls
                        try {
@@ -85,7 +85,7 @@ namespace HAF {
       if (this.Projects.Count == 0) {
         var project = new Project() {
           Name = "default project",
-          FilePath = Path.Combine(Backend.ConfigurationDirectory, "default project.xml"),
+          FilePath = Path.Combine(Configuration.ConfigurationDirectory, "default project.xml"),
         };
         this.SaveProject(project);
         this.Projects.Add(project);
