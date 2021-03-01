@@ -20,6 +20,12 @@ namespace HAF {
 
     public ServiceEvent OnActiveThemeChanged { get; private set; } = new ServiceEvent();
 
+    /// <summary>
+    /// the list of themes that can be selected and applied
+    /// </summary>
+    /// <remarks>
+    /// the first theme is the default theme
+    /// </remarks>
     public ObservableCollection<Theme> AvailableThemes { get; private set; } = new ObservableCollection<Theme>();
 
     private Theme activeTheme;
@@ -87,6 +93,22 @@ namespace HAF {
       Telerik.Windows.Controls.Windows8Palette.Palette.FontFamily = new FontFamily("Segoe UI");
       Telerik.Windows.Controls.Windows8Palette.Palette.FontFamilyLight = new FontFamily("Segoe UI Light");
       Telerik.Windows.Controls.Windows8Palette.Palette.FontFamilyStrong = new FontFamily("Segoe UI Semibold");
+    }
+
+    public override void LoadConfiguration(ServiceConfiguration configuration) {
+      Theme theme = null;
+      if (configuration.ReadStringValue("theme", out var themeName)) {
+        theme = this.AvailableThemes.FirstOrDefault(t => t.Name == themeName);
+      } else {
+        theme = this.AvailableThemes.FirstOrDefault();
+      }
+      if(theme != null) {
+        this.ActiveTheme = theme;
+      }
+    }
+
+    public override void SaveConfiguration(ServiceConfiguration configuration) {
+      configuration.WriteValue("theme", this.activeTheme.Name);
     }
   }
 }
