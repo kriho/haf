@@ -5,18 +5,26 @@ using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Dynamic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace HAF {
 
+  /// <summary>
+  /// use MEF to export the view model, this will make it available to the ViewModelLocator
+  /// </summary>
+  /// <remarks>
+  /// the name of the file without extension is used as the view model name by default
+  /// </remarks>
+  [Obsolete]
   [MetadataAttribute]
   [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
   public class ExportViewModelAttribute : ExportAttribute {
     public string Name { get; private set; }
 
-    public ExportViewModelAttribute(string name) : base(typeof(ViewModel)) {
-      Name = name;
+    public ExportViewModelAttribute([CallerFilePath]string name = null) : base(typeof(ViewModel)) {
+      Name = System.IO.Path.GetFileNameWithoutExtension(name);
     }
   }
 
@@ -24,6 +32,13 @@ namespace HAF {
     string Name { get; }
   }
 
+  /// <summary>
+  /// recent discoveries indicate that this is an anti-pattern
+  /// https://blog.ploeh.dk/2010/02/03/ServiceLocatorisanAnti-Pattern/
+  /// 
+  /// assign the view models directly and let MEF handle the dependency injection
+  /// </summary>
+  [Obsolete]
   [TypeDescriptionProvider(typeof(ModelViewMapDescriptionProvider))]
   public class ViewModelLocator : DynamicObject, ITypedList {
 
@@ -40,7 +55,7 @@ namespace HAF {
       if (!ViewModelLocator.cache.TryGetValue(binder.Name, out result)) {
         try {
           if (this.viewModels == null) {
-            Backend.Container.ComposeParts(this);
+            Configuration.Container.ComposeParts(this);
           }
           result = this.viewModels.Single(v => v.Metadata.Name == binder.Name).Value;
           ViewModelLocator.cache[binder.Name] = result;
