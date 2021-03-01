@@ -12,15 +12,15 @@ namespace HAF {
 
   public abstract class Service : ObservableObject, IService {
 
-    public virtual void LoadConfiguration(Configuration configuration) {
+    public virtual void LoadConfiguration(ServiceConfiguration configuration) {
     }
 
-    public virtual void SaveConfiguration(Configuration configuration) {
+    public virtual void SaveConfiguration(ServiceConfiguration configuration) {
     }
 
     public virtual void ClearConfiguration() {
       // use defaults from LoadConfiguration()
-      this.LoadConfiguration(new Configuration("empty"));
+      this.LoadConfiguration(new ServiceConfiguration("empty"));
     }
   }
 }

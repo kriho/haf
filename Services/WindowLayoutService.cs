@@ -19,7 +19,9 @@ namespace HAF {
     public ServiceEvent OnActiveWindowLayoutChanged { get; private set; } = new ServiceEvent();
 
     [Import]
+#pragma warning disable CS0649 // imported by MEF
     private IDockingWindowService dockingWindow;
+#pragma warning restore CS0649
 
     public RelayCommand<WindowLayout> LoadCommand { get; private set; }
 
@@ -108,7 +110,7 @@ namespace HAF {
       this.ActiveWindowLayout = windowLayout;
     }
 
-    public override void LoadConfiguration(Configuration configuration) {
+    public override void LoadConfiguration(ServiceConfiguration configuration) {
       this.WindowLayouts.Clear();
       var windowLayouts = new List<WindowLayout>();
       this.DefaultWindowLayout = null;
@@ -139,7 +141,7 @@ namespace HAF {
       }
     }
 
-    public override void SaveConfiguration(Configuration configuration) {
+    public override void SaveConfiguration(ServiceConfiguration configuration) {
       // apply current changes
       if (this.activeWindowLayout != null) {
         this.activeWindowLayout.Layout = this.dockingWindow.GetWindowLayout();

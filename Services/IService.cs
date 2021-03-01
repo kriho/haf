@@ -1,7 +1,7 @@
 ﻿namespace HAF {
   public interface IService {
-    void LoadConfiguration(Configuration configuration);
-    void SaveConfiguration(Configuration configuration);
+    void LoadConfiguration(ServiceConfiguration configuration);
+    void SaveConfiguration(ServiceConfiguration configuration);
     void ClearConfiguration();
   }
 }

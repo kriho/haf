@@ -1,4 +1,4 @@
-﻿using HAF.Models;
+using HAF.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -136,7 +136,7 @@ namespace HAF {
     }
 
     public void SaveProject(Project project) {
-      var configuration = new Configuration("project");
+      var configuration = new ServiceConfiguration("project");
       foreach (var service in this.ConfiguredServices) {
         service.SaveConfiguration(configuration);
       }
@@ -152,7 +152,7 @@ namespace HAF {
         this.SaveProject(this.currentProject);
       }
       // load from configuration
-      var configuration = Configuration.FromFile(project.FilePath);
+      var configuration = ServiceConfiguration.FromFile(project.FilePath);
       foreach (var service in this.ConfiguredServices) {
         service.LoadConfiguration(configuration);
       }
@@ -166,12 +166,12 @@ namespace HAF {
       }
     }
 
-    public override void LoadConfiguration(Configuration configuration) {
+    public override void LoadConfiguration(ServiceConfiguration configuration) {
       var defaultProject = configuration.ReadStringValue("defaultProject", null);
       this.LoadProjects(defaultProject);
     }
 
-    public override void SaveConfiguration(Configuration configuration) {
+    public override void SaveConfiguration(ServiceConfiguration configuration) {
       if (this.defaultProject != null) {
         configuration.WriteValue("defaultProject", this.defaultProject.Name);
       }
@@ -184,7 +184,7 @@ namespace HAF {
       this.ClearProject();
       var project = new Project() {
         Name = name,
-        FilePath = Path.Combine(Backend.ConfigurationDirectory, name + ".xml"),
+        FilePath = Path.Combine(Configuration.ConfigurationDirectory, name + ".xml"),
       };
       this.Projects.Add(project);
       this.CurrentProject = project;

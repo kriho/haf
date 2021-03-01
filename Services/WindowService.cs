@@ -15,7 +15,7 @@ namespace HAF {
 
     public Window Window { get; set; }
 
-    public override void LoadConfiguration(Configuration configuration) {
+    public override void LoadConfiguration(ServiceConfiguration configuration) {
       if (configuration.ReadEntry("window", out var window)) {
         this.Window.Topmost = window.ReadBooleanAttribute("topmost", false);
         if (window.ReadIntegerAttribute("width", out var width)) {
@@ -27,7 +27,7 @@ namespace HAF {
       }
     }
 
-    public override void SaveConfiguration(Configuration configuration) {
+    public override void SaveConfiguration(ServiceConfiguration configuration) {
       configuration.WriteEntry("window", true)
         .WriteAttribute("topmost", this.Window.Topmost)
         .WriteAttribute("width", this.Window.Width)
