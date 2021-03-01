@@ -1,4 +1,4 @@
-#HAF
+# HAF
 a **h**olistic **a**pplication **f**ramework for WPF based MVVM applications
 
 This framework aims to make the most of the MVVM pattern by
