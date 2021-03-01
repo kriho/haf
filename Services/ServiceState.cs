@@ -12,7 +12,13 @@ namespace HAF {
 
   public class ServiceState {
 
-    public bool Value { get; private set; } = true;
+    /// <summary>
+    /// get the current state
+    /// </summary>
+    /// <remarks>
+    /// when resolving the value of the state, this member is optional as the state supports an implicit cast to boolean
+    /// </remarks>
+    public bool Value { get; private set; }
 
     private List<ServiceDependency> dependencies = new List<ServiceDependency>();
 
@@ -20,16 +26,26 @@ namespace HAF {
     /// update the value of a condition and update relevant dependencies
     /// </summary>
     public void Update(bool value) {
-      this.Value = value;
-      foreach (var dependency in dependencies) {
-        dependency.Update();
+      if(value != this.Value) { 
+        this.Value = value;
+        foreach(var dependency in dependencies) {
+          dependency.Update();
+        }
       }
     }
 
-    public void AddDependency(ServiceDependency dependency) {
+    internal void RegisterDependency(ServiceDependency dependency) {
       if (!this.dependencies.Contains(dependency)) {
         this.dependencies.Add(dependency);
       }
+    }
+
+    public ServiceState(bool initialState = true) {
+      this.Value = initialState;
+    }
+
+    public static implicit operator bool(ServiceState state) {
+      return state.Value;
     }
   }
 }
