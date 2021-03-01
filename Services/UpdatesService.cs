@@ -16,9 +16,9 @@ namespace HAF {
   [Export(typeof(IUpdatesService)), PartCreationPolicy(CreationPolicy.Shared)]
   public class UpdatesService : Service, IUpdatesService {
 
-    public ServiceDependency CanUpdate { get; private set; } = new ServiceDependency();
+    public ServiceDependency CanUpdate { get; private set; } = new ServiceDependency("can update");
 
-    public ServiceEvent OnAvailableVersionChanged { get; private set; } = new ServiceEvent();
+    public ServiceEvent OnAvailableVersionChanged { get; private set; } = new ServiceEvent("on available version changed");
 
     private bool supportsUpdates = false;
     public bool SupportsUpdates {

@@ -10,9 +10,13 @@ using Telerik.Windows.Data;
 
 namespace HAF {
 
-  public class ServiceState : ObservableObject {
+  public class ServiceState: ObservableObject {
 
     private bool lastValue;
+
+#if DEBUG
+    public string Name;
+#endif
 
     /// <summary>
     /// the current state
@@ -24,6 +28,9 @@ namespace HAF {
       get => this.lastValue;
       set {
         if (this.SetValue(ref this.lastValue, value)) {
+#if DEBUG
+          Console.WriteLine($"<{this.Name}>={value}");
+# endif
           foreach (var dependency in dependencies) {
             dependency.Update();
           }
@@ -39,8 +46,11 @@ namespace HAF {
       }
     }
 
-    public ServiceState(bool initialState = true) {
+    public ServiceState(bool initialState, string name) {
       this.lastValue = initialState;
+#if DEBUG
+      this.Name = name;
+#endif
     }
 
     public static implicit operator bool(ServiceState state) {

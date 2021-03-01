@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -10,7 +11,11 @@ using Telerik.Windows.Data;
 
 namespace HAF {
 
-  public class ServiceDependency : ObservableObject {
+  public class ServiceDependency: ObservableObject {
+
+#if DEBUG
+    public string Name;
+#endif
 
     private readonly List<WeakAction> callbacks = new List<WeakAction>();
     private readonly List<ServiceState> states = new List<ServiceState>();
@@ -23,13 +28,16 @@ namespace HAF {
     /// </remarks>
     public bool Value { get; private set; } = true;
 
-    public void Update() {
+    public void Update([CallerMemberName]string callerName = null) {
       // calculate new value
       var last = this.Value;
       this.Value = this.states.All(s => s);
       if(this.Value != last) {
+#if DEBUG
+        Console.WriteLine($"[{this.Name}]={this.Value}");
+#endif
         // invoke update callbacks if value changed
-        foreach(var callback in this.callbacks) {
+        foreach (var callback in this.callbacks) {
           if(callback.IsAlive) {
             callback.Execute();
           }
@@ -62,8 +70,11 @@ namespace HAF {
       this.Update();
     }
 
-    public ServiceDependency(Action callback = null) {
-      if(callback != null) {
+    public ServiceDependency(string name, Action callback = null) {
+#if DEBUG
+      this.Name = name;
+#endif
+      if (callback != null) {
         this.RegisterUpdate(callback);
       }
     }

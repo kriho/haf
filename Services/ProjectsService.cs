@@ -15,9 +15,9 @@ namespace HAF {
   [Export(typeof(IProjectsService)), PartCreationPolicy(CreationPolicy.Shared)]
   public class ProjectsService : Service, IProjectsService {
 
-    public ServiceEvent OnProjectsChanged { get; private set; } = new ServiceEvent();
+    public ServiceEvent OnProjectsChanged { get; private set; } = new ServiceEvent("projects changed");
 
-    public ServiceDependency CanChangeProject { get; private set; } = new ServiceDependency();
+    public ServiceDependency CanChangeProject { get; private set; } = new ServiceDependency("can change project");
 
     public RelayCommand RefreshCommand { get; private set; }
 

@@ -13,6 +13,10 @@ namespace HAF {
   public class ServiceEvent<T> {
     public List<WeakAction<T>> Listeners;
 
+#if DEBUG
+    public string Name;
+#endif
+
     /// <summary>
     /// fire event
     /// </summary>
@@ -24,6 +28,9 @@ namespace HAF {
           // TODO remove from list
         }
       }
+#if DEBUG
+      Console.WriteLine($"service event <{this.Name}> fired");
+#endif
     }
 
     /// <summary>
@@ -32,10 +39,20 @@ namespace HAF {
     public void Register(Action<T> listener) {
       this.Listeners.Add(new WeakAction<T>(listener));
     }
+
+    public ServiceEvent(string name) {
+#if DEBUG
+      this.Name = name;
+#endif
+    }
   }
 
   public class ServiceEvent {
     public List<WeakAction> Listeners;
+
+#if DEBUG
+    public string Name;
+#endif
 
     /// <summary>
     /// fire event
@@ -48,6 +65,9 @@ namespace HAF {
           // TODO remove from list
         }
       }
+#if DEBUG
+      Console.WriteLine($"service event <{this.Name}> fired");
+#endif
     }
 
     /// <summary>
@@ -55,6 +75,12 @@ namespace HAF {
     /// </summary>
     public void Register(Action listener) {
       this.Listeners.Add(new WeakAction(listener));
+    }
+
+    public ServiceEvent(string name) {
+#if DEBUG
+      this.Name = name;
+#endif
     }
   }
 

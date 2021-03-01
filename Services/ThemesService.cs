@@ -16,9 +16,9 @@ namespace HAF {
   [Export(typeof(IThemesService)), PartCreationPolicy(CreationPolicy.Shared)]
   public class ThemesService : Service, IThemesService {
 
-    public ServiceDependency CanChangeTheme { get; private set; } = new ServiceDependency();
+    public ServiceDependency CanChangeTheme { get; private set; } = new ServiceDependency("can change theme");
 
-    public ServiceEvent OnActiveThemeChanged { get; private set; } = new ServiceEvent();
+    public ServiceEvent OnActiveThemeChanged { get; private set; } = new ServiceEvent("on active theme changed");
 
     /// <summary>
     /// the list of themes that can be selected and applied

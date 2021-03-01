@@ -14,9 +14,9 @@ namespace HAF {
   [Export(typeof(IWindowLayoutService)), PartCreationPolicy(CreationPolicy.Shared)]
   public class WindowLayoutService : Service, IWindowLayoutService {
 
-    public ServiceDependency CanChangeWindowLayout { get; private set; } = new ServiceDependency();
+    public ServiceDependency CanChangeWindowLayout { get; private set; } = new ServiceDependency("can cahnge window layout");
 
-    public ServiceEvent OnActiveWindowLayoutChanged { get; private set; } = new ServiceEvent();
+    public ServiceEvent OnActiveWindowLayoutChanged { get; private set; } = new ServiceEvent("on active window layout changed");
 
     [Import]
 #pragma warning disable CS0649 // imported by MEF
