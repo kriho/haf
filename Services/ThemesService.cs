@@ -16,9 +16,9 @@ namespace HAF {
   [Export(typeof(IThemesService)), PartCreationPolicy(CreationPolicy.Shared)]
   public class ThemesService : Service, IThemesService {
 
-    public ServiceDependency CanChangeTheme { get; private set; } = new ServiceDependency("can change theme");
+    public LinkedDependency MayChangeTheme { get; private set; } = new LinkedDependency();
 
-    public ServiceEvent OnActiveThemeChanged { get; private set; } = new ServiceEvent("on active theme changed");
+    public LinkedEvent OnActiveThemeChanged { get; private set; } = new LinkedEvent();
 
     /// <summary>
     /// the list of themes that can be selected and applied
@@ -70,13 +70,13 @@ namespace HAF {
 
     public RelayCommand<Theme> _SetTheme { get; private set; }
 
-    public ThemesService() {
+    protected override void Initialize() {
       this._SetTheme = new RelayCommand<Theme>(theme => {
         this.ActiveTheme = theme;
       }, (theme) => {
-        return theme != null && this.CanChangeTheme;
+        return theme != null && this.MayChangeTheme;
       });
-      this.CanChangeTheme.RegisterUpdate(() => {
+      this.MayChangeTheme.RegisterUpdate(() => {
         this._SetTheme.RaiseCanExecuteChanged();
       });
       // disable touch manager for increased performance 

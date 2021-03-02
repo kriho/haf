@@ -11,14 +11,21 @@ using Telerik.Windows.Data;
 
 namespace HAF {
 
-  public class ServiceDependency: ObservableObject {
+  /// <summary>
+  /// declares a dependency of a linked object
+  /// </summary>
+  /// <remarks>
+  /// dependencies evaluate link states to control what a linked object may do
+  /// dependency names must always start with May...
+  /// </remarks>
+  public class LinkedDependency: ObservableObject {
 
 #if DEBUG
-    public string Name;
+    public string Link;
 #endif
 
     private readonly List<WeakAction> callbacks = new List<WeakAction>();
-    private readonly List<ServiceState> states = new List<ServiceState>();
+    private readonly List<LinkedState> states = new List<LinkedState>();
 
     /// <summary>
     /// get the current state of the dependency
@@ -28,13 +35,13 @@ namespace HAF {
     /// </remarks>
     public bool Value { get; private set; } = true;
 
-    public void Update([CallerMemberName]string callerName = null) {
+    public void Update() {
       // calculate new value
       var last = this.Value;
       this.Value = this.states.All(s => s);
       if(this.Value != last) {
 #if DEBUG
-        Console.WriteLine($"[{this.Name}]={this.Value}");
+        Console.WriteLine($"{this.Link}={this.Value}");
 #endif
         // invoke update callbacks if value changed
         foreach (var callback in this.callbacks) {
@@ -60,7 +67,7 @@ namespace HAF {
     /// <remarks>
     /// if one conditional state evaluates to false, the dependency is false
     /// </remarks>
-    public void AddConditions(params ServiceState[] states) {
+    public void AddConditions(params LinkedState[] states) {
       foreach(var state in states) {
         if (!this.states.Contains(state)) {
           this.states.Add(state);
@@ -70,16 +77,13 @@ namespace HAF {
       this.Update();
     }
 
-    public ServiceDependency(string name, Action callback = null) {
-#if DEBUG
-      this.Name = name;
-#endif
+    public LinkedDependency(Action callback = null) {
       if (callback != null) {
         this.RegisterUpdate(callback);
       }
     }
 
-    public static implicit operator bool(ServiceDependency dependency) {
+    public static implicit operator bool(LinkedDependency dependency) {
       return dependency.Value;
     }
   }

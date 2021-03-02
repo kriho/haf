@@ -15,9 +15,9 @@ namespace HAF {
   [Export(typeof(IProjectsService)), PartCreationPolicy(CreationPolicy.Shared)]
   public class ProjectsService : Service, IProjectsService {
 
-    public ServiceEvent OnProjectsChanged { get; private set; } = new ServiceEvent("projects changed");
+    public LinkedEvent OnProjectsChanged { get; private set; } = new LinkedEvent();
 
-    public ServiceDependency CanChangeProject { get; private set; } = new ServiceDependency("can change project");
+    public LinkedDependency MayChangeProject { get; private set; } = new LinkedDependency();
 
     public RelayCommand RefreshCommand { get; private set; }
 
@@ -100,12 +100,12 @@ namespace HAF {
       this.LoadProject(defaultProject);
     }
 
-    public ProjectsService() {
+    protected override void Initialize() {
       this.LoadCommand = new RelayCommand<Project>((project) => {
         // load new project
         this.LoadProject(project);
       }, (project) => {
-        return this.currentProject != project && this.CanChangeProject;
+        return this.currentProject != project && this.MayChangeProject;
       });
       this.DeleteCommand = new RelayCommand<Project>((project) => {
         this.DeleteProject(project);
@@ -123,9 +123,9 @@ namespace HAF {
         // reload projects
         this.LoadProjects(this.defaultProject?.Name);
       }, () => {
-        return this.CanChangeProject;
+        return this.MayChangeProject;
       });
-      this.CanChangeProject.RegisterUpdate(() => {
+      this.MayChangeProject.RegisterUpdate(() => {
         this.LoadCommand.RaiseCanExecuteChanged();
         this.RefreshCommand.RaiseCanExecuteChanged();
       });

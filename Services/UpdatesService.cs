@@ -16,9 +16,9 @@ namespace HAF {
   [Export(typeof(IUpdatesService)), PartCreationPolicy(CreationPolicy.Shared)]
   public class UpdatesService : Service, IUpdatesService {
 
-    public ServiceDependency CanUpdate { get; private set; } = new ServiceDependency("can update");
+    public LinkedDependency MayUpdate { get; private set; } = new LinkedDependency();
 
-    public ServiceEvent OnAvailableVersionChanged { get; private set; } = new ServiceEvent("on available version changed");
+    public LinkedEvent OnAvailableVersionChanged { get; private set; } = new LinkedEvent();
 
     private bool supportsUpdates = false;
     public bool SupportsUpdates {
@@ -92,7 +92,7 @@ namespace HAF {
     public RelayCommand _Apply { get; private set; }
     public RelayCommand _Cancel { get; private set; }
 
-    public UpdatesService() {
+    protected override void Initialize() {
       // commands
       this._Fetch = new RelayCommand(() => {
         this.IsBusy = true;
@@ -108,13 +108,13 @@ namespace HAF {
           ApplicationDeployment.CurrentDeployment.UpdateAsync();
         });
       }, () => {
-        return this.isUpdateAvaliable && !this.isBusy && this.CanUpdate;
+        return this.isUpdateAvaliable && !this.isBusy && this.MayUpdate;
       });
       this._Apply = new RelayCommand(() => {
         System.Windows.Forms.Application.Restart();
         System.Windows.Application.Current.Shutdown();
       }, () => {
-        return this.isRestartRequired && !this.isBusy && this.CanUpdate;
+        return this.isRestartRequired && !this.isBusy && this.MayUpdate;
       });
       this._Cancel = new RelayCommand(() => {
         ApplicationDeployment.CurrentDeployment.UpdateAsyncCancel();
@@ -152,7 +152,7 @@ namespace HAF {
         };
         this._Fetch.Execute(null);
       }
-      this.CanUpdate.RegisterUpdate(() => {
+      this.MayUpdate.RegisterUpdate(() => {
         this._Install.RaiseCanExecuteChanged();
         this._Apply.RaiseCanExecuteChanged();
       });

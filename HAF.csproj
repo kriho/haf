@@ -96,6 +96,8 @@
     <Compile Include="Behaviors\SelectedItems.cs" />
     <Compile Include="Controls\FormGroup.cs" />
     <Compile Include="Controls\HeaderedFormGroup.cs" />
+    <Compile Include="Services\ITasksService.cs" />
+    <Compile Include="Tasks\ObservableTaskPool.cs" />
     <Compile Include="ServiceAwareCatalog.cs" />
     <Compile Include="Helpers\CommandLineArguments.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
@@ -184,9 +186,11 @@
     <Compile Include="Services\IUpdatesService.cs" />
     <Compile Include="Services\IWindowLayoutService.cs" />
     <Compile Include="Services\IWindowService.cs" />
-    <Compile Include="Services\ServiceState.cs" />
-    <Compile Include="Services\ServiceDependency.cs" />
-    <Compile Include="Services\ServiceEvent.cs" />
+    <Compile Include="Linked\LinkedObject.cs" />
+    <Compile Include="Linked\LinkedState.cs" />
+    <Compile Include="Linked\LinkedDependency.cs" />
+    <Compile Include="Linked\LinkedEvent.cs" />
+    <Compile Include="Services\TasksService.cs" />
     <Compile Include="Services\ThemesService.cs" />
     <Compile Include="Services\UpdatesService.cs" />
     <Compile Include="Services\ProjectsService.cs" />
@@ -205,8 +209,7 @@
     <Compile Include="Storage\XmlLiveStorageFile.cs" />
     <Compile Include="Storage\XmlStorageFile.cs" />
     <Compile Include="Tasks\ObservableTask.cs" />
-    <Compile Include="Tasks\ObservableTaskPool.cs" />
-    <Compile Include="Tasks\TaskProgress.cs" />
+    <Compile Include="Tasks\ObservableTaskProgress.cs" />
     <Compile Include="Updates\Snapshot.cs" />
     <Compile Include="Updates\SnapshotClient.cs" />
     <Compile Include="Updates\SnapshotFile.cs" />

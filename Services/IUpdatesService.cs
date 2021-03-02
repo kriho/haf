@@ -11,6 +11,6 @@
     bool IsUpdateAvaliable { get; set; }
     int Progress { get; set; }
     bool SupportsUpdates { get; set; }
-    ServiceEvent OnAvailableVersionChanged { get; }
+    LinkedEvent OnAvailableVersionChanged { get; }
   }
 }

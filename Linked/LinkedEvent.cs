@@ -10,7 +10,13 @@ using Telerik.Windows.Data;
 
 namespace HAF {
 
-  public class ServiceEvent<T> {
+  /// <summary>
+  /// declares an event of a linked object
+  /// </summary>
+  /// <remarks>
+  /// event names must always start with On...
+  /// </remarks>
+  public class LinkedEvent<T> {
     public List<WeakAction<T>> Listeners;
 
 #if DEBUG
@@ -29,7 +35,7 @@ namespace HAF {
         }
       }
 #if DEBUG
-      Console.WriteLine($"service event <{this.Name}> fired");
+      Console.WriteLine($"{this.Name}()");
 #endif
     }
 
@@ -40,14 +46,20 @@ namespace HAF {
       this.Listeners.Add(new WeakAction<T>(listener));
     }
 
-    public ServiceEvent(string name) {
+    public LinkedEvent(string name) {
 #if DEBUG
       this.Name = name;
 #endif
     }
   }
 
-  public class ServiceEvent {
+  /// <summary>
+  /// declares an event of a linked object
+  /// </summary>
+  /// <remarks>
+  /// event names must always start with On...
+  /// </remarks>
+  public class LinkedEvent {
     public List<WeakAction> Listeners;
 
 #if DEBUG
@@ -77,10 +89,7 @@ namespace HAF {
       this.Listeners.Add(new WeakAction(listener));
     }
 
-    public ServiceEvent(string name) {
-#if DEBUG
-      this.Name = name;
-#endif
+    public LinkedEvent() {
     }
   }
 

@@ -10,7 +10,14 @@ using Telerik.Windows.Data;
 
 namespace HAF {
 
-  public class ServiceState: ObservableObject {
+  /// <summary>
+  /// declares a state of a linked object
+  /// </summary>
+  /// <remarks>
+  /// states can be used as conditions for link dependencies
+  /// state names must always start with Can... or Is...
+  /// </remarks>
+  public class LinkedState: ObservableObject {
 
     private bool lastValue;
 
@@ -29,7 +36,7 @@ namespace HAF {
       set {
         if (this.SetValue(ref this.lastValue, value)) {
 #if DEBUG
-          Console.WriteLine($"<{this.Name}>={value}");
+          Console.WriteLine($"{this.Name}={value}");
 # endif
           foreach (var dependency in dependencies) {
             dependency.Update();
@@ -38,22 +45,19 @@ namespace HAF {
       }
     }
 
-    private List<ServiceDependency> dependencies = new List<ServiceDependency>();
+    private List<LinkedDependency> dependencies = new List<LinkedDependency>();
 
-    internal void RegisterDependency(ServiceDependency dependency) {
+    internal void RegisterDependency(LinkedDependency dependency) {
       if (!this.dependencies.Contains(dependency)) {
         this.dependencies.Add(dependency);
       }
     }
 
-    public ServiceState(bool initialState, string name) {
+    public LinkedState(bool initialState = true) {
       this.lastValue = initialState;
-#if DEBUG
-      this.Name = name;
-#endif
     }
 
-    public static implicit operator bool(ServiceState state) {
+    public static implicit operator bool(LinkedState state) {
       return state.Value;
     }
   }

@@ -14,9 +14,9 @@ namespace HAF {
   [Export(typeof(IWindowLayoutService)), PartCreationPolicy(CreationPolicy.Shared)]
   public class WindowLayoutService : Service, IWindowLayoutService {
 
-    public ServiceDependency CanChangeWindowLayout { get; private set; } = new ServiceDependency("can cahnge window layout");
+    public LinkedDependency MayChangeWindowLayout { get; private set; } = new LinkedDependency();
 
-    public ServiceEvent OnActiveWindowLayoutChanged { get; private set; } = new ServiceEvent("on active window layout changed");
+    public LinkedEvent OnActiveWindowLayoutChanged { get; private set; } = new LinkedEvent();
 
     [Import]
 #pragma warning disable CS0649 // imported by MEF
@@ -67,11 +67,11 @@ namespace HAF {
       }
     }
 
-    public WindowLayoutService() {
+    protected override void Initialize() {
       this.LoadCommand = new RelayCommand<Models.WindowLayout>((windowLayout) => {
         this.LoadWindowLayout(windowLayout);
       }, (windowLayout) => {
-        return this.CanChangeWindowLayout;
+        return this.MayChangeWindowLayout;
       });
       this.DeleteCommand = new RelayCommand<Models.WindowLayout>((windowLayout) => {
         this.WindowLayouts.Remove(windowLayout);
@@ -87,7 +87,7 @@ namespace HAF {
       }, (windowLayout) => {
         return this.defaultWindowLayout != windowLayout;
       });
-      this.CanChangeWindowLayout.RegisterUpdate(() => {
+      this.MayChangeWindowLayout.RegisterUpdate(() => {
         this.LoadCommand.RaiseCanExecuteChanged();
       });
 #if DEBUG

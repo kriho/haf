@@ -10,7 +10,7 @@ using Telerik.Windows.Data;
 
 namespace HAF {
 
-  public abstract class Service : ObservableObject, IService {
+  public abstract class Service: LinkedObject, IService {
 
     public virtual void LoadConfiguration(ServiceConfiguration configuration) {
     }

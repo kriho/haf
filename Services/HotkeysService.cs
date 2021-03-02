@@ -231,6 +231,11 @@ namespace HAF {
       Alt = 262144,
     }
 
+    [Import]
+#pragma warning disable CS0649 // injected by MEF
+    private IWindowService windowService;
+#pragma warning restore CS0649 // Modifizierer "readonly" hinzufügen
+
     private HwndSource source;
     private IntPtr handle;
     private Dictionary<int, Action> hotkeys = new Dictionary<int, Action>();
@@ -248,15 +253,10 @@ namespace HAF {
       return IntPtr.Zero;
     }
 
-    public void Register(System.Windows.Window window) {
-      handle = new WindowInteropHelper(window).Handle;
-      source = HwndSource.FromHwnd(handle);
-      source.AddHook(HwndHook);
-    }
-
-    public void Unregister() {
-      source.RemoveHook(HwndHook);
-      source = null;
+    protected override void Initialize() {
+      this.handle = new WindowInteropHelper(windowService.Window).Handle;
+      this.source = HwndSource.FromHwnd(this.handle);
+      this.source.AddHook(HwndHook);
     }
 
     private int CalculateCode(Modifiers modifiers, Keys key) {
@@ -276,7 +276,8 @@ namespace HAF {
     }
 
     public void Dispose() {
-      this.Unregister();
+      this.source.RemoveHook(HwndHook);
+      this.source = null;
     }
   }
 }

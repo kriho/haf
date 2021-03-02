@@ -5,8 +5,8 @@ using Telerik.Windows.Data;
 
 namespace HAF {
   public interface IProjectsService : IService {
-    ServiceEvent OnProjectsChanged { get; }
-    ServiceDependency CanChangeProject { get; }
+    LinkedEvent OnProjectsChanged { get; }
+    LinkedDependency MayChangeProject { get; }
     RelayCommand<Project> DeleteCommand { get; }
     RelayCommand<Project> LoadCommand { get; }
     RelayCommand RefreshCommand { get; }

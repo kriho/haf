@@ -15,6 +15,9 @@ namespace HAF {
 
     public Window Window { get; set; }
 
+    protected override void Initialize() {
+    }
+
     public override void LoadConfiguration(ServiceConfiguration configuration) {
       if (configuration.ReadEntry("window", out var window)) {
         this.Window.Topmost = window.ReadBooleanAttribute("topmost", false);

@@ -9,10 +9,10 @@ namespace HAF {
     Theme ActiveTheme { get; set; }
     ObservableCollection<Theme> AvailableThemes { get; }
     Color BasicColor { get; }
-    ServiceDependency CanChangeTheme { get; }
+    LinkedDependency MayChangeTheme { get; }
     Color MainColor { get; }
     Color MarkerColor { get; }
-    ServiceEvent OnActiveThemeChanged { get; }
+    LinkedEvent OnActiveThemeChanged { get; }
     Color StrongColor { get; }
   }
 }
