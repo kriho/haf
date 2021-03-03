@@ -6,6 +6,7 @@ on:
 jobs:
   publish:
     name: build, pack & publish
+    environment: default
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
