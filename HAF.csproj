@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -96,6 +96,7 @@
     <Compile Include="Behaviors\SelectedItems.cs" />
     <Compile Include="Controls\FormGroup.cs" />
     <Compile Include="Controls\HeaderedFormGroup.cs" />
+    <Compile Include="Enumeration.cs" />
     <Compile Include="Services\ITasksService.cs" />
     <Compile Include="Tasks\ObservableTaskPool.cs" />
     <Compile Include="ServiceAwareCatalog.cs" />
