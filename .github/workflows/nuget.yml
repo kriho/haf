@@ -6,7 +6,8 @@ on:
 jobs:
   publish:
     name: build, pack & publish
-    runs-on: ubuntu-latest
+    environment: default
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
       - name: publish on version change
