@@ -9,7 +9,7 @@ namespace HAF.Core.Storage
 {
     public abstract class StorageFolder<T>
     {
-        public ObservableCollection<T> Stores;
+        public NotifyCollection<T> Stores;
 
         protected bool loaded = false;
         public bool Loaded
@@ -22,7 +22,7 @@ namespace HAF.Core.Storage
         public StorageFolder(string path)
         {
             this.Path = path;
-            this.Stores = new ObservableCollection<T>();
+            this.Stores = new NotifyCollection<T>();
         }
 
         public abstract void Load();

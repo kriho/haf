@@ -3,7 +3,7 @@
 namespace HAF {
   public interface ITasksService: IService {
     ObservableTaskPool this[string name] { get; }
-    ObservableCollection<ObservableTaskPool> TaskPools { get; set; }
+    IReadOnlyNotifyCollection<ObservableTaskPool> TaskPools { get; }
     void AddTaskPool(string name, bool allowParallelExecution);
   }
 }

@@ -16,7 +16,10 @@ namespace HAF {
   [Export(typeof(ITasksService)), PartCreationPolicy(CreationPolicy.Shared)]
   public class TasksService: Service, ITasksService {
 
-    public ObservableCollection<ObservableTaskPool> TaskPools { get; set; } = new ObservableCollection<ObservableTaskPool>();
+    private NotifyCollection<ObservableTaskPool> taskPools = new NotifyCollection<ObservableTaskPool>();
+    public IReadOnlyNotifyCollection<ObservableTaskPool> TaskPools {
+      get => this.taskPools;
+    }
 
     public ObservableTaskPool this[string name] {
       get { return this.TaskPools.FirstOrDefault(t => t.Name == name); }
@@ -29,7 +32,7 @@ namespace HAF {
       if (this.TaskPools.Any(t => t.Name == name)) {
         throw new Exception($"the task domain {name} already exists");
       }
-      this.TaskPools.Add(new ObservableTaskPool() {
+      this.taskPools.Add(new ObservableTaskPool() {
         Name = name,
         AllowParallelExecution = allowParallelExecution,
       });

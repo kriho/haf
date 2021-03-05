@@ -7,7 +7,7 @@ namespace HAF {
     RelayCommand<Theme> _SetTheme { get; }
     Color AccentColor { get; }
     Theme ActiveTheme { get; set; }
-    ObservableCollection<Theme> AvailableThemes { get; }
+    NotifyCollection<Theme> AvailableThemes { get; }
     Color BasicColor { get; }
     LinkedDependency MayChangeTheme { get; }
     Color MainColor { get; }

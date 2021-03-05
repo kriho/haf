@@ -33,11 +33,14 @@ namespace HAF {
 
     public RelayCommand<PaneMeta> ShowPaneCommand { get; private set; }
 
-    public RangeObservableCollection<WindowLayout> WindowLayouts { get; private set; } = new RangeObservableCollection<WindowLayout>();
+    private RangeNotifyCollection<WindowLayout> windowLayouts = new RangeNotifyCollection<WindowLayout>();
+    public IReadOnlyNotifyCollection<WindowLayout> WindowLayouts {
+      get => this.windowLayouts;
+    }
 
-    public RangeObservableCollection<WindowLayout> DefaultWindowLayouts { get; private set; } = new RangeObservableCollection<WindowLayout>();
+    public RangeNotifyCollection<WindowLayout> DefaultWindowLayouts { get; private set; } = new RangeNotifyCollection<WindowLayout>();
 
-    public ObservableCollection<PaneMeta> AvailablePanes { get; private set; } = new ObservableCollection<PaneMeta>();
+    public NotifyCollection<PaneMeta> AvailablePanes { get; private set; } = new NotifyCollection<PaneMeta>();
 
     private WindowLayout activeWindowLayout = null;
     public WindowLayout ActiveWindowLayout {
@@ -74,7 +77,7 @@ namespace HAF {
         return this.MayChangeWindowLayout;
       });
       this.DeleteCommand = new RelayCommand<Models.WindowLayout>((windowLayout) => {
-        this.WindowLayouts.Remove(windowLayout);
+        this.windowLayouts.Remove(windowLayout);
       });
       this.SaveCommand = new RelayCommand<Models.WindowLayout>((windowLayout) => {
         windowLayout.Layout = this.dockingWindow.GetWindowLayout();
@@ -92,11 +95,11 @@ namespace HAF {
       });
 #if DEBUG
       if (this.IsInDesignMode) {
-        this.WindowLayouts.Add(new Models.WindowLayout() {
+        this.windowLayouts.Add(new Models.WindowLayout() {
           Name = "default config",
           IsDefault = true,
         });
-        this.WindowLayouts.Add(new Models.WindowLayout() {
+        this.windowLayouts.Add(new Models.WindowLayout() {
           Name = "sniffer",
           IsCurrent = true,
         });
@@ -111,7 +114,7 @@ namespace HAF {
     }
 
     public override void LoadConfiguration(ServiceConfiguration configuration) {
-      this.WindowLayouts.Clear();
+      this.windowLayouts.Clear();
       var windowLayouts = new List<WindowLayout>();
       this.DefaultWindowLayout = null;
       this.ActiveWindowLayout = null;
@@ -128,7 +131,7 @@ namespace HAF {
             windowLayouts.Add(windowLayout);
           }
         }
-        this.WindowLayouts.AddRange(windowLayouts);
+        this.windowLayouts.AddRange(windowLayouts);
         var defaultWindowLayoutName = entry.ReadStringAttribute("defaultLayout", null);
         var defaultWindowLayout = this.WindowLayouts.FirstOrDefault(w => w.Name == defaultWindowLayoutName);
         if (defaultWindowLayout != null) {
@@ -163,7 +166,7 @@ namespace HAF {
         Name = name,
       };
       windowLayout.Layout = this.dockingWindow.GetWindowLayout();
-      this.WindowLayouts.Add(windowLayout);
+      this.windowLayouts.Add(windowLayout);
       this.ActiveWindowLayout = windowLayout;
     }
   }

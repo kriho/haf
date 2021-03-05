@@ -26,7 +26,7 @@ namespace HAF {
     /// <remarks>
     /// the first theme is the default theme
     /// </remarks>
-    public ObservableCollection<Theme> AvailableThemes { get; private set; } = new ObservableCollection<Theme>();
+    public NotifyCollection<Theme> AvailableThemes { get; private set; } = new NotifyCollection<Theme>();
 
     private Theme activeTheme;
     public Theme ActiveTheme {

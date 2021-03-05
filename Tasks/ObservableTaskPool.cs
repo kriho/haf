@@ -15,7 +15,7 @@ namespace HAF {
 
     public LinkedState CanScheduleTasks { get; private set; } = new LinkedState();
 
-    public ObservableCollection<ObservableTask> Tasks { get; private set; } = new ObservableCollection<ObservableTask>();
+    public NotifyCollection<ObservableTask> Tasks { get; private set; } = new NotifyCollection<ObservableTask>();
 
     protected override void Initialize() {
       this.Link = this.Name;

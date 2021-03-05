@@ -27,7 +27,10 @@ namespace HAF {
 
     public RelayCommand<Project> SetDefaultCommand { get; private set; }
 
-    public RangeObservableCollection<Project> Projects { get; private set; } = new RangeObservableCollection<Project>();
+    private RangeNotifyCollection<Project> projects = new RangeNotifyCollection<Project>();
+    public IReadOnlyNotifyCollection<Project> Projects {
+      get => this.projects;
+    }
 
     public List<IService> ConfiguredServices { get; private set; } = new List<IService>();
 
@@ -36,7 +39,7 @@ namespace HAF {
       get { return this.currentProject; }
       set {
         if (this.SetValue(ref this.currentProject, value)) {
-          foreach (var project in this.Projects) {
+          foreach (var project in this.projects) {
             project.IsCurrent = project == value;
           }
           this.LoadCommand.RaiseCanExecuteChanged();
@@ -51,7 +54,7 @@ namespace HAF {
       get { return this.defaultProject; }
       set {
         if (this.SetValue(ref this.defaultProject, value)) {
-          foreach (var project in this.Projects) {
+          foreach (var project in this.projects) {
             project.IsDefault = project == value;
           }
           this.SetDefaultCommand.RaiseCanExecuteChanged();
@@ -78,23 +81,23 @@ namespace HAF {
                        Name = Path.GetFileNameWithoutExtension(p),
                        FilePath = p,
                      });
-      this.Projects.Clear();
-      this.Projects.AddRange(projects);
+      this.projects.Clear();
+      this.projects.AddRange(projects);
       Project defaultProject = null;
       // add default project if none exist
-      if (this.Projects.Count == 0) {
+      if (this.projects.Count == 0) {
         var project = new Project() {
           Name = "default project",
           FilePath = Path.Combine(Configuration.ConfigurationDirectory, "default project.xml"),
         };
         this.SaveProject(project);
-        this.Projects.Add(project);
+        this.projects.Add(project);
         defaultProject = project;
       } else {
-        defaultProject = this.Projects.FirstOrDefault(p => p.Name == defaultProjectName);
+        defaultProject = this.projects.FirstOrDefault(p => p.Name == defaultProjectName);
       }
       if (defaultProject == null) {
-        defaultProject = this.Projects[0];
+        defaultProject = this.projects[0];
       }
       this.DefaultProject = defaultProject;
       this.LoadProject(defaultProject);
@@ -110,7 +113,7 @@ namespace HAF {
       this.DeleteCommand = new RelayCommand<Project>((project) => {
         this.DeleteProject(project);
       }, (project) => {
-        return this.currentProject != project && this.Projects.Count > 1;
+        return this.currentProject != project && this.projects.Count > 1;
       });
       this.SetDefaultCommand = new RelayCommand<Project>((project) => {
         this.DefaultProject = project;
@@ -129,7 +132,7 @@ namespace HAF {
         this.LoadCommand.RaiseCanExecuteChanged();
         this.RefreshCommand.RaiseCanExecuteChanged();
       });
-      this.Projects.CollectionChanged += (sender, e) => {
+      this.projects.CollectionChanged += (sender, e) => {
         this.DeleteCommand.RaiseCanExecuteChanged();
         this.OnProjectsChanged.Fire();
       };
@@ -186,7 +189,7 @@ namespace HAF {
         Name = name,
         FilePath = Path.Combine(Configuration.ConfigurationDirectory, name + ".xml"),
       };
-      this.Projects.Add(project);
+      this.projects.Add(project);
       this.CurrentProject = project;
       this.SaveProject(project);
     }
@@ -195,10 +198,10 @@ namespace HAF {
       if (this.currentProject == project) {
         return;
       }
-      this.Projects.Remove(project);
+      this.projects.Remove(project);
       File.Delete(project.FilePath);
       if (this.defaultProject == project) {
-        this.DefaultProject = this.Projects.FirstOrDefault();
+        this.DefaultProject = this.projects.FirstOrDefault();
       }
     }
   }
