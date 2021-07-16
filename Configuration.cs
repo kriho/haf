@@ -31,7 +31,7 @@ namespace HAF {
       }
     }
 
-    public static void ConfigureContainer(string[] designTimeAssemblyNames, Assembly applicationAssembly) {
+    public static void ConfigureContainer(string[] designTimeAssemblyNames, string applicationAssemblyName) {
       // aggregate all catalogs
       var catalog = new AggregateCatalog();
 #if DEBUG
@@ -42,8 +42,8 @@ namespace HAF {
       }
 #endif
       catalog.Catalogs.Add(new DirectoryCatalog(Configuration.ExtensionsDirectory));
-      catalog.Catalogs.Add(new AssemblyCatalog(applicationAssembly));
-      catalog.Catalogs.Add(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
+      catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load(applicationAssemblyName)));
+      catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load("HAF, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")));
       // filter out all duplicate service exports, only the first export of a service export type identity remains
       // note that design time services have highest priority, then extension services and lastly application services
       var serviceAwareCatalog = new ServiceAwareCatalog(catalog);
@@ -51,11 +51,11 @@ namespace HAF {
     }
 
     public static void Load() {
+      // assign links for all linked objects
+      LinkedObjectManager.AssignLinks();
+      // load configuration
       var filePath = Path.Combine(Configuration.ConfigurationDirectory, "settings.xml");
-      if (!File.Exists(filePath)) {
-        Configuration.Save();
-      }
-      var configuration = ServiceConfiguration.FromFile(filePath);
+      var configuration = File.Exists(filePath) ? ServiceConfiguration.FromFile(filePath) : new ServiceConfiguration("settings");
       foreach (var service in Configuration.ConfiguratedServices) {
         service.LoadConfiguration(configuration);
       }
