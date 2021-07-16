@@ -19,18 +19,18 @@ namespace HAF {
 
     public LinkedDependency MayChangeProject { get; private set; } = new LinkedDependency();
 
-    public RelayCommand RefreshCommand { get; private set; }
+    public RelayCommand DoRefresh { get; private set; }
 
-    public RelayCommand<Project> LoadCommand { get; private set; }
+    public RelayCommand<Project> DoLoadProject { get; private set; }
 
-    public RelayCommand<Project> DeleteCommand { get; private set; }
+    public RelayCommand<Project> DoDeleteProject { get; private set; }
 
-    public RelayCommand<Project> SetDefaultCommand { get; private set; }
+    public RelayCommand<Project> DoSetDefaultProject { get; private set; }
+
+    public RelayCommand DoOpenDirectory { get; private set; }
 
     private RangeNotifyCollection<Project> projects = new RangeNotifyCollection<Project>();
-    public IReadOnlyNotifyCollection<Project> Projects {
-      get => this.projects;
-    }
+    public IReadOnlyNotifyCollection<Project> Projects => this.projects;
 
     public List<IService> ConfiguredServices { get; private set; } = new List<IService>();
 
@@ -42,8 +42,8 @@ namespace HAF {
           foreach (var project in this.projects) {
             project.IsCurrent = project == value;
           }
-          this.LoadCommand.RaiseCanExecuteChanged();
-          this.DeleteCommand.RaiseCanExecuteChanged();
+          this.DoLoadProject.RaiseCanExecuteChanged();
+          this.DoDeleteProject.RaiseCanExecuteChanged();
           this.OnProjectsChanged.Fire();
         }
       }
@@ -57,7 +57,7 @@ namespace HAF {
           foreach (var project in this.projects) {
             project.IsDefault = project == value;
           }
-          this.SetDefaultCommand.RaiseCanExecuteChanged();
+          this.DoSetDefaultProject.RaiseCanExecuteChanged();
           this.OnProjectsChanged.Fire();
         }
       }
@@ -103,24 +103,24 @@ namespace HAF {
       this.LoadProject(defaultProject);
     }
 
-    protected override void Initialize() {
-      this.LoadCommand = new RelayCommand<Project>((project) => {
+    public ProjectsService() {
+      this.DoLoadProject = new RelayCommand<Project>((project) => {
         // load new project
         this.LoadProject(project);
       }, (project) => {
         return this.currentProject != project && this.MayChangeProject;
       });
-      this.DeleteCommand = new RelayCommand<Project>((project) => {
+      this.DoDeleteProject = new RelayCommand<Project>((project) => {
         this.DeleteProject(project);
       }, (project) => {
         return this.currentProject != project && this.projects.Count > 1;
       });
-      this.SetDefaultCommand = new RelayCommand<Project>((project) => {
+      this.DoSetDefaultProject = new RelayCommand<Project>((project) => {
         this.DefaultProject = project;
       }, (project) => {
         return this.defaultProject != project;
       });
-      this.RefreshCommand = new RelayCommand(() => {
+      this.DoRefresh = new RelayCommand(() => {
         // save changes to current project
         this.SaveProject(this.currentProject);
         // reload projects
@@ -128,12 +128,15 @@ namespace HAF {
       }, () => {
         return this.MayChangeProject;
       });
+      this.DoOpenDirectory = new RelayCommand(() => {
+        System.Diagnostics.Process.Start(Configuration.ConfigurationDirectory);
+      });
       this.MayChangeProject.RegisterUpdate(() => {
-        this.LoadCommand.RaiseCanExecuteChanged();
-        this.RefreshCommand.RaiseCanExecuteChanged();
+        this.DoLoadProject.RaiseCanExecuteChanged();
+        this.DoRefresh.RaiseCanExecuteChanged();
       });
       this.projects.CollectionChanged += (sender, e) => {
-        this.DeleteCommand.RaiseCanExecuteChanged();
+        this.DoDeleteProject.RaiseCanExecuteChanged();
         this.OnProjectsChanged.Fire();
       };
     }

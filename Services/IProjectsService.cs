@@ -7,12 +7,13 @@ namespace HAF {
   public interface IProjectsService : IService {
     LinkedEvent OnProjectsChanged { get; }
     LinkedDependency MayChangeProject { get; }
-    RelayCommand<Project> DeleteCommand { get; }
-    RelayCommand<Project> LoadCommand { get; }
-    RelayCommand RefreshCommand { get; }
-    RelayCommand<Project> SetDefaultCommand { get; }
-    Project CurrentProject { get; set; }
-    Project DefaultProject { get; set; }
+    RelayCommand<Project> DoDeleteProject { get; }
+    RelayCommand<Project> DoLoadProject { get; }
+    RelayCommand DoOpenDirectory { get; }
+    RelayCommand DoRefresh { get; }
+    RelayCommand<Project> DoSetDefaultProject { get; }
+    Project CurrentProject { get; }
+    Project DefaultProject { get; }
     List<IService> ConfiguredServices { get; }
     IReadOnlyNotifyCollection<Project> Projects { get; }
 

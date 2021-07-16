@@ -17,25 +17,17 @@ namespace HAF {
   public class TasksService: Service, ITasksService {
 
     private NotifyCollection<ObservableTaskPool> taskPools = new NotifyCollection<ObservableTaskPool>();
-    public IReadOnlyNotifyCollection<ObservableTaskPool> TaskPools {
-      get => this.taskPools;
-    }
+    public IReadOnlyNotifyCollection<ObservableTaskPool> TaskPools => this.taskPools;
 
     public ObservableTaskPool this[string name] {
       get { return this.TaskPools.FirstOrDefault(t => t.Name == name); }
-    }
-
-    protected override void Initialize() {
     }
 
     public void AddTaskPool(string name, bool allowParallelExecution) {
       if (this.TaskPools.Any(t => t.Name == name)) {
         throw new Exception($"the task domain {name} already exists");
       }
-      this.taskPools.Add(new ObservableTaskPool() {
-        Name = name,
-        AllowParallelExecution = allowParallelExecution,
-      });
+      this.taskPools.Add(new ObservableTaskPool(name, allowParallelExecution));
     }
   }
 }

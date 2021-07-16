@@ -25,7 +25,7 @@ namespace HAF {
 
     public RelayCommand<WindowLayout> LoadCommand { get; private set; }
 
-    public RelayCommand<WindowLayout> SaveCommand { get; private set; }
+    public RelayCommand<WindowLayout> DoSave { get; private set; }
 
     public RelayCommand<WindowLayout> DeleteCommand { get; private set; }
 
@@ -34,9 +34,7 @@ namespace HAF {
     public RelayCommand<PaneMeta> ShowPaneCommand { get; private set; }
 
     private RangeNotifyCollection<WindowLayout> windowLayouts = new RangeNotifyCollection<WindowLayout>();
-    public IReadOnlyNotifyCollection<WindowLayout> WindowLayouts {
-      get => this.windowLayouts;
-    }
+    public IReadOnlyNotifyCollection<WindowLayout> WindowLayouts => this.windowLayouts;
 
     public RangeNotifyCollection<WindowLayout> DefaultWindowLayouts { get; private set; } = new RangeNotifyCollection<WindowLayout>();
 
@@ -70,7 +68,7 @@ namespace HAF {
       }
     }
 
-    protected override void Initialize() {
+    public WindowLayoutService() {
       this.LoadCommand = new RelayCommand<Models.WindowLayout>((windowLayout) => {
         this.LoadWindowLayout(windowLayout);
       }, (windowLayout) => {
@@ -79,7 +77,7 @@ namespace HAF {
       this.DeleteCommand = new RelayCommand<Models.WindowLayout>((windowLayout) => {
         this.windowLayouts.Remove(windowLayout);
       });
-      this.SaveCommand = new RelayCommand<Models.WindowLayout>((windowLayout) => {
+      this.DoSave = new RelayCommand<Models.WindowLayout>((windowLayout) => {
         windowLayout.Layout = this.dockingWindow.GetWindowLayout();
       });
       this.ShowPaneCommand = new RelayCommand<PaneMeta>((meta) => {
@@ -93,18 +91,6 @@ namespace HAF {
       this.MayChangeWindowLayout.RegisterUpdate(() => {
         this.LoadCommand.RaiseCanExecuteChanged();
       });
-#if DEBUG
-      if (this.IsInDesignMode) {
-        this.windowLayouts.Add(new Models.WindowLayout() {
-          Name = "default config",
-          IsDefault = true,
-        });
-        this.windowLayouts.Add(new Models.WindowLayout() {
-          Name = "sniffer",
-          IsCurrent = true,
-        });
-      }
-#endif
     }
 
     private void LoadWindowLayout(WindowLayout windowLayout) {
@@ -115,9 +101,11 @@ namespace HAF {
 
     public override void LoadConfiguration(ServiceConfiguration configuration) {
       this.windowLayouts.Clear();
-      var windowLayouts = new List<WindowLayout>();
       this.DefaultWindowLayout = null;
       this.ActiveWindowLayout = null;
+      var windowLayouts = new List<WindowLayout>();
+      string defaultWindowLayoutName = null;
+      // load previous window layout and default
       if (configuration.ReadEntry("window", out var entry)) {
         foreach (var windowLayoutEntry in entry.ReadEntries("layout")) {
           windowLayouts.Add(new Models.WindowLayout() {
@@ -125,22 +113,22 @@ namespace HAF {
             Layout = windowLayoutEntry.ReadStringAttribute("configuration", null),
           });
         }
-        // add default layouts
-        foreach (var windowLayout in this.DefaultWindowLayouts) {
-          if (!windowLayouts.Any(w => w.Name == windowLayout.Name)) {
-            windowLayouts.Add(windowLayout);
-          }
+        defaultWindowLayoutName = entry.ReadStringAttribute("defaultLayout", null);
+      }
+      // add default layouts
+      foreach (var windowLayout in this.DefaultWindowLayouts) {
+        if (!windowLayouts.Any(w => w.Name == windowLayout.Name)) {
+          windowLayouts.Add(windowLayout);
         }
-        this.windowLayouts.AddRange(windowLayouts);
-        var defaultWindowLayoutName = entry.ReadStringAttribute("defaultLayout", null);
-        var defaultWindowLayout = this.WindowLayouts.FirstOrDefault(w => w.Name == defaultWindowLayoutName);
-        if (defaultWindowLayout != null) {
-          this.DefaultWindowLayout = defaultWindowLayout;
-          this.LoadWindowLayout(defaultWindowLayout);
-        } else {
-          this.DefaultWindowLayout = null;
-          this.ActiveWindowLayout = null;
-        }
+      }
+      this.windowLayouts.AddRange(windowLayouts);
+      var defaultWindowLayout = this.windowLayouts.FirstOrDefault(w => w.Name == defaultWindowLayoutName);
+      if (defaultWindowLayout != null) {
+        this.DefaultWindowLayout = defaultWindowLayout;
+        this.LoadWindowLayout(defaultWindowLayout);
+      } else {
+        this.DefaultWindowLayout = null;
+        this.ActiveWindowLayout = null;
       }
     }
 

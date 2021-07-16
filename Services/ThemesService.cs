@@ -68,16 +68,16 @@ namespace HAF {
       get { return this.activeTheme.MarkerColor; }
     }
 
-    public RelayCommand<Theme> _SetTheme { get; private set; }
+    public RelayCommand<Theme> DoSetTheme { get; private set; }
 
-    protected override void Initialize() {
-      this._SetTheme = new RelayCommand<Theme>(theme => {
+    public ThemesService() {
+      this.DoSetTheme = new RelayCommand<Theme>(theme => {
         this.ActiveTheme = theme;
       }, (theme) => {
         return theme != null && this.MayChangeTheme;
       });
       this.MayChangeTheme.RegisterUpdate(() => {
-        this._SetTheme.RaiseCanExecuteChanged();
+        this.DoSetTheme.RaiseCanExecuteChanged();
       });
       // disable touch manager for increased performance 
       Telerik.Windows.Input.Touch.TouchManager.IsTouchEnabled = false;
@@ -99,7 +99,8 @@ namespace HAF {
       Theme theme = null;
       if (configuration.ReadStringValue("theme", out var themeName)) {
         theme = this.AvailableThemes.FirstOrDefault(t => t.Name == themeName);
-      } else {
+      }
+      if(theme == null) {
         theme = this.AvailableThemes.FirstOrDefault();
       }
       if(theme != null) {

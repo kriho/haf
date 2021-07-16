@@ -11,7 +11,7 @@ namespace HAF {
     RelayCommand<WindowLayout> DeleteCommand { get; }
     RelayCommand<WindowLayout> LoadCommand { get; }
     LinkedEvent OnActiveWindowLayoutChanged { get; }
-    RelayCommand<WindowLayout> SaveCommand { get; }
+    RelayCommand<WindowLayout> DoSave { get; }
     RelayCommand<WindowLayout> SetDefaultCommand { get; }
     RelayCommand<PaneMeta> ShowPaneCommand { get; }
     IReadOnlyNotifyCollection<WindowLayout> WindowLayouts { get; }

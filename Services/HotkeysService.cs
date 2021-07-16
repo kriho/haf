@@ -253,7 +253,7 @@ namespace HAF {
       return IntPtr.Zero;
     }
 
-    protected override void Initialize() {
+    public HotkeysService() {
       this.handle = new WindowInteropHelper(windowService.Window).Handle;
       this.source = HwndSource.FromHwnd(this.handle);
       this.source.AddHook(HwndHook);

@@ -4,7 +4,7 @@ using System.Windows.Media;
 
 namespace HAF {
   public interface IThemesService : IService {
-    RelayCommand<Theme> _SetTheme { get; }
+    RelayCommand<Theme> DoSetTheme { get; }
     Color AccentColor { get; }
     Theme ActiveTheme { get; set; }
     NotifyCollection<Theme> AvailableThemes { get; }

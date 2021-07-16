@@ -92,7 +92,7 @@ namespace HAF {
     public RelayCommand _Apply { get; private set; }
     public RelayCommand _Cancel { get; private set; }
 
-    protected override void Initialize() {
+    public UpdatesService() {
       // commands
       this._Fetch = new RelayCommand(() => {
         this.IsBusy = true;
