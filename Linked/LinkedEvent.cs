@@ -17,7 +17,7 @@ namespace HAF {
   /// event names must always start with On...
   /// </remarks>
   public class LinkedEvent<T> {
-    public List<WeakAction<T>> Listeners;
+    public List<WeakAction<T>> Listeners = new List<WeakAction<T>>();
 
 #if DEBUG
     public string Name;
@@ -60,7 +60,7 @@ namespace HAF {
   /// event names must always start with On...
   /// </remarks>
   public class LinkedEvent {
-    public List<WeakAction> Listeners;
+    public List<WeakAction> Listeners = new List<WeakAction>();
 
 #if DEBUG
     public string Name;

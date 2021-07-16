@@ -14,11 +14,13 @@ namespace HAF {
 
     public string Link = null;
 
-    protected abstract void Initialize();
-
     public LinkedObject() {
-      this.Initialize();
 #if DEBUG
+      LinkedObjectManager.Register(this);
+#endif
+    }
+
+    internal void AssignLinks() {
       var derivedType = this.GetType();
       foreach (var propertyInfo in derivedType.GetProperties()) {
         var linkName = $"{this.Link ?? derivedType.Name}/{propertyInfo.Name}";
@@ -36,7 +38,6 @@ namespace HAF {
           }
         }
       }
-#endif
     }
   }
 }
