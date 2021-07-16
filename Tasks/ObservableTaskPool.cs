@@ -9,15 +9,22 @@ using System.Windows.Data;
 
 namespace HAF {
   public class ObservableTaskPool: LinkedObject {
-    public string Name { get; set; }
+    public string Name { get; private set; }
 
-    public bool AllowParallelExecution { get; set; }
+    public bool AllowParallelExecution { get; private set; }
 
     public LinkedState CanScheduleTasks { get; private set; } = new LinkedState();
 
-    public NotifyCollection<ObservableTask> Tasks { get; private set; } = new NotifyCollection<ObservableTask>();
+    private NotifyCollection<ObservableTask> tasks = new NotifyCollection<ObservableTask>();
+    public IReadOnlyNotifyCollection<ObservableTask> Tasks => this.tasks;
 
-    protected override void Initialize() {
+
+    public ObservableTaskPool(string name, bool allowParallelExecution) {
+      this.Name = name;
+      this.AllowParallelExecution = allowParallelExecution;
+    }
+
+    public ObservableTaskPool() {
       this.Link = this.Name;
     }
 
@@ -26,15 +33,15 @@ namespace HAF {
         throw new Exception("task group does not allow parallel execution");
       }
       task.AssignPool(this);
-      this.Tasks.Add(task);
+      this.tasks.Add(task);
       if(!this.AllowParallelExecution) {
         this.CanScheduleTasks.Value = false;
       }
     }
 
     public void UnscheduleTask(ObservableTask task) {
-      if(this.Tasks.Contains(task)) {
-        this.Tasks.Remove(task);
+      if(this.tasks.Contains(task)) {
+        this.tasks.Remove(task);
         if (this.AllowParallelExecution || this.Tasks.Count == 0) {
           this.CanScheduleTasks.Value = true;
         }

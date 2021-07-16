@@ -96,9 +96,14 @@
     <Compile Include="Behaviors\SelectedItems.cs" />
     <Compile Include="Controls\FormGroup.cs" />
     <Compile Include="Controls\HeaderedFormGroup.cs" />
+    <Compile Include="Converters\IsEqualToBoolean.cs" />
     <Compile Include="Enumeration.cs" />
+    <Compile Include="IHafApplication.cs" />
+    <Compile Include="Linked\LinkedObjectManager.cs" />
     <Compile Include="Observable\NotifyCollection.cs" />
+    <Compile Include="Services\IInspectorService.cs" />
     <Compile Include="Services\ITasksService.cs" />
+    <Compile Include="Services\InspectorService.cs" />
     <Compile Include="Tasks\ObservableTaskPool.cs" />
     <Compile Include="ServiceAwareCatalog.cs" />
     <Compile Include="Helpers\CommandLineArguments.cs" />

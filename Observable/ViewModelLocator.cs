@@ -17,7 +17,6 @@ namespace HAF {
   /// <remarks>
   /// the name of the file without extension is used as the view model name by default
   /// </remarks>
-  [Obsolete]
   [MetadataAttribute]
   [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
   public class ExportViewModelAttribute : ExportAttribute {
@@ -33,12 +32,8 @@ namespace HAF {
   }
 
   /// <summary>
-  /// recent discoveries indicate that this is an anti-pattern
-  /// https://blog.ploeh.dk/2010/02/03/ServiceLocatorisanAnti-Pattern/
-  /// 
   /// assign the view models directly and let MEF handle the dependency injection
   /// </summary>
-  [Obsolete]
   [TypeDescriptionProvider(typeof(ModelViewMapDescriptionProvider))]
   public class ViewModelLocator : DynamicObject, ITypedList {
 
