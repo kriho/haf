@@ -26,6 +26,15 @@ namespace HAF {
   }
 
   public class NotifyCollection<T>: ObservableCollection<T>, INotifyCollection<T>, IReadOnlyNotifyCollection<T> {
+
+    public NotifyCollection(IEnumerable<T> collection): base(collection) {
+    }
+
+    public NotifyCollection(List<T> list) : base(list) {
+    }
+
+    public NotifyCollection() : base() {
+    }
   }
 
   public class RangeNotifyCollection<T>: RangeObservableCollection<T>, IRangeNotifyCollection<T>, IReadOnlyNotifyCollection<T> {
