@@ -60,30 +60,6 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="Telerik.Windows.Controls, Version=2020.3.1020.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <HintPath>..\lib\RCWPF\2020.3.1020.45.Trial\Telerik.Windows.Controls.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Telerik.Windows.Controls.Docking, Version=2020.3.1020.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <HintPath>..\lib\RCWPF\2020.3.1020.45.Trial\Telerik.Windows.Controls.Docking.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Telerik.Windows.Controls.GridView, Version=2020.3.1020.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <HintPath>..\lib\RCWPF\2020.3.1020.45.Trial\Telerik.Windows.Controls.GridView.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Telerik.Windows.Controls.Input, Version=2020.3.1020.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <HintPath>..\lib\RCWPF\2020.3.1020.45.Trial\Telerik.Windows.Controls.Input.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Telerik.Windows.Controls.Navigation, Version=2020.3.1020.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <HintPath>..\lib\RCWPF\2020.3.1020.45.Trial\Telerik.Windows.Controls.Navigation.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Telerik.Windows.Data, Version=2020.3.1020.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <HintPath>..\lib\RCWPF\2020.3.1020.45.Trial\Telerik.Windows.Data.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -93,7 +69,6 @@
     <Compile Include="Behaviors\Attached\Watermark.cs" />
     <Compile Include="Behaviors\Attached\IsFocused.cs" />
     <Compile Include="Behaviors\Attached\IgnoreMouseWheel.cs" />
-    <Compile Include="Behaviors\SelectedItems.cs" />
     <Compile Include="Controls\FormGroup.cs" />
     <Compile Include="Controls\HeaderedFormGroup.cs" />
     <Compile Include="Converters\IsEqualToBoolean.cs" />
@@ -101,6 +76,7 @@
     <Compile Include="IHafApplication.cs" />
     <Compile Include="Linked\LinkedObjectManager.cs" />
     <Compile Include="Observable\NotifyCollection.cs" />
+    <Compile Include="Services\IDockingWindowService.cs" />
     <Compile Include="Services\IInspectorService.cs" />
     <Compile Include="Services\ITasksService.cs" />
     <Compile Include="Services\InspectorService.cs" />
@@ -173,7 +149,6 @@
     <Compile Include="Observable\ViewModel.cs" />
     <Compile Include="Observable\ValidatableObservableObject.cs" />
     <Compile Include="Services\HotkeysService.cs" />
-    <Compile Include="Services\IDockingWindowService.cs" />
     <Compile Include="Services\IHotkeysService.cs" />
     <Compile Include="Services\IService.cs" />
     <Compile Include="Messanger.cs" />
@@ -198,10 +173,8 @@
     <Compile Include="Linked\LinkedDependency.cs" />
     <Compile Include="Linked\LinkedEvent.cs" />
     <Compile Include="Services\TasksService.cs" />
-    <Compile Include="Services\ThemesService.cs" />
     <Compile Include="Services\UpdatesService.cs" />
     <Compile Include="Services\ProjectsService.cs" />
-    <Compile Include="Services\DockingWindowService.cs" />
     <Compile Include="Services\WindowService.cs" />
     <Compile Include="Services\WindowLayoutService.cs" />
     <Compile Include="Services\Service.cs" />
@@ -231,24 +204,11 @@
     <Compile Include="Validation\NumberRangeValidationRule.cs" />
     <Compile Include="Validation\StringPatternValidationRule.cs" />
     <Compile Include="Validation\StringRangeValidationRule.cs" />
-    <Compile Include="Views\Updates.xaml.cs">
-      <DependentUpon>Updates.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Snippets\Property with Changed Notification.snippet" />
     <None Include="Snippets\RelayCommand.snippet" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Themes\Overrides.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Updates.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Localization\Strings.de-DE.resx" />
@@ -257,7 +217,12 @@
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Page Include="Themes\Overrides.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

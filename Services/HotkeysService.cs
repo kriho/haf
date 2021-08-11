@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Xml;
-using Telerik.Windows.Data;
 
 namespace HAF {
 

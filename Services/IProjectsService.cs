@@ -1,7 +1,6 @@
 ﻿using HAF.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Telerik.Windows.Data;
 
 namespace HAF {
   public interface IProjectsService : IService {
