@@ -93,7 +93,7 @@ namespace HAF {
     #region value
 
     private string ReadValue(string name) {
-      return this.context.Descendants(name).FirstOrDefault()?.Value;
+      return this.context.Element(name)?.Value;
     }
 
     public string ReadStringValue(string name, string fallbackValue) {
@@ -165,7 +165,7 @@ namespace HAF {
     #region entry
 
     public bool ReadEntry(string name, out ServiceConfigurationEntry entry) {
-      var element = this.context.Descendants(name).FirstOrDefault();
+      var element = this.context.Element(name);
       if(element != null) { 
         entry = new ServiceConfigurationEntry(element);
         return true;
@@ -175,13 +175,16 @@ namespace HAF {
     }
 
     public ServiceConfigurationEntry WriteEntry(string name, bool reuseExisting) {
+      XElement element;
       if (reuseExisting) {
-        var element = this.context.Descendants(name).FirstOrDefault();
+        element = this.context.Element(name);
         if(element != null) {
           return new ServiceConfigurationEntry(element);
         }
       }
-      return new ServiceConfigurationEntry(this.context.Element(name));
+      element = new XElement(name);
+      this.context.Add(element);
+      return new ServiceConfigurationEntry(element);
     }
 
     #endregion
