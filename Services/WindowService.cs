@@ -30,8 +30,8 @@ namespace HAF {
     public override void SaveConfiguration(ServiceConfiguration configuration) {
       configuration.WriteEntry("window", true)
         .WriteAttribute("topmost", this.Window.Topmost)
-        .WriteAttribute("width", this.Window.Width)
-        .WriteAttribute("height", this.Window.Height);
+        .WriteAttribute("width", (int)this.Window.Width)
+        .WriteAttribute("height", (int)this.Window.Height);
     }
   }
 }
