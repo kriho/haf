@@ -19,6 +19,7 @@ namespace HAF {
 #endif
     }
 
+#if DEBUG
     internal void AssignLinks() {
       var derivedType = this.GetType();
       foreach (var propertyInfo in derivedType.GetProperties()) {
@@ -38,5 +39,6 @@ namespace HAF {
         }
       }
     }
+#endif
   }
 }
