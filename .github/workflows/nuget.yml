@@ -8,13 +8,20 @@ jobs:
     name: build, pack & publish
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: checkout repository
+        uses: actions/checkout@v2
+      - name: setup MSBuild path
+        uses: warrenbuckley/Setup-MSBuild@v1
+      - name: setup NuGet
+        uses: NuGet/setup-nuget@v1.0.2
+      - name: restore NuGet packages
+        run: nuget restore HSF.csproj
+      - name: Build and Publish Web App
+        run: msbuild HAF.csproj /p:Configuration=Release
       - name: install dependency Newtonsoft.Json
         run: dotnet add package Newtonsoft.Json --version 12.0.3
       - name: install dependency System.Windows.Interactivity.WPF
         run: dotnet add package System.Windows.Interactivity.WPF --version 2.0.20525
-      - name: try build
-        run: dotnet build
       - name: publish on version change
         uses: rohith/publish-nuget@v2
         with:
