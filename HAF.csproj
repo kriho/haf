@@ -21,6 +21,9 @@
     <Version>$(AssemblyVersion)</Version>
     <Authors>Kristjan Hornung</Authors>
     <PackageOutputPath>.</PackageOutputPath>
+    <Description>
+      A holistic application framework for WPF based MVVM applications.
+    </Description>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
