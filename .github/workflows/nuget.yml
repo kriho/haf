@@ -9,6 +9,8 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
+      - name: install dependencies
+        run: dotnet restore
       - name: publish on version change
         uses: rohith/publish-nuget@v2
         with:
