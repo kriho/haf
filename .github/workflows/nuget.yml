@@ -16,6 +16,11 @@ jobs:
         run: msbuild -t:restore
       - name: pack
         run: msbuild -t:pack
+      - name: get versions
+        uses: naminodarie/get-net-sdk-project-versions-action@v1
+        id: get-versions
+        with:
+          proj-path: HAF.csproj
       - name: publish
-        run: dotnet nuget push HAF.1.0.0.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push HAF.${{steps.get-versions.outputs.assembly-version}}.nupkg --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
           
