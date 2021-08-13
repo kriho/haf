@@ -14,7 +14,7 @@ namespace HAF {
 
     public event EventHandler CanExecuteChanged;
 
-    public RelayCommand(Action execute) : this(execute, null) {
+    public RelayCommand(Action execute) : this(execute, (Func<bool>)null) {
     }
 
     public RelayCommand(Action execute, Func<bool> canExecute = null) {
@@ -24,6 +24,17 @@ namespace HAF {
       this.execute = new WeakAction(execute);
       if (canExecute != null) {
         this.canExecute = new WeakFunc<bool>(canExecute);
+      }
+    }
+
+    public RelayCommand(Action execute, LinkedDependency dependency) {
+      if (execute == null) {
+        throw new ArgumentNullException("execute");
+      }
+      this.execute = new WeakAction(execute);
+      if (dependency != null) {
+        var reference = new WeakReference<LinkedDependency>(dependency);
+        this.canExecute = new WeakFunc<bool>(() => reference.TryGetTarget(out var target) ? target.Value : false);
       }
     }
 
