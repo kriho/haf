@@ -33,8 +33,10 @@ namespace HAF {
       }
       this.execute = new WeakAction(execute);
       if (dependency != null) {
+        dependency.RegisterUpdate(this.RaiseCanExecuteChanged);
         var reference = new WeakReference<LinkedDependency>(dependency);
         this.canExecute = new WeakFunc<bool>(() => reference.TryGetTarget(out var target) ? target.Value : false);
+
       }
     }
 
