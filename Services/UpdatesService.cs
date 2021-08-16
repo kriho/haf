@@ -19,11 +19,7 @@ namespace HAF {
 
     public LinkedEvent OnAvailableVersionChanged { get; private set; } = new LinkedEvent();
 
-    private bool supportsUpdates = false;
-    public bool SupportsUpdates {
-      get { return this.supportsUpdates; }
-      set { this.SetValue(ref this.supportsUpdates, value); }
-    }
+    public LinkedState CanUpdate { get; private set; } = new LinkedState(false);
 
     private int progress = 0;
     public int Progress {
@@ -119,8 +115,8 @@ namespace HAF {
         ApplicationDeployment.CurrentDeployment.UpdateAsyncCancel();
       });
       // check if updates are supported
-      this.SupportsUpdates = ApplicationDeployment.IsNetworkDeployed;
-      if (this.SupportsUpdates) {
+      this.CanUpdate.Value = ApplicationDeployment.IsNetworkDeployed;
+      if (this.CanUpdate) {
         // register event handlers
         ApplicationDeployment.CurrentDeployment.CheckForUpdateCompleted += (s, e) => {
           this.IsBusy = false;
