@@ -22,15 +22,15 @@ namespace HAF {
     private IDockingWindowService dockingWindow;
 #pragma warning restore CS0649
 
-    public RelayCommand<WindowLayout> LoadCommand { get; private set; }
+    public RelayCommand<WindowLayout> DoLoad { get; private set; }
 
     public RelayCommand<WindowLayout> DoSave { get; private set; }
 
-    public RelayCommand<WindowLayout> DeleteCommand { get; private set; }
+    public RelayCommand<WindowLayout> DoDelete { get; private set; }
 
-    public RelayCommand<WindowLayout> SetDefaultCommand { get; private set; }
+    public RelayCommand<WindowLayout> DoSetDefault { get; private set; }
 
-    public RelayCommand<PaneMeta> ShowPaneCommand { get; private set; }
+    public RelayCommand<PaneMeta> DoShowPane { get; private set; }
 
     private RangeNotifyCollection<WindowLayout> windowLayouts = new RangeNotifyCollection<WindowLayout>();
     public IReadOnlyNotifyCollection<WindowLayout> WindowLayouts => this.windowLayouts;
@@ -47,8 +47,8 @@ namespace HAF {
           foreach (var windowLayout in this.WindowLayouts) {
             windowLayout.IsCurrent = windowLayout == value;
           }
-          this.LoadCommand.RaiseCanExecuteChanged();
-          this.DeleteCommand.RaiseCanExecuteChanged();
+          this.DoLoad.RaiseCanExecuteChanged();
+          this.DoDelete.RaiseCanExecuteChanged();
           this.OnActiveWindowLayoutChanged.Fire();
         }
       }
@@ -62,33 +62,33 @@ namespace HAF {
           foreach (var project in this.WindowLayouts) {
             project.IsDefault = project == value;
           }
-          this.SetDefaultCommand.RaiseCanExecuteChanged();
+          this.DoSetDefault.RaiseCanExecuteChanged();
         }
       }
     }
 
     public WindowLayoutService() {
-      this.LoadCommand = new RelayCommand<Models.WindowLayout>((windowLayout) => {
+      this.DoLoad = new RelayCommand<Models.WindowLayout>((windowLayout) => {
         this.LoadWindowLayout(windowLayout);
       }, (windowLayout) => {
         return this.MayChangeWindowLayout;
       });
-      this.DeleteCommand = new RelayCommand<Models.WindowLayout>((windowLayout) => {
+      this.DoDelete = new RelayCommand<Models.WindowLayout>((windowLayout) => {
         this.windowLayouts.Remove(windowLayout);
       });
       this.DoSave = new RelayCommand<Models.WindowLayout>((windowLayout) => {
         windowLayout.Layout = this.dockingWindow.GetWindowLayout();
       });
-      this.ShowPaneCommand = new RelayCommand<PaneMeta>((meta) => {
+      this.DoShowPane = new RelayCommand<PaneMeta>((meta) => {
         this.dockingWindow.ShowPane(meta.Name, meta.Type, meta.CanUserClose);
       });
-      this.SetDefaultCommand = new RelayCommand<Models.WindowLayout>((windowLayout) => {
+      this.DoSetDefault = new RelayCommand<Models.WindowLayout>((windowLayout) => {
         this.DefaultWindowLayout = windowLayout;
       }, (windowLayout) => {
         return this.defaultWindowLayout != windowLayout;
       });
       this.MayChangeWindowLayout.RegisterUpdate(() => {
-        this.LoadCommand.RaiseCanExecuteChanged();
+        this.DoLoad.RaiseCanExecuteChanged();
       });
     }
 

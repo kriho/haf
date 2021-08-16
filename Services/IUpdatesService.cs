@@ -1,9 +1,9 @@
 ﻿namespace HAF {
   public interface IUpdatesService : IService {
-    RelayCommand _Apply { get; }
-    RelayCommand _Cancel { get; }
-    RelayCommand _Fetch { get; }
-    RelayCommand _Install { get; }
+    RelayCommand DoApply { get; }
+    RelayCommand DoCancel { get; }
+    RelayCommand DoFetch { get; }
+    RelayCommand DoInstall { get; }
     string AvaliableVersion { get; set; }
     string CurrentVersion { get; }
     bool IsBusy { get; set; }

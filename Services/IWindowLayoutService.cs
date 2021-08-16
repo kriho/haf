@@ -8,12 +8,12 @@ namespace HAF {
     LinkedDependency MayChangeWindowLayout { get; }
     WindowLayout DefaultWindowLayout { get; set; }
     RangeNotifyCollection<WindowLayout> DefaultWindowLayouts { get; }
-    RelayCommand<WindowLayout> DeleteCommand { get; }
-    RelayCommand<WindowLayout> LoadCommand { get; }
+    RelayCommand<WindowLayout> DoDelete { get; }
+    RelayCommand<WindowLayout> DoLoad { get; }
     LinkedEvent OnActiveWindowLayoutChanged { get; }
     RelayCommand<WindowLayout> DoSave { get; }
-    RelayCommand<WindowLayout> SetDefaultCommand { get; }
-    RelayCommand<PaneMeta> ShowPaneCommand { get; }
+    RelayCommand<WindowLayout> DoSetDefault { get; }
+    RelayCommand<PaneMeta> DoShowPane { get; }
     IReadOnlyNotifyCollection<WindowLayout> WindowLayouts { get; }
 
     void AddWindowLayout(string name);

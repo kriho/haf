@@ -40,9 +40,9 @@ namespace HAF {
             // reset progress
             this.Progress = 0;
           }
-          this._Fetch.RaiseCanExecuteChanged();
-          this._Install.RaiseCanExecuteChanged();
-          this._Apply.RaiseCanExecuteChanged();
+          this.DoFetch.RaiseCanExecuteChanged();
+          this.DoInstall.RaiseCanExecuteChanged();
+          this.DoApply.RaiseCanExecuteChanged();
         }
       }
     }
@@ -52,7 +52,7 @@ namespace HAF {
       get { return this.isUpdateAvaliable; }
       set {
         if (this.SetValue(ref this.isUpdateAvaliable, value)) {
-          this._Install.RaiseCanExecuteChanged();
+          this.DoInstall.RaiseCanExecuteChanged();
         }
       }
     }
@@ -62,7 +62,7 @@ namespace HAF {
       get { return this.isRestartRequired; }
       set {
         if (this.SetValue(ref this.isRestartRequired, value)) {
-          this._Apply.RaiseCanExecuteChanged();
+          this.DoApply.RaiseCanExecuteChanged();
         }
       }
     }
@@ -86,14 +86,14 @@ namespace HAF {
       }
     }
 
-    public RelayCommand _Fetch { get; private set; }
-    public RelayCommand _Install { get; private set; }
-    public RelayCommand _Apply { get; private set; }
-    public RelayCommand _Cancel { get; private set; }
+    public RelayCommand DoFetch { get; private set; }
+    public RelayCommand DoInstall { get; private set; }
+    public RelayCommand DoApply { get; private set; }
+    public RelayCommand DoCancel { get; private set; }
 
     public UpdatesService() {
       // commands
-      this._Fetch = new RelayCommand(() => {
+      this.DoFetch = new RelayCommand(() => {
         this.IsBusy = true;
         Task.Factory.StartNew(() => {
           ApplicationDeployment.CurrentDeployment.CheckForUpdateAsync();
@@ -101,7 +101,7 @@ namespace HAF {
       }, () => {
         return !this.isBusy;
       });
-      this._Install = new RelayCommand(() => {
+      this.DoInstall = new RelayCommand(() => {
         this.IsBusy = true;
         Task.Factory.StartNew(() => {
           ApplicationDeployment.CurrentDeployment.UpdateAsync();
@@ -109,13 +109,13 @@ namespace HAF {
       }, () => {
         return this.isUpdateAvaliable && !this.isBusy && this.MayUpdate;
       });
-      this._Apply = new RelayCommand(() => {
+      this.DoApply = new RelayCommand(() => {
         System.Windows.Forms.Application.Restart();
         System.Windows.Application.Current.Shutdown();
       }, () => {
         return this.isRestartRequired && !this.isBusy && this.MayUpdate;
       });
-      this._Cancel = new RelayCommand(() => {
+      this.DoCancel = new RelayCommand(() => {
         ApplicationDeployment.CurrentDeployment.UpdateAsyncCancel();
       });
       // check if updates are supported
@@ -149,11 +149,11 @@ namespace HAF {
         ApplicationDeployment.CurrentDeployment.UpdateProgressChanged += (s, e) => {
           this.Progress = e.ProgressPercentage;
         };
-        this._Fetch.Execute(null);
+        this.DoFetch.Execute(null);
       }
       this.MayUpdate.RegisterUpdate(() => {
-        this._Install.RaiseCanExecuteChanged();
-        this._Apply.RaiseCanExecuteChanged();
+        this.DoInstall.RaiseCanExecuteChanged();
+        this.DoApply.RaiseCanExecuteChanged();
       });
     }
   }
