@@ -35,11 +35,11 @@ namespace HAF {
       // aggregate all catalogs
       var catalog = new AggregateCatalog();
 #if DEBUG
-      //if (ObservableObject.IsInDesignModeStatic) {
+      if (ObservableObject.IsInDesignModeStatic) {
         foreach(var designTimeAssemblyName in designTimeAssemblyNames) {
           catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load(designTimeAssemblyName)));
         }
-      //}
+      }
 #endif
       catalog.Catalogs.Add(new DirectoryCatalog(Configuration.ExtensionsDirectory));
       catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load(applicationAssemblyName)));
