@@ -20,9 +20,9 @@ namespace HAF {
 
     private bool lastValue;
 
-#if DEBUG
+  #if DEBUG
     public string Name;
-#endif
+  #endif
 
     /// <summary>
     /// the current state
@@ -34,9 +34,9 @@ namespace HAF {
       get => this.lastValue;
       set {
         if (this.SetValue(ref this.lastValue, value)) {
-#if DEBUG
+        #if DEBUG
           Console.WriteLine($"{this.Name}={value}");
-# endif
+        #endif
           foreach (var dependency in dependencies) {
             dependency.Update();
           }
