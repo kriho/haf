@@ -8,35 +8,45 @@ using System.Windows.Input;
 
 namespace HAF {
 
-  public class RelayCommand : ICommand {
+  public class RelayCommand: ICommand {
     private readonly WeakAction execute;
     private readonly WeakFunc<bool> canExecute;
+    private LinkedDependency dependency;
 
     public event EventHandler CanExecuteChanged;
 
-    public RelayCommand(Action execute) : this(execute, (Func<bool>)null) {
-    }
-
-    public RelayCommand(Action execute, Func<bool> canExecute = null) {
+    public RelayCommand(Action execute) {
       if (execute == null) {
         throw new ArgumentNullException("execute");
       }
       this.execute = new WeakAction(execute);
-      if (canExecute != null) {
-        this.canExecute = new WeakFunc<bool>(canExecute);
+      this.canExecute = null;
+      this.dependency = null;
+    }
+
+    public RelayCommand(Action execute, Func<bool> canExecute) {
+      if (execute == null) {
+        throw new ArgumentNullException("execute");
       }
+      if (canExecute == null) {
+        throw new ArgumentNullException("canExecute");
+      }
+      this.execute = new WeakAction(execute);
+      this.canExecute = new WeakFunc<bool>(canExecute);
+      this.dependency = null;
     }
 
     public RelayCommand(Action execute, LinkedDependency dependency) {
       if (execute == null) {
         throw new ArgumentNullException("execute");
       }
-      this.execute = new WeakAction(execute);
-      if (dependency != null) {
-        dependency.RegisterUpdate(this.RaiseCanExecuteChanged);
-        this.canExecute = new WeakFunc<bool>(() => dependency.Value);
-
+      if (dependency == null) {
+        throw new ArgumentNullException("dependency");
       }
+      this.execute = new WeakAction(execute);
+      this.canExecute = null;
+      this.dependency = dependency;
+      this.dependency.RegisterUpdate(this.RaiseCanExecuteChanged);
     }
 
     public bool CanExecute(object parameter) {
@@ -46,7 +56,13 @@ namespace HAF {
         return false;
       }
 #endif
-      return this.canExecute == null || (this.canExecute.IsAlive && this.canExecute.Execute());
+      if (this.canExecute != null) {
+        return this.canExecute.IsAlive && this.canExecute.Execute();
+      }
+      if (this.dependency != null) {
+        return this.dependency;
+      }
+      return true;
     }
 
     public void Execute(object parameter) {
@@ -60,23 +76,45 @@ namespace HAF {
     }
   }
 
-  public class RelayCommand<T> : ICommand {
+  public class RelayCommand<T>: ICommand {
     private readonly WeakAction<T> execute;
     private readonly WeakFunc<T, bool> canExecute;
+    private LinkedDependency dependency;
 
     public event EventHandler CanExecuteChanged;
 
-    public RelayCommand(Action<T> execute) : this(execute, null) {
-    }
-
-    public RelayCommand(Action<T> execute, Func<T, bool> canExecute = null) {
+    public RelayCommand(Action<T> execute) {
       if (execute == null) {
         throw new ArgumentNullException("execute");
       }
       this.execute = new WeakAction<T>(execute);
-      if (canExecute != null) {
-        this.canExecute = new WeakFunc<T, bool>(canExecute);
+      this.canExecute = null;
+      this.dependency = null;
+    }
+
+    public RelayCommand(Action<T> execute, Func<T, bool> canExecute) {
+      if (execute == null) {
+        throw new ArgumentNullException("execute");
       }
+      if (canExecute == null) {
+        throw new ArgumentNullException("canExecute");
+      }
+      this.execute = new WeakAction<T>(execute);
+      this.canExecute = new WeakFunc<T, bool>(canExecute);
+      this.dependency = null;
+    }
+
+    public RelayCommand(Action<T> execute, LinkedDependency dependency) {
+      if (execute == null) {
+        throw new ArgumentNullException("execute");
+      }
+      if (dependency == null) {
+        throw new ArgumentNullException("dependency");
+      }
+      this.execute = new WeakAction<T>(execute);
+      this.canExecute = null;
+      this.dependency = dependency;
+      this.dependency.RegisterUpdate(this.RaiseCanExecuteChanged);
     }
 
     public bool CanExecute(object parameter) {
@@ -86,12 +124,18 @@ namespace HAF {
         return false;
       }
 #endif
-      return this.canExecute == null || (this.canExecute.IsAlive && this.canExecute.Execute());
+      if (this.canExecute != null) {
+        return this.canExecute.IsAlive && this.canExecute.Execute((T)parameter);
+      }
+      if (this.dependency != null) {
+        return this.dependency;
+      }
+      return true;
     }
 
     public void Execute(object parameter) {
       if (this.CanExecute(parameter) && this.execute != null && this.execute.IsAlive) {
-        this.execute.Execute();
+        this.execute.Execute((T)parameter);
       }
     }
 
