@@ -42,13 +42,11 @@ namespace HAF {
 #if DEBUG
         Console.WriteLine($"{this.Link}={this.Value}");
 #endif
+        this.NotifyPropertyChanged(() => this.Value);
         // invoke update callbacks if value changed
         foreach (var callback in this.callbacks) {
-          if(callback.IsAlive) {
-            callback.Execute();
-          }
+          callback.Execute();
         }
-        this.NotifyPropertyChanged(() => this.Value);
       }
     }
 
