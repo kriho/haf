@@ -135,4 +135,56 @@ namespace HAF {
       base.QueryDeletion();
     }
   }
+
+  public class WeakFunc<Tin1, Tin2, Tout>: WeakFunc<Tout> {
+    private Func<Tin1, Tin2, Tout> staticFunc;
+
+    public override bool IsStatic {
+      get {
+        return this.staticFunc != null;
+      }
+    }
+
+    public override string MethodName {
+      get {
+        return this.IsStatic ? this.staticFunc.Method.Name : this.Method.Name;
+      }
+    }
+
+    public WeakFunc(Func<Tin1, Tin2, Tout> func) : this(func?.Target, func) { }
+
+    public WeakFunc(object target, Func<Tin1, Tin2, Tout> func) {
+      if (func.Method.IsStatic) {
+        this.staticFunc = func;
+        if (target != null) {
+          this.Reference = new WeakReference(target);
+        }
+      } else {
+        this.Method = func.Method;
+        this.FuncReference = new WeakReference(func.Target);
+        this.Reference = new WeakReference(target);
+      }
+    }
+
+    public new Tout Execute() {
+      return this.Execute(default, default);
+    }
+
+    public Tout Execute(Tin1 parameter1, Tin2 parameter2) {
+      if (this.IsStatic) {
+        return this.staticFunc(parameter1, parameter2);
+      }
+      if (this.IsAlive) {
+        if (this.Method != null && this.FuncReference != null && this.FuncTarget != null) {
+          return (Tout)Method.Invoke(this.FuncTarget, new object[] { parameter1, parameter2 });
+        }
+      }
+      return default;
+    }
+
+    public new void QueryDeletion() {
+      this.staticFunc = null;
+      base.QueryDeletion();
+    }
+  }
 }

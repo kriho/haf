@@ -5,10 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Runtime.CompilerServices;
 
 namespace HAF {
 
-  public class RelayCommand: ICommand {
+  public interface IRelayCommand: ICommand {
+    void Execute();
+    bool CanExecute();
+    void RaiseCanExecuteChanged();
+  }
+
+  public class RelayCommand: IRelayCommand {
     private readonly WeakAction execute;
     private readonly WeakFunc<bool> canExecute;
     private LinkedDependency dependency;
@@ -49,6 +56,7 @@ namespace HAF {
       this.dependency.RegisterUpdate(this.RaiseCanExecuteChanged);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool CanExecute(object parameter) {
 #if DEBUG
       // disable all commands in designe time
@@ -57,7 +65,7 @@ namespace HAF {
       }
 #endif
       if (this.canExecute != null) {
-        return this.canExecute.IsAlive && this.canExecute.Execute();
+        return this.canExecute.Execute();
       }
       if (this.dependency != null) {
         return this.dependency;
@@ -65,18 +73,33 @@ namespace HAF {
       return true;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool CanExecute() {
+      return this.CanExecute(null);
+    }
+
     public void Execute(object parameter) {
-      if (this.CanExecute(parameter) && this.execute != null && this.execute.IsAlive) {
+      if (this.CanExecute(parameter)) {
         this.execute.Execute();
       }
+    }
+
+    public void Execute() {
+      this.Execute(null);
     }
 
     public void RaiseCanExecuteChanged() {
       this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
   }
+  
+  public interface IRelayCommand<T>: ICommand {
+    void Execute(T parameter);
+    bool CanExecute(T parameter);
+    void RaiseCanExecuteChanged();
+  }
 
-  public class RelayCommand<T>: ICommand {
+  public class RelayCommand<T>: IRelayCommand<T> {
     private readonly WeakAction<T> execute;
     private readonly WeakFunc<T, bool> canExecute;
     private LinkedDependency dependency;
@@ -117,6 +140,7 @@ namespace HAF {
       this.dependency.RegisterUpdate(this.RaiseCanExecuteChanged);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool CanExecute(object parameter) {
 #if DEBUG
       // disable all commands in designe time
@@ -125,7 +149,7 @@ namespace HAF {
       }
 #endif
       if (this.canExecute != null) {
-        return this.canExecute.IsAlive && this.canExecute.Execute((T)parameter);
+        return this.canExecute.Execute((T)parameter);
       }
       if (this.dependency != null) {
         return this.dependency;
@@ -133,10 +157,19 @@ namespace HAF {
       return true;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool CanExecute(T parameter) {
+      return this.CanExecute((object)parameter);
+    }
+
     public void Execute(object parameter) {
-      if (this.CanExecute(parameter) && this.execute != null && this.execute.IsAlive) {
+      if (this.CanExecute(parameter)) {
         this.execute.Execute((T)parameter);
       }
+    }
+
+    public void Execute(T parameter) {
+      this.Execute((object)parameter);
     }
 
     public void RaiseCanExecuteChanged() {
