@@ -16,43 +16,28 @@ namespace HAF {
   }
 
   public class RelayCommand: IRelayCommand {
-    private readonly WeakAction execute;
-    private readonly WeakFunc<bool> canExecute;
+    private readonly Action execute;
+    private readonly Func<bool> canExecute;
     private LinkedDependency dependency;
 
     public event EventHandler CanExecuteChanged;
 
     public RelayCommand(Action execute) {
-      if (execute == null) {
-        throw new ArgumentNullException("execute");
-      }
-      this.execute = new WeakAction(execute);
+      this.execute = execute ?? throw new ArgumentNullException("execute");
       this.canExecute = null;
       this.dependency = null;
     }
 
     public RelayCommand(Action execute, Func<bool> canExecute) {
-      if (execute == null) {
-        throw new ArgumentNullException("execute");
-      }
-      if (canExecute == null) {
-        throw new ArgumentNullException("canExecute");
-      }
-      this.execute = new WeakAction(execute);
-      this.canExecute = new WeakFunc<bool>(canExecute);
+      this.execute = execute ?? throw new ArgumentNullException("execute");
+      this.canExecute = canExecute ?? throw new ArgumentNullException("canExecute");
       this.dependency = null;
     }
 
     public RelayCommand(Action execute, LinkedDependency dependency) {
-      if (execute == null) {
-        throw new ArgumentNullException("execute");
-      }
-      if (dependency == null) {
-        throw new ArgumentNullException("dependency");
-      }
-      this.execute = new WeakAction(execute);
+      this.execute = execute ?? throw new ArgumentNullException("execute");
       this.canExecute = null;
-      this.dependency = dependency;
+      this.dependency = dependency ?? throw new ArgumentNullException("dependency");
       this.dependency.RegisterUpdate(this.RaiseCanExecuteChanged);
     }
 
@@ -65,7 +50,7 @@ namespace HAF {
       }
 #endif
       if (this.canExecute != null) {
-        return this.canExecute.Execute();
+        return this.canExecute.Invoke();
       }
       if (this.dependency != null) {
         return this.dependency;
@@ -80,7 +65,7 @@ namespace HAF {
 
     public void Execute(object parameter) {
       if (this.CanExecute(parameter)) {
-        this.execute.Execute();
+        this.execute.Invoke();
       }
     }
 
@@ -100,43 +85,28 @@ namespace HAF {
   }
 
   public class RelayCommand<T>: IRelayCommand<T> {
-    private readonly WeakAction<T> execute;
-    private readonly WeakFunc<T, bool> canExecute;
+    private readonly Action<T> execute;
+    private readonly Func<T, bool> canExecute;
     private LinkedDependency dependency;
 
     public event EventHandler CanExecuteChanged;
 
     public RelayCommand(Action<T> execute) {
-      if (execute == null) {
-        throw new ArgumentNullException("execute");
-      }
-      this.execute = new WeakAction<T>(execute);
+      this.execute = execute ?? throw new ArgumentNullException("execute");
       this.canExecute = null;
       this.dependency = null;
     }
 
     public RelayCommand(Action<T> execute, Func<T, bool> canExecute) {
-      if (execute == null) {
-        throw new ArgumentNullException("execute");
-      }
-      if (canExecute == null) {
-        throw new ArgumentNullException("canExecute");
-      }
-      this.execute = new WeakAction<T>(execute);
-      this.canExecute = new WeakFunc<T, bool>(canExecute);
+      this.execute = execute ?? throw new ArgumentNullException("execute");
+      this.canExecute = canExecute ?? throw new ArgumentNullException("canExecute");
       this.dependency = null;
     }
 
     public RelayCommand(Action<T> execute, LinkedDependency dependency) {
-      if (execute == null) {
-        throw new ArgumentNullException("execute");
-      }
-      if (dependency == null) {
-        throw new ArgumentNullException("dependency");
-      }
-      this.execute = new WeakAction<T>(execute);
+      this.execute = execute ?? throw new ArgumentNullException("execute");
       this.canExecute = null;
-      this.dependency = dependency;
+      this.dependency = dependency ?? throw new ArgumentNullException("dependency");
       this.dependency.RegisterUpdate(this.RaiseCanExecuteChanged);
     }
 
@@ -149,7 +119,7 @@ namespace HAF {
       }
 #endif
       if (this.canExecute != null) {
-        return this.canExecute.Execute((T)parameter);
+        return this.canExecute.Invoke((T)parameter);
       }
       if (this.dependency != null) {
         return this.dependency;
@@ -164,7 +134,7 @@ namespace HAF {
 
     public void Execute(object parameter) {
       if (this.CanExecute(parameter)) {
-        this.execute.Execute((T)parameter);
+        this.execute.Invoke((T)parameter);
       }
     }
 
