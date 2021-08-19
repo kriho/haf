@@ -16,10 +16,10 @@ namespace HAF {
   [Export(typeof(ITasksService)), PartCreationPolicy(CreationPolicy.Shared)]
   public class TasksService: Service, ITasksService {
 
-    private NotifyCollection<ObservableTaskPool> taskPools = new NotifyCollection<ObservableTaskPool>();
-    public IReadOnlyNotifyCollection<ObservableTaskPool> TaskPools => this.taskPools;
+    private NotifyCollection<IObservableTaskPool> taskPools = new NotifyCollection<IObservableTaskPool>();
+    public IReadOnlyNotifyCollection<IObservableTaskPool> TaskPools => this.taskPools;
 
-    public ObservableTaskPool this[string name] {
+    public IObservableTaskPool this[string name] {
       get { return this.TaskPools.FirstOrDefault(t => t.Name == name); }
     }
 

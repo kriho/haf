@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
 namespace HAF {
-  public class ObservableTaskProgress : ObservableObject, ITaskProgress {
+
+  public class ObservableTaskProgress : ObservableObject, IObservableTaskProgress {
 
     private int maximum;
     public int Maximum {
@@ -17,7 +19,7 @@ namespace HAF {
           return this.maximum;
         }
       }
-      set { this.SetValue(ref this.maximum, value); }
+      internal set { this.SetValue(ref this.maximum, value); }
     }
 
     private int value;
@@ -33,31 +35,31 @@ namespace HAF {
           return this.value;
         }
       }
-      set { this.SetValue(ref this.value, value); }
+      internal set { this.SetValue(ref this.value, value); }
     }
 
     private bool isRunning;
     public bool IsRunning {
       get { return this.isRunning; }
-      set { this.SetValue(ref this.isRunning, value); }
+      internal set { this.SetValue(ref this.isRunning, value); }
     }
 
     private bool isIndeterminate;
     public bool IsIndeterminate {
       get { return this.isIndeterminate; }
-      set { this.SetValue(ref this.isIndeterminate, value); }
+      internal set { this.SetValue(ref this.isIndeterminate, value); }
     }
 
     private string description;
     public string Description {
       get { return this.description; }
-      set { this.SetValue(ref this.description, value); }
+      internal set { this.SetValue(ref this.description, value); }
     }
 
     private int? normalizer;
     public int? Normalizer {
       get { return this.normalizer; }
-      set { this.SetValue(ref this.normalizer, value); }
+      internal set { this.SetValue(ref this.normalizer, value); }
     }
 
     public ObservableTaskProgress() {

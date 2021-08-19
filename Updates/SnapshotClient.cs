@@ -104,7 +104,7 @@ namespace HAF.Updates {
       }
     }
 
-    public async Task<Snapshot> DownloadHeadSnapshot(string applicationPath, CancellationToken cancellationToken, ITaskProgress progress) {
+    public async Task<Snapshot> DownloadHeadSnapshot(string applicationPath, CancellationToken cancellationToken, IObservableTaskProgress progress) {
       Snapshot snapshot = null;
       this.Reporter.StartSession(Messages.StartDownloadHead);
       progress.ReportIndeterminate(this.GetMessageText(Messages.StartDownloadHead));
@@ -135,7 +135,7 @@ namespace HAF.Updates {
       }
     }
 
-    public async Task UploadSnapshot(Snapshot snapshot, DirectoryInfo directory, CancellationToken cancellationToken, ITaskProgress progress) {
+    public async Task UploadSnapshot(Snapshot snapshot, DirectoryInfo directory, CancellationToken cancellationToken, IObservableTaskProgress progress) {
       this.Reporter.StartSession(Messages.StartUploadSnapshot);
       // check snapshot
       if (snapshot == null) {
@@ -200,7 +200,7 @@ namespace HAF.Updates {
       progress?.ReportProgress();
     }
 
-    public Task<Snapshot> CreateLocalSnapshot(DirectoryInfo localDirectory, int applicationId, string applicationPath, int versionId, string versionPath, string description, List<SnapshotTask> tasks, ITaskProgress progress) {
+    public Task<Snapshot> CreateLocalSnapshot(DirectoryInfo localDirectory, int applicationId, string applicationPath, int versionId, string versionPath, string description, List<SnapshotTask> tasks, IObservableTaskProgress progress) {
       return Task.Run(() => {
         Snapshot snapshot = null;
         this.Reporter.StartSession(Messages.StartCreateLocalSnapshot);
@@ -264,7 +264,7 @@ namespace HAF.Updates {
       });
     }
 
-    public async Task DownloadSnapshot(Snapshot snapshot, DirectoryInfo directory, CancellationToken cancellationToken, ITaskProgress progress) {
+    public async Task DownloadSnapshot(Snapshot snapshot, DirectoryInfo directory, CancellationToken cancellationToken, IObservableTaskProgress progress) {
       this.Reporter.StartSession(Messages.StartDownloadSnapshot);
       // report initial progress
       progress?.ReportIndeterminate(this.GetMessageText(Messages.StartDownloadSnapshot));
@@ -324,7 +324,7 @@ namespace HAF.Updates {
       progress?.ReportProgress();
     }
 
-    public Task<Snapshot> ReadLocalSnapshot(string localDirectory, ITaskProgress progress) {
+    public Task<Snapshot> ReadLocalSnapshot(string localDirectory, IObservableTaskProgress progress) {
       return Task.Run(() => {
         progress?.ReportIndeterminate();
         this.Reporter.StartSession(Messages.StartReadLocalSnapshot);

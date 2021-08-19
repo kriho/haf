@@ -18,7 +18,7 @@
     <TargetFrameworkProfile />
     <PackageId>$(AssemblyName)</PackageId>
     <Title>Holistic Application Framework</Title>
-    <Version>1.0.9</Version>
+    <Version>1.0.10</Version>
     <Authors>Kristjan Hornung</Authors>
     <PackageOutputPath>.</PackageOutputPath>
     <Description>
@@ -79,6 +79,9 @@
     <Compile Include="Services\IInspectorService.cs" />
     <Compile Include="Services\ITasksService.cs" />
     <Compile Include="Services\InspectorService.cs" />
+    <Compile Include="Tasks\IObservableTask.cs" />
+    <Compile Include="Tasks\IObservableTaskPool.cs" />
+    <Compile Include="Tasks\IObservableTaskProgress.cs" />
     <Compile Include="Tasks\ObservableTask.cs" />
     <Compile Include="Tasks\ObservableTaskPool.cs" />
     <Compile Include="ServiceAwareCatalog.cs" />

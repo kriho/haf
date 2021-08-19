@@ -160,7 +160,7 @@ namespace HAF.Ftp {
       }
     }
 
-    public Task<MemoryStream> DownloadToStream(string remoteFile, CancellationToken cancellationToken, long fileSize = 0, ITaskProgress progress = null) {
+    public Task<MemoryStream> DownloadToStream(string remoteFile, CancellationToken cancellationToken, long fileSize = 0, IObservableTaskProgress progress = null) {
       return Task.Run(() => {
         this.Reporter.StartSession(Messages.StartDownloadStream);
         var stream = new MemoryStream();
@@ -200,7 +200,7 @@ namespace HAF.Ftp {
       });
     }
 
-    public Task DownloadToFile(string remoteFile, string localFile, CancellationToken cancellationToken, long fileSize = 0, ITaskProgress progress = null) {
+    public Task DownloadToFile(string remoteFile, string localFile, CancellationToken cancellationToken, long fileSize = 0, IObservableTaskProgress progress = null) {
       return Task.Run(() => {
         this.Reporter.StartSession(Messages.StartDownloadFile);
         // read head snapshot file
@@ -239,7 +239,7 @@ namespace HAF.Ftp {
       });
     }
 
-    public async Task<bool> DownloadToFileVerified(string remoteFile, string localFile, string md5, CancellationToken cancellationToken, long fileSize = 0, ITaskProgress progress = null) {
+    public async Task<bool> DownloadToFileVerified(string remoteFile, string localFile, string md5, CancellationToken cancellationToken, long fileSize = 0, IObservableTaskProgress progress = null) {
       await this.DownloadToFile(remoteFile, localFile, cancellationToken, fileSize, progress);
       if (this.Reporter.HasErrors) {
         return false;
@@ -254,7 +254,7 @@ namespace HAF.Ftp {
       }
     }
 
-    public Task UploadFile(string remoteFile, string localFile, CancellationToken cancellationToken, long fileSize = 0, ITaskProgress progress = null) {
+    public Task UploadFile(string remoteFile, string localFile, CancellationToken cancellationToken, long fileSize = 0, IObservableTaskProgress progress = null) {
       return Task.Run(() => {
         this.Reporter.StartSession(Messages.StartUploadFile);
         // check if local file exists
@@ -295,7 +295,7 @@ namespace HAF.Ftp {
       });
     }
 
-    public async Task<bool> UploadFileVerified(string remoteFile, string localFile, string md5, CancellationToken cancellationToken, long fileSize = 0, ITaskProgress progress = null) {
+    public async Task<bool> UploadFileVerified(string remoteFile, string localFile, string md5, CancellationToken cancellationToken, long fileSize = 0, IObservableTaskProgress progress = null) {
       await this.UploadFile(remoteFile, localFile, cancellationToken, fileSize, progress);
       if (this.Reporter.HasErrors) {
         return false;
