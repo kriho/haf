@@ -7,87 +7,32 @@ using System.Threading.Tasks;
 using System.Windows;
 
 namespace HAF {
+
+  public interface ITaskProgress: IProgress<int> {
+    void ReportIndeterminate(string description = null);
+    void ReportProgress(int? value = null);
+    void ReportProgress(string description);
+    void ReportProgress(int value, string description);
+    void ReportProgress(int value, int maximum, string description = "", int? normalizer = null);
+    void NormalizeProgress(int? normalizer);
+  }
+
   public class ObservableTask {
-    public static CancellationToken InvalidCancellationToken = CancellationToken.None;
 
-    private TaskProgress initialProgress;
-    private ObservableTaskPool pool;
+    public ObservableTaskPool Pool { get; internal set; }
+    
+    public ObservableTaskProgress Progress { get; private set; }
 
-    public TaskProgress Progress { get; private set; }
+    private ObservableTaskProgress initialProgress;
+    
+    private Func<Task> work;
+    
+    private Task task;
 
     private CancellationTokenSource cancellationTokenSource;
-    public CancellationToken CancellationToken {
-      get {
-        return this.cancellationTokenSource.Token;
-      }
-    }
-
-    public void Abort() {
-      if (!this.IsCancelled) {
-        this.cancellationTokenSource.Cancel();
-      }
-    }
 
     public bool IsCancelled {
-      get { return this.cancellationTokenSource.IsCancellationRequested; }
-    }
-
-    public void ReportIndeterminate(string description = null) {
-      Application.Current.Dispatcher.Invoke(new Action(() => {
-        this.Progress.IsIndeterminate = true;
-        if (description != null) {
-          this.Progress.Description = description;
-        }
-      }));
-    }
-
-    public void ReportProgress(int? value = null) {
-      Application.Current.Dispatcher.Invoke(new Action(() => {
-        if (value.HasValue) {
-          this.Progress.Value = value.Value;
-        } else {
-          this.Progress.IncreaseValue(1);
-        }
-      }));
-    }
-
-    public void ReportProgress(string description) {
-      Application.Current.Dispatcher.Invoke(new Action(() => {
-        this.Progress.Description = description;
-      }));
-    }
-
-    public void ReportProgress(int value, string description) {
-      Application.Current.Dispatcher.Invoke(new Action(() => {
-        this.Progress.Value = value;
-        this.Progress.Description = description;
-      }));
-    }
-
-    public void ReportProgress(int value, int maximum, string description = "", int? normalizer = null) {
-      Application.Current.Dispatcher.Invoke(new Action(() => {
-        this.Progress.IsIndeterminate = (value == maximum);
-        this.Progress.Value = value;
-        this.Progress.Maximum = maximum;
-        this.Progress.Normalizer = normalizer;
-        if (description != "") {
-          this.Progress.Description = description;
-        }
-      }));
-    }
-
-    public void NormalizeProgress(int? normalizer) {
-      this.Progress.Normalizer = normalizer;
-    }
-
-    public void Report(Action action) {
-      Application.Current.Dispatcher.Invoke(new Action(() => {
-        action();
-      }));
-    }
-
-    public void AssignPool(ObservableTaskPool pool) {
-      this.pool = pool;
+      get { return this.cancellationTokenSource?.IsCancellationRequested == true; }
     }
 
     public void RevertProgress() {
@@ -98,89 +43,96 @@ namespace HAF {
       this.Progress.IsRunning = false;
     }
 
-    public RelayCommand DoAbort { get; private set; }
+    public RelayCommand DoCancel { get; private set; }
 
-    public ObservableTask(string description = "", int maximum = 0, int value = 0, CancellationTokenSource cancellationTokenSource = null) {
-      // store cancellation token source
-      this.cancellationTokenSource = cancellationTokenSource;
+    public ObservableTask(Func<Task> work, string description, ObservableTaskPool pool = null) {
+      this.initialProgress = new ObservableTaskProgress(description);
+      this.Initialize(work, pool);
+    }
+
+    public ObservableTask(Func<CancellationToken, Task> work, string description, ObservableTaskPool pool = null) {
+      this.initialProgress = new ObservableTaskProgress(description);
+      this.Initialize(async () => {
+        await work(this.cancellationTokenSource.Token);
+      }, pool);
+    }
+
+    public ObservableTask(Func<IProgress<int>, Task> work, string description, int maximum = 0, int value = 0, ObservableTaskPool pool = null) {
+      this.initialProgress = new ObservableTaskProgress(description, maximum, value);
+      this.Initialize(async () => {
+        await work(this.Progress);
+      }, pool);
+    }
+
+    public ObservableTask(Func<ITaskProgress, Task> work, string description, int maximum = 0, int value = 0, ObservableTaskPool pool = null) {
+      this.initialProgress = new ObservableTaskProgress(description, maximum, value);
+      this.Initialize(async () => {
+        await work(this.Progress);
+      }, pool);
+    }
+
+    public ObservableTask(Func<IProgress<int>, CancellationToken, Task> work, string description, int maximum = 0, int value = 0, ObservableTaskPool pool = null) {
+      this.initialProgress = new ObservableTaskProgress(description, maximum, value);
+      this.Initialize(async () => {
+        await work(this.Progress, this.cancellationTokenSource.Token);
+      }, pool);
+    }
+
+    public ObservableTask(Func<ITaskProgress, CancellationToken, Task> work, string description, int maximum = 0, int value = 0) {
+      this.initialProgress = new ObservableTaskProgress(description, maximum, value);
+      this.Initialize(async () => {
+        await work(this.Progress, this.cancellationTokenSource.Token);
+      }, Pool);
+    }
+
+    private void Initialize(Func<Task> work, ObservableTaskPool pool) {
       // apply initial progress
-      this.initialProgress = new TaskProgress(description, maximum, value);
       this.RevertProgress();
-      this.DoAbort = new RelayCommand(() => {
-        this.Abort();
-      }, () => {
-        return !this.IsCancelled;
+      this.DoCancel = new RelayCommand(this.Cancel, () => {
+        return this.cancellationTokenSource != null && !this.cancellationTokenSource.IsCancellationRequested && this.Progress.IsRunning;
       });
+      this.work = work;
+      this.Pool = pool;
+      // register task
+      if(this.Pool != null) {
+        this.Pool.RegisterTask(this);
+      }
     }
 
-    public void Reset() {
-      this.cancellationTokenSource = new CancellationTokenSource();
-    }
-
-    private void BeginRun() {
-      Application.Current.Dispatcher.Invoke(new Action(() => {
+    public async Task Run() {
+      try {
         // revert progress to make tast restartable
         this.RevertProgress();
         // add and indicate as running
         this.Progress.IsRunning = true;
-      }));
-    }
-
-    private void EndRun() {
-      Application.Current.Dispatcher.Invoke(new Action(() => {
-        // remove and indicate as completed
+        // create new cancellation token source
+        this.cancellationTokenSource = new CancellationTokenSource();
+        this.task = this.work.Invoke();
+        await this.task;
+      } catch(TaskCanceledException) {
+      } finally {
         this.Progress.IsRunning = false;
-        this.pool?.UnscheduleTask(this);
-      }));
+      }
     }
 
-    public async Task Run(Action<ObservableTask> workItem) {
-      this.BeginRun();
-      await Task.Run(() => {
-        workItem(this);
-      });
-      this.EndRun();
+    public async Task Schedule() {
+      if(this.Pool == null) {
+        await this.Run();
+      } else {
+        await this.Pool.ScheduleTask(this);
+      }
     }
 
-    public async Task Run(Func<ObservableTask, Task> workItem) {
-      this.BeginRun();
-      // perform work item
-      await workItem(this);
-      this.EndRun();
+    public void Cancel() {
+      if (this.cancellationTokenSource != null && !this.cancellationTokenSource.IsCancellationRequested) {
+        this.cancellationTokenSource.Cancel();
+      }
     }
 
-    public async Task<T> Run<T>(Func<ObservableTask, T> workItem) {
-      this.BeginRun();
-      // perform work item
-      var result = await Task.Run(() => {
-        return workItem(this);
-      });
-      this.EndRun();
-      return result;
-    }
-
-    public async Task<T> Run<T>(Func<ObservableTask, Task<T>> workItem) {
-      this.BeginRun();
-      // perform work item
-      var result = await workItem(this);
-      this.EndRun();
-      return result;
-    }
-
-    public static Task Run(Action<ObservableTask> workItem, string description = "", int maximum = 0, int value = 0, CancellationTokenSource cancellationTokenSource = null) {
-      return new ObservableTask(description, maximum, value, cancellationTokenSource).Run(workItem);
-    }
-
-    public static Task Run(Func<ObservableTask, Task> workItem, string description = "", int maximum = 0, int value = 0, CancellationTokenSource cancellationTokenSource = null) {
-      return new ObservableTask(description, maximum, value, cancellationTokenSource).Run(workItem);
-    }
-
-    public static Task<T> Run<T>(Func<ObservableTask, T> workItem, string description = "", int maximum = 0, int value = 0, CancellationTokenSource cancellationTokenSource = null) {
-      return new ObservableTask(description, maximum, value, cancellationTokenSource).Run(workItem);
-    }
-
-    public static Task<T> Run<T>(Func<ObservableTask, Task<T>> workItem, string description = "", int maximum = 0, int value = 0, CancellationTokenSource cancellationTokenSource = null) {
-      return new ObservableTask(description, maximum, value, cancellationTokenSource).Run(workItem);
+    public async Task WaitForCompletion() {
+      if(this.Progress.IsRunning && this.task != null) {
+        await this.task;
+      }
     }
   }
 }

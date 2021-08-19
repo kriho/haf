@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace HAF {
-  public class TaskProgress : ObservableObject {
+  public class ObservableTaskProgress : ObservableObject, ITaskProgress {
 
     private int maximum;
     public int Maximum {
@@ -59,7 +60,7 @@ namespace HAF {
       set { this.SetValue(ref this.normalizer, value); }
     }
 
-    public TaskProgress() {
+    public ObservableTaskProgress() {
       this.Description = "";
       this.IsIndeterminate = true;
       this.Maximum = 0;
@@ -67,7 +68,7 @@ namespace HAF {
       this.normalizer = null;
     }
 
-    public TaskProgress(string description, int maximum = 0, int value = 0) {
+    public ObservableTaskProgress(string description, int maximum = 0, int value = 0) {
       this.description = description;
       this.isIndeterminate = (maximum == value);
       this.maximum = maximum;
@@ -76,9 +77,61 @@ namespace HAF {
       this.isRunning = false;
     }
 
+    public void ReportIndeterminate(string description = null) {
+      Application.Current.Dispatcher.Invoke(new Action(() => {
+        this.IsIndeterminate = true;
+        if (description != null) {
+          this.Description = description;
+        }
+      }));
+    }
+
+    public void ReportProgress(int? value = null) {
+      Application.Current.Dispatcher.Invoke(new Action(() => {
+        if (value.HasValue) {
+          this.Value = value.Value;
+        } else {
+          this.IncreaseValue(1);
+        }
+      }));
+    }
+
+    public void ReportProgress(string description) {
+      Application.Current.Dispatcher.Invoke(new Action(() => {
+        this.Description = description;
+      }));
+    }
+
+    public void ReportProgress(int value, string description) {
+      Application.Current.Dispatcher.Invoke(new Action(() => {
+        this.Value = value;
+        this.Description = description;
+      }));
+    }
+
+    public void ReportProgress(int value, int maximum, string description = "", int? normalizer = null) {
+      Application.Current.Dispatcher.Invoke(new Action(() => {
+        this.IsIndeterminate = (value == maximum);
+        this.Value = value;
+        this.Maximum = maximum;
+        this.Normalizer = normalizer;
+        if (description != "") {
+          this.Description = description;
+        }
+      }));
+    }
+
+    public void NormalizeProgress(int? normalizer) {
+      this.Normalizer = normalizer;
+    }
+
     public void IncreaseValue(int value) {
       this.value += value;
       this.NotifyPropertyChanged(() => this.Value);
+    }
+
+    public void Report(int value) {
+      this.ReportProgress(value);
     }
   }
 }

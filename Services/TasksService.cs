@@ -25,7 +25,7 @@ namespace HAF {
 
     public void AddTaskPool(string name, bool allowParallelExecution) {
       if (this.TaskPools.Any(t => t.Name == name)) {
-        throw new Exception($"the task domain {name} already exists");
+        throw new Exception($"the task pool {name} already exists");
       }
       this.taskPools.Add(new ObservableTaskPool(name, allowParallelExecution));
     }

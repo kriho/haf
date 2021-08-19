@@ -13,39 +13,41 @@ namespace HAF {
 
     public bool AllowParallelExecution { get; private set; }
 
-    public LinkedState CanScheduleTasks { get; private set; } = new LinkedState();
+    public LinkedState IsIdle { get; private set; } = new LinkedState(true);
 
-    private NotifyCollection<ObservableTask> tasks = new NotifyCollection<ObservableTask>();
-    public IReadOnlyNotifyCollection<ObservableTask> Tasks => this.tasks;
+    private NotifyCollection<ObservableTask> activeTasks = new NotifyCollection<ObservableTask>();
+    public IReadOnlyNotifyCollection<ObservableTask> ActiveTasks => this.activeTasks;
 
+    private NotifyCollection<ObservableTask> registeredTasks = new NotifyCollection<ObservableTask>();
+    public IReadOnlyNotifyCollection<ObservableTask> RegisteredTasks => this.registeredTasks;
 
     public ObservableTaskPool(string name, bool allowParallelExecution) {
       this.Name = name;
+      this.Link = name;
       this.AllowParallelExecution = allowParallelExecution;
     }
 
-    public ObservableTaskPool() {
-      this.Link = this.Name;
-    }
-
-    public void ScheduleTask(ObservableTask task) {
-      if(this.Tasks.Count > 0 && !this.AllowParallelExecution) {
-        throw new Exception("task group does not allow parallel execution");
-      }
-      task.AssignPool(this);
-      this.tasks.Add(task);
-      if(!this.AllowParallelExecution) {
-        this.CanScheduleTasks.Value = false;
+    internal void RegisterTask(ObservableTask task) {
+      if (!this.registeredTasks.Contains(task)) {
+        this.registeredTasks.Add(task);
       }
     }
 
-    public void UnscheduleTask(ObservableTask task) {
-      if(this.tasks.Contains(task)) {
-        this.tasks.Remove(task);
-        if (this.AllowParallelExecution || this.Tasks.Count == 0) {
-          this.CanScheduleTasks.Value = true;
-        }
+    internal async Task ScheduleTask(ObservableTask task) {
+      this.IsIdle.Value = false;
+      if (!this.AllowParallelExecution) {
+        await Task.WhenAll(this.activeTasks.Select(t => t.WaitForCompletion()));
       }
+      if(this.activeTasks.Contains(task)) {
+        await task.WaitForCompletion();
+      }
+      this.activeTasks.Add(task);
+      try {
+        await task.Run();
+      } finally {
+        this.activeTasks.Remove(task);
+      }
+      this.IsIdle.Value = this.activeTasks.Count == 0;
     }
   }
 }
