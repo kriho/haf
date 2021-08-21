@@ -26,12 +26,18 @@ namespace HAF {
     /// fire event
     /// </summary>
     public void Fire(T args) {
+      var cleanup = false;
       foreach (var listener in this.Listeners) {
         if (listener.IsAlive) {
           listener.Execute(args);
         } else {
-          // TODO remove from list
+          // stale events exist
+          cleanup = true;
         }
+      }
+      if(cleanup) {
+        // remove all stale events
+        this.Listeners.RemoveAll(l => !l.IsAlive);
       }
 #if DEBUG
       Console.WriteLine($"{this.Name}()");
@@ -73,8 +79,13 @@ namespace HAF {
         if (listener.IsAlive) {
           listener.Execute();
         } else {
-          // TODO remove from list
+          // stale events exist
+          cleanup = true;
         }
+      }
+      if(cleanup) {
+        // remove all stale events
+        this.Listeners.RemoveAll(l => !l.IsAlive);
       }
 #if DEBUG
       Console.WriteLine($"service event <{this.Name}> fired");
