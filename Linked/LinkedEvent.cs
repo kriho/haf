@@ -75,6 +75,7 @@ namespace HAF {
     /// fire event
     /// </summary>
     public void Fire() {
+      var cleanup = false;
       foreach (var listener in this.Listeners) {
         if (listener.IsAlive) {
           listener.Execute();
