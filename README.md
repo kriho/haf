@@ -11,3 +11,11 @@ This framework aims to make the most of the MVVM pattern by
 - improving the design time experience by declaring design time data on a service level
 - already providing a large set of services for default application logic
 - implementing most missing MVVM related classes such as the RelayCommand and the ObservableObject
+
+### Naming conventions
+Enitity | Prefix | Examples
+-|-|-
+event | On | OnConnected
+command | Do | DoConnect
+state | Is, Can | IsConnected, CanConnect
+dependency | May | MayConnect
