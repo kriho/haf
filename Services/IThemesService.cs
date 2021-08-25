@@ -3,6 +3,18 @@ using System.Collections.ObjectModel;
 using System.Windows.Media;
 
 namespace HAF {
+
+  public enum ThemeKey {
+    Background,
+    Text,
+    Accent,
+    Light, 
+    Strong,
+    Info,
+    Warning, 
+    Error
+  }
+
   public interface IThemesService : IService {
     Color BackgroundColor { get; }
     Brush BackgroundBrush { get; }
@@ -25,5 +37,7 @@ namespace HAF {
     NotifyCollection<Theme> AvailableThemes { get; }
     LinkedDependency MayChangeTheme { get; }
     LinkedEvent OnActiveThemeChanged { get; }
+    Color GetColor(ThemeKey key);
+    Brush GetBrush(ThemeKey key);
   }
 }

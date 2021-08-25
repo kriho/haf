@@ -18,7 +18,7 @@
     <TargetFrameworkProfile />
     <PackageId>$(AssemblyName)</PackageId>
     <Title>Holistic Application Framework</Title>
-    <Version>1.0.10</Version>
+    <Version>1.0.11</Version>
     <Authors>Kristjan Hornung</Authors>
     <PackageOutputPath>.</PackageOutputPath>
     <Description>
@@ -192,6 +192,7 @@
     <Compile Include="Storage\XmlLiveStorageFile.cs" />
     <Compile Include="Storage\XmlStorageFile.cs" />
     <Compile Include="Tasks\ObservableTaskProgress.cs" />
+    <Compile Include="ThemeResource.cs" />
     <Compile Include="Updates\Snapshot.cs" />
     <Compile Include="Updates\SnapshotClient.cs" />
     <Compile Include="Updates\SnapshotFile.cs" />
