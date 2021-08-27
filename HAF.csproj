@@ -18,7 +18,7 @@
     <TargetFrameworkProfile />
     <PackageId>$(AssemblyName)</PackageId>
     <Title>Holistic Application Framework</Title>
-    <Version>1.0.11</Version>
+    <Version>1.0.12</Version>
     <Authors>Kristjan Hornung</Authors>
     <PackageOutputPath>.</PackageOutputPath>
     <Description>
@@ -74,11 +74,11 @@
     <Compile Include="Converters\IsEqualToBoolean.cs" />
     <Compile Include="Enumeration.cs" />
     <Compile Include="Linked\LinkedObjectManager.cs" />
-    <Compile Include="Observable\NotifyCollection.cs" />
     <Compile Include="Services\IDockingWindowService.cs" />
     <Compile Include="Services\IInspectorService.cs" />
     <Compile Include="Services\ITasksService.cs" />
     <Compile Include="Services\InspectorService.cs" />
+    <Compile Include="SystemFileOperation.cs" />
     <Compile Include="Tasks\IObservableTask.cs" />
     <Compile Include="Tasks\IObservableTaskPool.cs" />
     <Compile Include="Tasks\IObservableTaskProgress.cs" />
@@ -146,7 +146,7 @@
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Logging\Report.cs" />
     <Compile Include="Logging\Reporter.cs" />
-    <Compile Include="Observable\RangeObservableCollection.cs" />
+    <Compile Include="Observable\ObservableCollection.cs" />
     <Compile Include="Observable\ValidatableView.cs" />
     <Compile Include="Observable\Model.cs" />
     <Compile Include="Observable\ViewModel.cs" />
@@ -192,6 +192,8 @@
     <Compile Include="Storage\XmlLiveStorageFile.cs" />
     <Compile Include="Storage\XmlStorageFile.cs" />
     <Compile Include="Tasks\ObservableTaskProgress.cs" />
+    <Compile Include="ThemeBrush.cs" />
+    <Compile Include="ThemeColor.cs" />
     <Compile Include="Updates\Snapshot.cs" />
     <Compile Include="Updates\SnapshotClient.cs" />
     <Compile Include="Updates\SnapshotFile.cs" />
