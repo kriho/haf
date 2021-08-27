@@ -23,6 +23,10 @@ namespace HAF {
             return;
           }
         }
+        if(propertyName == "Item[]") {
+          // TODO check if indexer property exists
+          return;
+        }
         throw new ArgumentException("failed to notify changed for unknown property", propertyName);
       }
     }
