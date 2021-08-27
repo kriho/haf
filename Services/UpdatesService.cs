@@ -17,7 +17,7 @@ namespace HAF {
 
     public LinkedDependency MayUpdate { get; private set; } = new LinkedDependency();
 
-    public LinkedEvent OnAvailableVersionChanged { get; private set; } = new LinkedEvent();
+    public LinkedEvent OnAvailableVersionChanged { get; private set; } = new LinkedEvent(nameof(OnAvailableVersionChanged));
 
     public LinkedState CanUpdate { get; private set; } = new LinkedState(false);
 

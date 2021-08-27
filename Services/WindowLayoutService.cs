@@ -1,4 +1,4 @@
-using HAF.Models;
+﻿using HAF.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,7 +15,7 @@ namespace HAF {
 
     public LinkedDependency MayChangeWindowLayout { get; private set; } = new LinkedDependency();
 
-    public LinkedEvent OnActiveWindowLayoutChanged { get; private set; } = new LinkedEvent();
+    public LinkedEvent OnActiveWindowLayoutChanged { get; private set; } = new LinkedEvent(nameof(OnActiveWindowLayoutChanged));
 
     [Import]
 #pragma warning disable CS0649 // imported by MEF

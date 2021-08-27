@@ -1,4 +1,4 @@
-using HAF.Models;
+﻿using HAF.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,7 +14,7 @@ namespace HAF {
   [Export(typeof(IProjectsService)), PartCreationPolicy(CreationPolicy.Shared)]
   public class ProjectsService : Service, IProjectsService {
 
-    public LinkedEvent OnProjectsChanged { get; private set; } = new LinkedEvent();
+    public LinkedEvent OnProjectsChanged { get; private set; } = new LinkedEvent(nameof(OnProjectsChanged));
 
     public LinkedDependency MayChangeProject { get; private set; } = new LinkedDependency();
 
