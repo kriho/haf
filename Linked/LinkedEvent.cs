@@ -100,7 +100,10 @@ namespace HAF {
       this.Listeners.Add(new WeakAction(listener));
     }
 
-    public LinkedEvent() {
+    public LinkedEvent(string name) {
+#if DEBUG
+      this.Name = name;
+#endif
     }
   }
 
