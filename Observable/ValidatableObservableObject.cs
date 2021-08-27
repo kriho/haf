@@ -28,8 +28,8 @@ namespace HAF {
       return this.SetValueAndValidate(ref property, value, subscribe, this.GetExpressionMemberName(expression));
     }
 
-    private ConcurrentDictionary<string, List<string>> errors = new ConcurrentDictionary<string, List<string>>();
-    private object validationLock = new object();
+    private readonly ConcurrentDictionary<string, List<string>> errors = new ConcurrentDictionary<string, List<string>>();
+    private readonly object validationLock = new object();
 
     public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
@@ -40,7 +40,7 @@ namespace HAF {
     }
 
     public IEnumerable GetErrors(string propertyName) {
-      this.errors.TryGetValue(propertyName, out List<string> errorsForProperty);
+      this.errors.TryGetValue(propertyName, out var errorsForProperty);
       return errorsForProperty;
     }
 
@@ -52,7 +52,7 @@ namespace HAF {
       lock (this.validationLock) {
         // remove old validation errors
         if (this.errors.ContainsKey(propertyName)) {
-          this.errors.TryRemove(propertyName, out List<string> list);
+          this.errors.TryRemove(propertyName, out var list);
         }
         // get error description
         var propertyInfo = this.GetType().GetProperty(propertyName);
