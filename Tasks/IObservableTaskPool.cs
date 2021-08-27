@@ -12,7 +12,7 @@ namespace HAF {
     string Name { get; }
     bool AllowParallelExecution { get; }
     LinkedState IsIdle { get; }
-    IReadOnlyNotifyCollection<IObservableTask> ActiveTasks { get; }
-    IReadOnlyNotifyCollection<IObservableTask> RegisteredTasks { get; }
+    IReadOnlyObservableCollection<IObservableTask> ActiveTasks { get; }
+    IReadOnlyObservableCollection<IObservableTask> RegisteredTasks { get; }
   }
 }

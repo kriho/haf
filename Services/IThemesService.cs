@@ -1,4 +1,4 @@
-﻿using HAF.Models;
+using HAF.Models;
 using System.Collections.ObjectModel;
 using System.Windows.Media;
 
@@ -22,7 +22,7 @@ namespace HAF {
     Brush ErrorBrush { get; }
     RelayCommand<Theme> DoSetTheme { get; }
     Theme ActiveTheme { get; set; }
-    NotifyCollection<Theme> AvailableThemes { get; }
+    IObservableCollection<Theme> AvailableThemes { get; }
     LinkedDependency MayChangeTheme { get; }
     LinkedEvent OnActiveThemeChanged { get; }
   }

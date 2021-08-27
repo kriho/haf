@@ -11,7 +11,7 @@ namespace HAF {
 
   public class Logger<Tmessage, Tid> : ObservableObject {
     public event MessageLoggedEventHandler<Tmessage, Tid> MessageLogged;
-    public NotifyCollection<Report<Tmessage, Tid>> reports = new NotifyCollection<Report<Tmessage, Tid>>();
+    public ObservableCollection<Report<Tmessage, Tid>> reports = new ObservableCollection<Report<Tmessage, Tid>>();
 
     public Logger() {
     }

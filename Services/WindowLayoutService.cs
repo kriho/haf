@@ -1,4 +1,4 @@
-﻿using HAF.Models;
+using HAF.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -32,12 +32,13 @@ namespace HAF {
 
     public RelayCommand<PaneMeta> DoShowPane { get; private set; }
 
-    private RangeNotifyCollection<WindowLayout> windowLayouts = new RangeNotifyCollection<WindowLayout>();
-    public IReadOnlyNotifyCollection<WindowLayout> WindowLayouts => this.windowLayouts;
+    private ObservableCollection<WindowLayout> windowLayouts = new ObservableCollection<WindowLayout>();
+    public IReadOnlyObservableCollection<WindowLayout> WindowLayouts => this.windowLayouts;
 
-    public RangeNotifyCollection<WindowLayout> DefaultWindowLayouts { get; private set; } = new RangeNotifyCollection<WindowLayout>();
+    private List<WindowLayout> defaultindowLayouts = new List<WindowLayout>();
+    public IReadOnlyCollection<WindowLayout> DefaultWindowLayouts => this.defaultindowLayouts;
 
-    public NotifyCollection<PaneMeta> AvailablePanes { get; private set; } = new NotifyCollection<PaneMeta>();
+    public ObservableCollection<PaneMeta> AvailablePanes { get; private set; } = new ObservableCollection<PaneMeta>();
 
     private WindowLayout activeWindowLayout = null;
     public WindowLayout ActiveWindowLayout {

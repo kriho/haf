@@ -16,8 +16,8 @@ namespace HAF {
   [Export(typeof(ITasksService)), PartCreationPolicy(CreationPolicy.Shared)]
   public class TasksService: Service, ITasksService {
 
-    private NotifyCollection<IObservableTaskPool> taskPools = new NotifyCollection<IObservableTaskPool>();
-    public IReadOnlyNotifyCollection<IObservableTaskPool> TaskPools => this.taskPools;
+    private readonly ObservableCollection<IObservableTaskPool> taskPools = new ObservableCollection<IObservableTaskPool>();
+    public IReadOnlyObservableCollection<IObservableTaskPool> TaskPools => this.taskPools;
 
     public IObservableTaskPool this[string name] {
       get { return this.TaskPools.FirstOrDefault(t => t.Name == name); }

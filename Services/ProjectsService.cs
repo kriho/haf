@@ -1,4 +1,4 @@
-﻿using HAF.Models;
+using HAF.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -28,8 +28,8 @@ namespace HAF {
 
     public RelayCommand DoOpenDirectory { get; private set; }
 
-    private RangeNotifyCollection<Project> projects = new RangeNotifyCollection<Project>();
-    public IReadOnlyNotifyCollection<Project> Projects => this.projects;
+    private ObservableCollection<Project> projects = new ObservableCollection<Project>();
+    public IReadOnlyObservableCollection<Project> Projects => this.projects;
 
     public List<IService> ConfiguredServices { get; private set; } = new List<IService>();
 

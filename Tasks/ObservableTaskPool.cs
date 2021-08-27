@@ -15,11 +15,11 @@ namespace HAF {
 
     public LinkedState IsIdle { get; private set; } = new LinkedState(true);
 
-    private NotifyCollection<IObservableTask> activeTasks = new NotifyCollection<IObservableTask>();
-    public IReadOnlyNotifyCollection<IObservableTask> ActiveTasks => this.activeTasks;
+    private readonly ObservableCollection<IObservableTask> activeTasks = new ObservableCollection<IObservableTask>();
+    public IReadOnlyObservableCollection<IObservableTask> ActiveTasks => this.activeTasks;
 
-    private NotifyCollection<IObservableTask> registeredTasks = new NotifyCollection<IObservableTask>();
-    public IReadOnlyNotifyCollection<IObservableTask> RegisteredTasks => this.registeredTasks;
+    private readonly ObservableCollection<IObservableTask> registeredTasks = new ObservableCollection<IObservableTask>();
+    public IReadOnlyObservableCollection<IObservableTask> RegisteredTasks => this.registeredTasks;
 
     public ObservableTaskPool(string name, bool allowParallelExecution) {
       this.Name = name;
