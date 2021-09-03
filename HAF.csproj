@@ -18,7 +18,7 @@
     <TargetFrameworkProfile />
     <PackageId>$(AssemblyName)</PackageId>
     <Title>Holistic Application Framework</Title>
-    <Version>1.0.12</Version>
+    <Version>1.0.13</Version>
     <Authors>Kristjan Hornung</Authors>
     <PackageOutputPath>.</PackageOutputPath>
     <Description>
@@ -69,15 +69,19 @@
     <Compile Include="Behaviors\Attached\IsFocused.cs" />
     <Compile Include="Behaviors\Attached\IgnoreMouseWheel.cs" />
     <Compile Include="Commands\AsyncRelayCommand.cs" />
+    <Compile Include="Controls\Icon.cs" />
+    <Compile Include="Controls\Form.cs" />
     <Compile Include="Controls\FormGroup.cs" />
     <Compile Include="Controls\HeaderedFormGroup.cs" />
     <Compile Include="Converters\IsEqualToBoolean.cs" />
     <Compile Include="Enumeration.cs" />
     <Compile Include="Linked\LinkedObjectManager.cs" />
+    <Compile Include="Models\ITheme.cs" />
     <Compile Include="Services\IDockingWindowService.cs" />
     <Compile Include="Services\IInspectorService.cs" />
     <Compile Include="Services\ITasksService.cs" />
     <Compile Include="Services\InspectorService.cs" />
+    <Compile Include="Services\ThemesService.cs" />
     <Compile Include="SystemFileOperation.cs" />
     <Compile Include="Tasks\IObservableTask.cs" />
     <Compile Include="Tasks\IObservableTaskPool.cs" />
@@ -90,7 +94,6 @@
     <Compile Include="Commands\WeakAction.cs" />
     <Compile Include="Commands\WeakFunc.cs" />
     <Compile Include="Controls\BindableRichTextBox.cs" />
-    <Compile Include="Controls\Icon.cs" />
     <Compile Include="Controls\ChromeWindow.cs" />
     <Compile Include="Controls\StretchWrapPanel.cs" />
     <Compile Include="Converters\BitmapToImageSource.cs" />
@@ -194,6 +197,7 @@
     <Compile Include="Tasks\ObservableTaskProgress.cs" />
     <Compile Include="ThemeBrush.cs" />
     <Compile Include="ThemeColor.cs" />
+    <Compile Include="Resources\ThemeResourceDictionary.cs" />
     <Compile Include="Updates\Snapshot.cs" />
     <Compile Include="Updates\SnapshotClient.cs" />
     <Compile Include="Updates\SnapshotFile.cs" />
@@ -221,7 +225,15 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Themes\Overrides.xaml">
+    <Page Include="Resources\Icons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Overrides.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
