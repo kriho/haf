@@ -1,8 +1,6 @@
 ﻿<haf:ThemeResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:controls="clr-namespace:HAF.Controls"
-                    xmlns:haf="clr-namespace:HAF"
-                    xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation">
+                    xmlns:haf="clr-namespace:HAF">
     <!-- colors -->
     <Color x:Key="ThemeBackgroundColor" A="0xFF" R="0xFF" G="0xFF" B="0xFF"/>
     <Color x:Key="ThemeTextColor" A="0xFF" R="0x00" G="0x00" B="0x00"/>
