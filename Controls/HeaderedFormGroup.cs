@@ -9,7 +9,7 @@ using System.Windows.Controls;
 namespace HAF.Controls {
   public class HeaderedFormGroup: HeaderedContentControl {
 
-    public static readonly DependencyProperty OrientationProperty = DependencyProperty.Register("Orientation", typeof(Orientation), typeof(HeaderedFormGroup), new PropertyMetadata(Orientation.Horizontal));
+    public static readonly DependencyProperty OrientationProperty = DependencyProperty.Register("Orientation", typeof(Orientation), typeof(HeaderedFormGroup), new PropertyMetadata(Orientation.Vertical));
 
     public Orientation Orientation {
       get { return (Orientation)GetValue(OrientationProperty); }
