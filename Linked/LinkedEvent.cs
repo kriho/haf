@@ -16,7 +16,7 @@ namespace HAF {
   /// event names must always start with On...
   /// </remarks>
   public class LinkedEvent<T> {
-    public List<WeakAction<T>> Listeners = new List<WeakAction<T>>();
+    public List<Action<T>> Listeners = new List<Action<T>>();
 
 #if DEBUG
     public string Name;
@@ -26,18 +26,8 @@ namespace HAF {
     /// fire event
     /// </summary>
     public void Fire(T args) {
-      var cleanup = false;
       foreach (var listener in this.Listeners) {
-        if (listener.IsAlive) {
-          listener.Execute(args);
-        } else {
-          // stale events exist
-          cleanup = true;
-        }
-      }
-      if(cleanup) {
-        // remove all stale events
-        this.Listeners.RemoveAll(l => !l.IsAlive);
+        listener.Invoke(args);
       }
 #if DEBUG
       Console.WriteLine($"{this.Name}()");
@@ -48,7 +38,7 @@ namespace HAF {
     /// register event listener
     /// </summary>
     public void Register(Action<T> listener) {
-      this.Listeners.Add(new WeakAction<T>(listener));
+      this.Listeners.Add(listener);
     }
 
     public LinkedEvent(string name) {
@@ -65,7 +55,7 @@ namespace HAF {
   /// event names must always start with On...
   /// </remarks>
   public class LinkedEvent {
-    public List<WeakAction> Listeners = new List<WeakAction>();
+    public List<Action> Listeners = new List<Action>();
 
 #if DEBUG
     public string Name;
@@ -75,18 +65,8 @@ namespace HAF {
     /// fire event
     /// </summary>
     public void Fire() {
-      var cleanup = false;
       foreach (var listener in this.Listeners) {
-        if (listener.IsAlive) {
-          listener.Execute();
-        } else {
-          // stale events exist
-          cleanup = true;
-        }
-      }
-      if(cleanup) {
-        // remove all stale events
-        this.Listeners.RemoveAll(l => !l.IsAlive);
+        listener.Invoke();
       }
 #if DEBUG
       Console.WriteLine($"service event <{this.Name}> fired");
@@ -97,7 +77,7 @@ namespace HAF {
     /// register event listener
     /// </summary>
     public void Register(Action listener) {
-      this.Listeners.Add(new WeakAction(listener));
+      this.Listeners.Add(listener);
     }
 
     public LinkedEvent(string name) {
