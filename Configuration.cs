@@ -13,13 +13,23 @@ using System.Windows;
 namespace HAF {
   public static class Configuration {
 
+    public class ServiceRegistration {
+      public IService Service { get; private set;}
+      public int Priority{ get; private set;}
+
+      public ServiceRegistration(IService service, int priority) {
+        this.Service = service;
+        this.Priority = priority;
+      }
+    }
+
     public static string ConfigurationDirectory;
 
     public static string ExtensionsDirectory;
 
     public static CompositionContainer Container { get; private set; }
 
-    public static List<IService> ConfiguratedServices { get; private set; } = new List<IService>();
+    private static readonly List<ServiceRegistration> serviceRegistrations = new List<ServiceRegistration>();
 
     public static void Initialize() {
       // create directories if needed
@@ -43,29 +53,36 @@ namespace HAF {
 #endif
       catalog.Catalogs.Add(new DirectoryCatalog(Configuration.ExtensionsDirectory));
       catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load(applicationAssemblyName)));
-      catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load("HAF, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")));
       catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load($"HAF.{userInterfaceLibrary}, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")));
+      catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load("HAF, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")));
       // filter out all duplicate service exports, only the first export of a service export type identity remains
       // note that design time services have highest priority, then extension services and lastly application services
       var serviceAwareCatalog = new ServiceAwareCatalog(catalog);
       Configuration.Container = new CompositionContainer(serviceAwareCatalog);
     }
 
-    public static void Load() {
+    public static void RegisterService(IService service, int priority = 0) {
+      if(Configuration.serviceRegistrations.Any(s => s.Service == service)) {
+        throw new Exception($"the service {service.GetType().Name} is already registered in the HAF configuration");
+      }
+      Configuration.serviceRegistrations.Add(new ServiceRegistration(service, priority));
+    }
+
+    public static void LoadServiceConfigurations(int priority = 0) {
       // assign links for all linked objects
       LinkedObjectManager.AssignLinks();
       // load configuration
       var filePath = Path.Combine(Configuration.ConfigurationDirectory, "settings.xml");
       var configuration = File.Exists(filePath) ? ServiceConfiguration.FromFile(filePath) : new ServiceConfiguration("settings");
-      foreach (var service in Configuration.ConfiguratedServices) {
-        service.LoadConfiguration(configuration);
+      foreach (var serviceRegistration in Configuration.serviceRegistrations.Where(s => s.Priority == priority)) {
+        serviceRegistration.Service.LoadConfiguration(configuration);
       }
     }
 
-    public static void Save() {
+    public static void SaveServiceConfigurations() {
       var configuration = new ServiceConfiguration("settings");
-      foreach (var service in Configuration.ConfiguratedServices) {
-        service.SaveConfiguration(configuration);
+      foreach (var serviceRegistration in Configuration.serviceRegistrations) {
+        serviceRegistration.Service.SaveConfiguration(configuration);
       }
       configuration.SaveToFile(Path.Combine(Configuration.ConfigurationDirectory, "settings.xml"));
     }
