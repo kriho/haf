@@ -9,13 +9,9 @@ using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows.Media;
 
-namespace HAF.Converters {
-  public class IEnumerableToString : ValueConverter<IEnumerable<object>, string> {
-    public string Seperator { get; set; }
-
-    public IEnumerableToString() {
-      this.Seperator = ", ";
-    }
+namespace HAF {
+  public class IEnumerableToStringConverter: ValueConverter<IEnumerable<object>, string> {
+    public string Seperator { get; set; } = ", ";
 
     protected override string convert(IEnumerable<object> value) {
       return String.Join(this.Seperator, value.Select(v => v.ToString()));

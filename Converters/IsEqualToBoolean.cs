@@ -11,7 +11,7 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace HAF.Converters {
+namespace HAF {
   public class IsEqualToBoolean: MultiValueConverter<object, bool> {
 
     protected override bool convert(IEnumerable<object> values) {

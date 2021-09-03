@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HAF.Converters {
-  public class PathToFilename : ValueConverter<string, string> {
+namespace HAF {
+  public class PathToFilenameConverter: ValueConverter<string, string> {
     public bool TrimExtension { get; set; } = true;
 
     protected override string convert(string value) {

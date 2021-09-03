@@ -12,11 +12,11 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace HAF.Converters {
-  public class BitmapToImageSource : ValueConverter<Bitmap, ImageSource> {
+namespace HAF {
+  public class BitmapToImageSourceConverter: ValueConverter<Bitmap, ImageSource> {
 
     protected override ImageSource convert(Bitmap value) {
-      if(value == null) {
+      if (value == null) {
         return null;
       }
       // convert to image source

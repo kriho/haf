@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace HAF.Controls {
+namespace HAF {
   public class FormGroup : ContentControl {
 
     public static readonly DependencyProperty BorderlessProperty = DependencyProperty.Register("Borderless", typeof(bool), typeof(FormGroup), new PropertyMetadata(true));

@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace HAF.Converters {
+namespace HAF {
   [MarkupExtensionReturnType(typeof(IValueConverter))]
-  public abstract class UnsafeValueConverter<Tin, Tout> : MarkupExtension, IValueConverter {
+  public abstract class UnsafeValueConverter<Tin, Tout>: MarkupExtension, IValueConverter {
     protected abstract Tout convert(Tin value);
 
     protected virtual Tin convertBack(Tout value) {

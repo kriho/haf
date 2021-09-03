@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace HAF.Converters {
-  public class StringExpressionToVisibility : ValueConverter<string, Visibility> {
+namespace HAF {
+  public class StringExpressionToVisibilityConverter: ValueConverter<string, Visibility> {
     public enum StringExpression {
       IsEqual,
       Contains,
@@ -24,11 +24,11 @@ namespace HAF.Converters {
         case StringExpression.IsEqual:
           result = this.Comparator == string.Empty ? string.IsNullOrEmpty(value) : value == this.Comparator;
           break;
-        case StringExpression.Contains: 
+        case StringExpression.Contains:
           result = (value.Contains(this.Comparator)); break;
-        case StringExpression.IsEmpty: 
+        case StringExpression.IsEmpty:
           result = String.IsNullOrWhiteSpace(value); break;
-        default: 
+        default:
           throw new Exception("Unknown expression used for conversion.");
       }
       if (this.Inverted) {

@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace HAF.Converters {
-  public class OffsetPoint : UnsafeValueConverter<Point, Point> {
+namespace HAF {
+  public class OffsetPointConverter: UnsafeValueConverter<Point, Point> {
     public Vector Offset { get; set; } = new Vector();
 
     protected override Point convert(Point value) {

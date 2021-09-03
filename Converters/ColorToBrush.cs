@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
-namespace HAF.Converters {
-  public class ColorToBrush : ValueConverter<Color, Brush> {
+namespace HAF {
+  public class ColorToBrushConverter: ValueConverter<Color, Brush> {
     public Color FallbackColor { get; set; } = Colors.Black;
     public byte? Alpha { get; set; } = null;
 

@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HAF.Converters {
-  public class InvertNullableBoolean : ValueConverter<bool?, bool?> {
+namespace HAF {
+  public class InvertNullableBooleanConverter: ValueConverter<bool?, bool?> {
 
     protected override bool? convert(bool? value) {
       if (value == null) {

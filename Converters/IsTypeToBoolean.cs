@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace HAF.Converters {
-  public class IsTypeToBoolean : UnsafeValueConverter<object, bool> {
+namespace HAF {
+  public class IsTypeToBooleanConverter: UnsafeValueConverter<object, bool> {
     public bool Inverted { get; set; } = false;
     public Type Type { get; set; }
 

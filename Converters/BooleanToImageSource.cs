@@ -9,15 +9,11 @@ using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows.Media;
 
-namespace HAF.Converters {
-  public class BooleanToImageSource : ValueConverter<bool, ImageSource> {
-    public bool Inverted { get; set; }
+namespace HAF {
+  public class BooleanToImageSourceConverter: ValueConverter<bool, ImageSource> {
+    public bool Inverted { get; set; } = false;
     public ImageSource TrueValue { get; set; }
     public ImageSource FalseValue { get; set; }
-
-    public BooleanToImageSource() {
-      this.Inverted = false;
-    }
 
     protected override ImageSource convert(bool value) {
       var result = value;

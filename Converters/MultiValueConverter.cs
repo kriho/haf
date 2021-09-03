@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace HAF.Converters {
+namespace HAF {
   [MarkupExtensionReturnType(typeof(IMultiValueConverter))]
-  public abstract class MultiValueConverter<Tin, Tout> : MarkupExtension, IMultiValueConverter {
+  public abstract class MultiValueConverter<Tin, Tout>: MarkupExtension, IMultiValueConverter {
     protected CultureInfo culture;
 
     protected abstract Tout convert(IEnumerable<Tin> values);

@@ -9,8 +9,8 @@ using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows.Media;
 
-namespace HAF.Converters {
-  public class PointToThickness : ValueConverter<Point, Thickness> {
+namespace HAF {
+  public class PointToThicknessConverter: ValueConverter<Point, Thickness> {
 
     protected override Thickness convert(Point value) {
       return new Thickness(value.X, value.Y, 0, 0);

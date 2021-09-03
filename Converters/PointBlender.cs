@@ -11,8 +11,8 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace HAF.Converters {
-  public class PointBlender : MultiValueConverter<Point, Point> {
+namespace HAF {
+  public class PointBlender: MultiValueConverter<Point, Point> {
 
     public double BlendX { get; set; } = 0.5;
     public double BlendY { get; set; } = 0.5;

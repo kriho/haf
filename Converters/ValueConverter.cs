@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace HAF.Converters {
+namespace HAF {
   [MarkupExtensionReturnType(typeof(IValueConverter))]
-  public abstract class ValueConverter<Tin, Tout> : MarkupExtension, IValueConverter {
+  public abstract class ValueConverter<Tin, Tout>: MarkupExtension, IValueConverter {
     protected abstract Tout convert(Tin value);
 
     protected virtual Tin convertBack(Tout value) {
@@ -33,7 +33,7 @@ namespace HAF.Converters {
       if (value != null) {
         input = (Tin)value;
       }
-      if(this.Prepare != null) {
+      if (this.Prepare != null) {
         return this.Prepare.Convert(this.convert(input), typeof(Tin), null, this.culture);
       }
       return this.convert(input);

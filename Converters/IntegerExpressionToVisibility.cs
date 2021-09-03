@@ -5,25 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace HAF.Converters {
+namespace HAF {
   public enum IntegerExpression {
     IsEqual,
     IsLargerThen,
     IsSmallerThen
   }
 
-  public class IntegerExpressionToVisibility : ValueConverter<int, Visibility> {
-    public IntegerExpression Expression { get; set; }
-    public int Comparator { get; set; }
-    public bool Inverted { get; set; }
-    public Visibility InvisibleState { get; set; }
-
-    public IntegerExpressionToVisibility() {
-      this.Expression = IntegerExpression.IsEqual;
-      this.Comparator = 0;
-      this.Inverted = false;
-      this.InvisibleState = Visibility.Collapsed;
-    }
+  public class IntegerExpressionToVisibilityConverter: ValueConverter<int, Visibility> {
+    public IntegerExpression Expression { get; set; } = IntegerExpression.IsEqual;
+    public int Comparator { get; set; } = 0;
+    public bool Inverted { get; set; } = false;
+    public Visibility InvisibleState { get; set; } = Visibility.Collapsed;
 
     protected override Visibility convert(int value) {
       bool result;

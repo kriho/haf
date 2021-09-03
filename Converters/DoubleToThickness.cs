@@ -9,8 +9,8 @@ using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows.Media;
 
-namespace HAF.Converters {
-  public class DoubleToThickness : ValueConverter<double, Thickness> {
+namespace HAF {
+  public class DoubleToThicknessConverter: ValueConverter<double, Thickness> {
     public bool Left { get; set; } = false;
     public bool Top { get; set; } = false;
     public bool Right { get; set; } = false;

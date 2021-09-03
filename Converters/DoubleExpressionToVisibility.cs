@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace HAF.Converters {
-  public class DoubleExpressionToVisibility : ValueConverter<double, Visibility> {
+namespace HAF {
+  public class DoubleExpressionToVisibilityConverter: ValueConverter<double, Visibility> {
     public enum DoubleExpression {
       IsEqual,
       IsLargerThen,
@@ -14,17 +14,10 @@ namespace HAF.Converters {
       IsNAN
     }
 
-    public DoubleExpression Expression { get; set; }
-    public int Comparator { get; set; }
-    public bool Inverted { get; set; }
-    public Visibility InvisibleState { get; set; }
-
-    public DoubleExpressionToVisibility() {
-      this.Expression = DoubleExpression.IsEqual;
-      this.Comparator = 0;
-      this.Inverted = false;
-      this.InvisibleState = Visibility.Collapsed;
-    }
+    public DoubleExpression Expression { get; set; } = DoubleExpression.IsEqual;
+    public int Comparator { get; set; } = 0;
+    public bool Inverted { get; set; } = false;
+    public Visibility InvisibleState { get; set; } = Visibility.Collapsed;
 
     protected override Visibility convert(double value) {
       bool result;

@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace HAF.Converters {
-  public class IsTypeToVisibility : UnsafeValueConverter<object, Visibility> {
+namespace HAF {
+  public class IsTypeToVisibilityConverter: UnsafeValueConverter<object, Visibility> {
     public bool Inverted { get; set; } = false;
     public Type Type { get; set; }
 

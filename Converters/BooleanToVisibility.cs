@@ -9,28 +9,17 @@ using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows.Media;
 
-namespace HAF.Converters {
-  public class BooleanToVisibility : ValueConverter<bool, Visibility> {
-    public bool Inverted { get; set; }
-    public Visibility InvisibleState { get; set; }
-
-    public BooleanToVisibility() {
-      this.Inverted = false;
-      this.InvisibleState = Visibility.Collapsed;
-    }
+namespace HAF {
+  public class BooleanToVisibilityConverter: ValueConverter<bool, Visibility> {
+    public bool Inverted { get; set; } = false;
+    public Visibility InvisibleState { get; set; } = Visibility.Collapsed;
 
     protected override Visibility convert(bool value) {
-      if (this.Inverted)
-        return !value ? Visibility.Visible : this.InvisibleState;
-      else
-        return value ? Visibility.Visible : this.InvisibleState;
+      return this.Inverted ? !value ? Visibility.Visible : this.InvisibleState : value ? Visibility.Visible : this.InvisibleState;
     }
 
     protected override bool convertBack(Visibility value) {
-      if (value == Visibility.Visible)
-        return this.Inverted ? false : true;
-      else
-        return this.Inverted ? true : false;
+      return value == Visibility.Visible ? !this.Inverted : this.Inverted;
     }
   }
 }

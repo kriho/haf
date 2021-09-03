@@ -11,8 +11,8 @@ using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows.Media;
 
-namespace HAF.Converters {
-  public class EnumToDescription : ValueConverter<object, string> {
+namespace HAF {
+  public class EnumToDescriptionConverter: ValueConverter<object, string> {
     public string Fallback { get; set; }
 
     protected override string convert(object value) {

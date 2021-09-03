@@ -9,17 +9,11 @@ using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows.Media;
 
-namespace HAF.Converters {
-  public class BooleanToDouble : ValueConverter<bool, double> {
-    public bool Inverted { get; set; }
-    public double TrueValue { get; set; }
-    public double FalseValue { get; set; }
-
-    public BooleanToDouble() {
-      this.Inverted = false;
-      this.TrueValue = 1;
-      this.FalseValue = 0;
-    }
+namespace HAF {
+  public class BooleanToDoubleConverter: ValueConverter<bool, double> {
+    public bool Inverted { get; set; } = false;
+    public double TrueValue { get; set; } = 1;
+    public double FalseValue { get; set; } = 0;
 
     protected override double convert(bool value) {
       if (this.Inverted) {

@@ -9,17 +9,17 @@ using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows.Media;
 
-namespace HAF.Converters {
-    public class BooleanToGridLength : ValueConverter<bool, GridLength> {
-        public GridLength TrueValue { get; set; }
-        public GridLength FalseValue { get; set; }
+namespace HAF {
+  public class BooleanToGridLengthConverter: ValueConverter<bool, GridLength> {
+    public GridLength TrueValue { get; set; }
+    public GridLength FalseValue { get; set; }
 
-        protected override GridLength convert(bool value) {
-            return value ? this.TrueValue : this.FalseValue;
-        }
-
-        protected override bool convertBack(GridLength value) {
-            return value == this.TrueValue;
-        }
+    protected override GridLength convert(bool value) {
+      return value ? this.TrueValue : this.FalseValue;
     }
+
+    protected override bool convertBack(GridLength value) {
+      return value == this.TrueValue;
+    }
+  }
 }

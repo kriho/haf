@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace HAF.Controls {
+namespace HAF {
   public class Icon: Image {
 
     private static ResourceDictionary dictionary;

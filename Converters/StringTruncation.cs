@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HAF.Converters {
-  public class StringTruncation : ValueConverter<string, string> {
+namespace HAF {
+  public class StringTruncationConverter: ValueConverter<string, string> {
     public int Length { get; set; } = 50;
     public string Indicator { get; set; } = "...";
 

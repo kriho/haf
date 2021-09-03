@@ -9,7 +9,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 
-namespace HAF.Controls {
+namespace HAF {
   // add a dependency property for a bindable document
   // http://stackoverflow.com/questions/30821339/load-rtf-in-bindable-richtexbox-mvvm-wpf
 

@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace HAF.Converters {
-  public class StringExpressionToBoolean : ValueConverter<string, bool> {
+namespace HAF {
+  public class StringExpressionToBooleanConverter: ValueConverter<string, bool> {
     public enum StringExpression {
       IsEqual,
       Contains,
@@ -22,9 +22,9 @@ namespace HAF.Converters {
         case StringExpression.IsEqual:
           result = this.Comparator == string.Empty ? string.IsNullOrEmpty(value) : value == this.Comparator;
           break;
-        case StringExpression.Contains: 
+        case StringExpression.Contains:
           result = (value.Contains(this.Comparator)); break;
-        default: 
+        default:
           throw new Exception("Unknown expression used for conversion.");
       }
       if (this.Inverted) {
