@@ -32,13 +32,13 @@ namespace HAF {
     Brush WarningBrush { get; }
     Color ErrorColor { get; }
     Brush ErrorBrush { get; }
-    RelayCommand<Theme> DoSetTheme { get; }
-    Theme ActiveTheme { get; set; }
-    IObservableCollection<Theme> AvailableThemes { get; }
+    RelayCommand<ITheme> DoSetTheme { get; }
+    ITheme ActiveTheme { get; set; }
+    IObservableCollection<ITheme> AvailableThemes { get; }
     LinkedDependency MayChangeTheme { get; }
     LinkedEvent OnActiveThemeChanged { get; }
-    Theme DefaultLightTheme { get; }
-    Theme DefaultDarkTheme { get; }
+    ITheme DefaultLightTheme { get; }
+    ITheme DefaultDarkTheme { get; }
     Color GetColor(ThemeKey key);
     Brush GetBrush(ThemeKey key);
   }

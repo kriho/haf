@@ -11,24 +11,29 @@ using System.Windows.Media;
 
 namespace HAF {
   [MarkupExtensionReturnType(typeof(Brush))]
-  public class ThemeBrush: MarkupExtension {
+  public class ThemeBrush: DynamicResourceExtension {
 
-    public  ThemeKey Key { get; set; }
-
-    public ThemeBrush() {
-      if (ThemeColor.ThemesService == null) {
-        try {
-          ThemeColor.ThemesService = Configuration.Container.GetExportedValue<IThemesService>();
-        } catch (Exception e) {
-          if (!ObservableObject.IsInDesignModeStatic) {
-            throw e;
-          }
+    [ConstructorArgument("key")]
+    public ThemeKey Key {
+      get {
+        switch (this.ResourceKey) {
+          case "ThemeTextBrush": return ThemeKey.Text;
+          case "ThemeAccentBrush": return ThemeKey.Accent;
+          case "ThemeErrorBrush": return ThemeKey.Error;
+          case "ThemeWarningBrush": return ThemeKey.Warning;
+          case "ThemeInfoBrush": return ThemeKey.Info;
+          case "ThemeLightBrush": return ThemeKey.Light;
+          case "ThemeStrongBrush": return ThemeKey.Strong;
+          default: return ThemeKey.Background;
         }
+      }
+      set {
+        this.ResourceKey = "Theme" + value.ToString() + "Brush";
       }
     }
 
-    public override object ProvideValue(IServiceProvider serviceProvider) {
-      return ThemeColor.ThemesService?.GetBrush(this.Key) ?? new SolidColorBrush(ThemeColor.GetDefaultColor(this.Key));
+    public ThemeBrush(ThemeKey key) {
+      this.Key = key;
     }
   }
 }

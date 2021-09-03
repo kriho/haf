@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace HAF.Models {
-  public class Theme {
+  public class Theme: ITheme {
     public string Name { get; set; }
     public Color BackgroundColor {get; set;}
     public Color TextColor {get; set;}

@@ -11,39 +11,29 @@ using System.Windows.Media;
 
 namespace HAF {
   [MarkupExtensionReturnType(typeof(Color))]
-  public class ThemeColor: MarkupExtension {
+  public class ThemeColor: DynamicResourceExtension {
 
-    public ThemeKey Key { get; set; }
-
-    internal static IThemesService ThemesService;
-
-    internal static Color GetDefaultColor(ThemeKey key) {
-      switch (key) {
-        case ThemeKey.Accent: return (Color)ColorConverter.ConvertFromString("#FF0B70BB");
-        case ThemeKey.Background: return (Color)ColorConverter.ConvertFromString("#FFFFFFFF");
-        case ThemeKey.Light: return (Color)ColorConverter.ConvertFromString("#FFDFDFDF");
-        case ThemeKey.Strong: return (Color)ColorConverter.ConvertFromString("#FF7E7E7E");
-        case ThemeKey.Info: return (Color)ColorConverter.ConvertFromString("#FFD3EBFC");
-        case ThemeKey.Warning: return (Color)ColorConverter.ConvertFromString("#FFFFFAC3");
-        case ThemeKey.Error: return (Color)ColorConverter.ConvertFromString("#FFFFD2D2");
-        default: return (Color)ColorConverter.ConvertFromString("#FF000000");
-      }
-    }
-
-    public ThemeColor() {
-      if (ThemeColor.ThemesService == null) {
-        try {
-          ThemeColor.ThemesService = Configuration.Container.GetExportedValue<IThemesService>();
-        } catch (Exception e) {
-          if (!ObservableObject.IsInDesignModeStatic) {
-            throw e;
-          }
+    [ConstructorArgument("key")]
+    public ThemeKey Key {
+      get {
+        switch (this.ResourceKey) {
+          case "ThemeTextColor": return ThemeKey.Text;
+          case "ThemeAccentColor": return ThemeKey.Accent;
+          case "ThemeErrorColor": return ThemeKey.Error;
+          case "ThemeWarningColor": return ThemeKey.Warning;
+          case "ThemeInfoColor": return ThemeKey.Info;
+          case "ThemeLightColor": return ThemeKey.Light;
+          case "ThemeStrongColor": return ThemeKey.Strong;
+          default: return ThemeKey.Background;
         }
       }
+      set {
+        this.ResourceKey = "Theme" + value.ToString() + "Color";
+      }
     }
 
-    public override object ProvideValue(IServiceProvider serviceProvider) {
-      return ThemeColor.ThemesService?.GetColor(this.Key) ?? ThemeColor.GetDefaultColor(this.Key);
+    public ThemeColor(ThemeKey key) {
+      this.Key = key;
     }
   }
 }
