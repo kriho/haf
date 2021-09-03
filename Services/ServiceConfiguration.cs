@@ -142,8 +142,9 @@ namespace HAF {
     }
 
     public ServiceConfigurationEntry WriteValue(string name, string value) {
-      var element = new XElement(name);
-      element.Value = value;
+      var element = new XElement(name) {
+        Value = value
+      };
       this.context.Add(element);
       return this;
     }
