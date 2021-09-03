@@ -18,22 +18,13 @@ namespace HAF {
     private readonly ObservableCollection<IObservableTask> activeTasks = new ObservableCollection<IObservableTask>();
     public IReadOnlyObservableCollection<IObservableTask> ActiveTasks => this.activeTasks;
 
-    private readonly ObservableCollection<IObservableTask> registeredTasks = new ObservableCollection<IObservableTask>();
-    public IReadOnlyObservableCollection<IObservableTask> RegisteredTasks => this.registeredTasks;
-
     public ObservableTaskPool(string name, bool allowParallelExecution) {
       this.Name = name;
       this.Link = name;
       this.AllowParallelExecution = allowParallelExecution;
     }
 
-    internal void RegisterTask(ObservableTask task) {
-      if (!this.registeredTasks.Contains(task)) {
-        this.registeredTasks.Add(task);
-      }
-    }
-
-    internal async Task ScheduleTask(ObservableTask task) {
+    public async Task ScheduleTask(IObservableTask task) {
       this.IsIdle.Value = false;
       if (!this.AllowParallelExecution) {
         await Task.WhenAll(this.activeTasks.Select(t => t.WaitForCompletion()));

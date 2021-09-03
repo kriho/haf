@@ -10,13 +10,12 @@ namespace HAF {
 
   public class ObservableTask: IObservableTask {
 
-    private ObservableTaskPool pool;
-    public IObservableTaskPool Pool => this.pool;
+    public IObservableTaskPool Pool { get; private set; }
 
-    private ObservableTaskProgress progress = new ObservableTaskProgress();
+    private readonly ObservableTaskProgress progress = new ObservableTaskProgress();
     public IObservableTaskProgress Progress => this.progress;
 
-    private ObservableTaskProgress initialProgress;
+    private readonly ObservableTaskProgress initialProgress;
     
     private Func<Task> work;
     
@@ -38,58 +37,54 @@ namespace HAF {
 
     public RelayCommand DoCancel { get; private set; }
 
-    public ObservableTask(Func<Task> work, string description, ObservableTaskPool pool = null) {
+    public ObservableTask(Func<Task> work, string description, IObservableTaskPool pool = null) {
       this.initialProgress = new ObservableTaskProgress(description);
       this.Initialize(work, pool);
     }
 
-    public ObservableTask(Func<CancellationToken, Task> work, string description, ObservableTaskPool pool = null) {
+    public ObservableTask(Func<CancellationToken, Task> work, string description, IObservableTaskPool pool = null) {
       this.initialProgress = new ObservableTaskProgress(description);
       this.Initialize(async () => {
         await work(this.cancellationTokenSource.Token);
       }, pool);
     }
 
-    public ObservableTask(Func<IProgress<int>, Task> work, string description, int maximum = 0, int value = 0, ObservableTaskPool pool = null) {
+    public ObservableTask(Func<IProgress<int>, Task> work, string description, int maximum = 0, int value = 0, IObservableTaskPool pool = null) {
       this.initialProgress = new ObservableTaskProgress(description, maximum, value);
       this.Initialize(async () => {
         await work(this.progress);
       }, pool);
     }
 
-    public ObservableTask(Func<IObservableTaskProgress, Task> work, string description, int maximum = 0, int value = 0, ObservableTaskPool pool = null) {
+    public ObservableTask(Func<IObservableTaskProgress, Task> work, string description, int maximum = 0, int value = 0, IObservableTaskPool pool = null) {
       this.initialProgress = new ObservableTaskProgress(description, maximum, value);
       this.Initialize(async () => {
         await work(this.progress);
       }, pool);
     }
 
-    public ObservableTask(Func<IProgress<int>, CancellationToken, Task> work, string description, int maximum = 0, int value = 0, ObservableTaskPool pool = null) {
+    public ObservableTask(Func<IProgress<int>, CancellationToken, Task> work, string description, int maximum = 0, int value = 0, IObservableTaskPool pool = null) {
       this.initialProgress = new ObservableTaskProgress(description, maximum, value);
       this.Initialize(async () => {
         await work(this.progress, this.cancellationTokenSource.Token);
       }, pool);
     }
 
-    public ObservableTask(Func<IObservableTaskProgress, CancellationToken, Task> work, string description, int maximum = 0, int value = 0, ObservableTaskPool pool = null) {
+    public ObservableTask(Func<IObservableTaskProgress, CancellationToken, Task> work, string description, int maximum = 0, int value = 0, IObservableTaskPool pool = null) {
       this.initialProgress = new ObservableTaskProgress(description, maximum, value);
       this.Initialize(async () => {
         await work(this.progress, this.cancellationTokenSource.Token);
       }, pool);
     }
 
-    private void Initialize(Func<Task> work, ObservableTaskPool pool) {
+    private void Initialize(Func<Task> work, IObservableTaskPool pool) {
       // apply initial progress
       this.RevertProgress();
       this.DoCancel = new RelayCommand(this.Cancel, () => {
         return this.cancellationTokenSource != null && !this.cancellationTokenSource.IsCancellationRequested && this.progress.IsRunning;
       });
       this.work = work;
-      this.pool = pool;
-      // register task
-      if(this.pool != null) {
-        this.pool.RegisterTask(this);
-      }
+      this.Pool = pool;
     }
 
     public async Task Run() {
@@ -109,10 +104,10 @@ namespace HAF {
     }
 
     public async Task Schedule() {
-      if(this.pool == null) {
+      if(this.Pool == null) {
         await this.Run();
       } else {
-        await this.pool.ScheduleTask(this);
+        await this.Pool.ScheduleTask(this);
       }
     }
 
@@ -126,22 +121,6 @@ namespace HAF {
       if(this.progress.IsRunning && this.task != null) {
         await this.task;
       }
-    }
-
-    Task IObservableTask.Run() {
-      throw new NotImplementedException();
-    }
-
-    Task IObservableTask.Schedule() {
-      throw new NotImplementedException();
-    }
-
-    void IObservableTask.Cancel() {
-      throw new NotImplementedException();
-    }
-
-    Task IObservableTask.WaitForCompletion() {
-      throw new NotImplementedException();
     }
   }
 }

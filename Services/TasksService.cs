@@ -23,11 +23,13 @@ namespace HAF {
       get { return this.TaskPools.FirstOrDefault(t => t.Name == name); }
     }
 
-    public void AddTaskPool(string name, bool allowParallelExecution) {
+    public IObservableTaskPool AddTaskPool(string name, bool allowParallelExecution) {
       if (this.TaskPools.Any(t => t.Name == name)) {
         throw new Exception($"the task pool {name} already exists");
       }
-      this.taskPools.Add(new ObservableTaskPool(name, allowParallelExecution));
+      var pool = new ObservableTaskPool(name, allowParallelExecution);
+      this.taskPools.Add(pool);
+      return pool;
     }
   }
 }

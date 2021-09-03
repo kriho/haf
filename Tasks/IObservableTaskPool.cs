@@ -13,6 +13,6 @@ namespace HAF {
     bool AllowParallelExecution { get; }
     LinkedState IsIdle { get; }
     IReadOnlyObservableCollection<IObservableTask> ActiveTasks { get; }
-    IReadOnlyObservableCollection<IObservableTask> RegisteredTasks { get; }
+    Task ScheduleTask(IObservableTask task);
   }
 }
