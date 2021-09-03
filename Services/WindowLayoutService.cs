@@ -17,10 +17,6 @@ namespace HAF {
 
     public LinkedEvent OnActiveWindowLayoutChanged { get; private set; } = new LinkedEvent(nameof(OnActiveWindowLayoutChanged));
 
-    [Import]
-#pragma warning disable CS0649 // imported by MEF
-    private IDockingWindowService dockingWindow;
-#pragma warning restore CS0649
 
     public RelayCommand<WindowLayout> DoLoad { get; private set; }
 
@@ -32,10 +28,10 @@ namespace HAF {
 
     public RelayCommand<PaneMeta> DoShowPane { get; private set; }
 
-    private ObservableCollection<WindowLayout> windowLayouts = new ObservableCollection<WindowLayout>();
+    private readonly ObservableCollection<WindowLayout> windowLayouts = new ObservableCollection<WindowLayout>();
     public IReadOnlyObservableCollection<WindowLayout> WindowLayouts => this.windowLayouts;
 
-    private List<WindowLayout> defaultindowLayouts = new List<WindowLayout>();
+    private readonly List<WindowLayout> defaultindowLayouts = new List<WindowLayout>();
     public IReadOnlyCollection<WindowLayout> DefaultWindowLayouts => this.defaultindowLayouts;
 
     public ObservableCollection<PaneMeta> AvailablePanes { get; private set; } = new ObservableCollection<PaneMeta>();
@@ -68,7 +64,11 @@ namespace HAF {
       }
     }
 
-    public WindowLayoutService() {
+    private readonly IDockingWindowService dockingWindow;
+
+    [ImportingConstructor]
+    public WindowLayoutService([Import] IDockingWindowService dockingWindow) {
+      this.dockingWindow = dockingWindow;
       this.DoLoad = new RelayCommand<Models.WindowLayout>((windowLayout) => {
         this.LoadWindowLayout(windowLayout);
       }, (windowLayout) => {

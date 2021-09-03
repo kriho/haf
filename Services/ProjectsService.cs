@@ -28,7 +28,7 @@ namespace HAF {
 
     public RelayCommand DoOpenDirectory { get; private set; }
 
-    private ObservableCollection<Project> projects = new ObservableCollection<Project>();
+    private readonly ObservableCollection<Project> projects = new ObservableCollection<Project>();
     public IReadOnlyObservableCollection<Project> Projects => this.projects;
 
     public List<IService> ConfiguredServices { get; private set; } = new List<IService>();
