@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using HAF.Logging;
 
 namespace HAF.Ftp {
   // the ftp interaction is realized using the FtpWebRequest class
