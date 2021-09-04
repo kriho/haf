@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 
 namespace HAF {
-  public class ObservableObject : INotifyPropertyChanged {
+  public class ObservableObject: INotifyPropertyChanged {
     public event PropertyChangedEventHandler PropertyChanged;
 
     [Conditional("DEBUG")]
@@ -23,7 +23,7 @@ namespace HAF {
             return;
           }
         }
-        if(propertyName == "Item[]") {
+        if (propertyName == "Item[]") {
           // TODO check if indexer property exists
           return;
         }
@@ -31,7 +31,7 @@ namespace HAF {
       }
     }
 
-    protected void NotifyPropertyChanged([CallerMemberName]string propertyName = "") {
+    protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "") {
       // validate property name
       this.VerifyPropertyName(propertyName);
       // update value using dispatcher if needed
@@ -62,7 +62,7 @@ namespace HAF {
       throw new Exception("resolving the property name from a member expression has failed");
     }
 
-    protected bool SetValue<T>(ref T property, T value, bool subscribe = false, [CallerMemberName]string propertyName = "") {
+    protected bool SetValue<T>(ref T property, T value, bool subscribe = false, [CallerMemberName] string propertyName = "") {
       if (Object.Equals(property, value)) {
         // no changes
         return false;

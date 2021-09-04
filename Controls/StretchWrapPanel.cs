@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace HAF {
-  public class StretchWrapPanel : Panel {
+namespace HAF.Controls {
+  public class StretchWrapPanel: Panel {
     public static readonly DependencyProperty ItemWidthProperty = DependencyProperty.Register(nameof(ItemWidth), typeof(double), typeof(StretchWrapPanel), new FrameworkPropertyMetadata(double.NaN, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
     [TypeConverter(typeof(LengthConverter))]
@@ -99,7 +99,7 @@ namespace HAF {
       var itemHeight = ItemHeight;
       var itemWidthSet = !double.IsNaN(itemWidth);
       var itemHeightSet = !double.IsNaN(itemHeight);
-      var childConstraint = new Size( itemWidthSet ? itemWidth : constraint.Width, itemHeightSet ? itemHeight : constraint.Height);
+      var childConstraint = new Size(itemWidthSet ? itemWidth : constraint.Width, itemHeightSet ? itemHeight : constraint.Height);
       var children = InternalChildren;
       for (int i = 0, count = children.Count; i < count; i++) {
         var child = children[i];

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HAF {
+namespace HAF.Logging {
 
   public enum ReportSeverity {
     Information,

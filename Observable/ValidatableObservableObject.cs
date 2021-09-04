@@ -13,10 +13,10 @@ using System.Threading.Tasks;
 using System.Windows;
 
 namespace HAF {
-  public abstract class ValidatableObservableObject : ObservableObject, INotifyDataErrorInfo {
+  public abstract class ValidatableObservableObject: ObservableObject, INotifyDataErrorInfo {
 
     protected bool SetValueAndValidate<T>(ref T property, T value, bool subscribe = false, [CallerMemberName] string propertyName = "") {
-      if(!this.SetValue(ref property, value, subscribe, propertyName)) {
+      if (!this.SetValue(ref property, value, subscribe, propertyName)) {
         return false;
       }
       // perform validation

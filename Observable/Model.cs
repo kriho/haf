@@ -11,6 +11,6 @@ using System.Threading.Tasks;
 using System.Windows;
 
 namespace HAF {
-  public class Model : ObservableObject {
+  public class Model: ObservableObject {
   }
 }

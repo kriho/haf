@@ -11,7 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 
 namespace HAF {
-  public class View : UserControl, INotifyPropertyChanged {
+  public class View: UserControl, INotifyPropertyChanged {
     public event PropertyChangedEventHandler PropertyChanged;
 
     [Conditional("DEBUG")]

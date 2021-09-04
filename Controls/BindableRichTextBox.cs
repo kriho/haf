@@ -9,11 +9,11 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 
-namespace HAF {
+namespace HAF.Controls.Controls {
   // add a dependency property for a bindable document
   // http://stackoverflow.com/questions/30821339/load-rtf-in-bindable-richtexbox-mvvm-wpf
 
-  public class BindableRichTextBox : RichTextBox {
+  public class BindableRichTextBox: RichTextBox {
     public static readonly DependencyProperty DocumentProperty =
         DependencyProperty.Register("Document", typeof(FlowDocument),
             typeof(BindableRichTextBox),

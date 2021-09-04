@@ -19,10 +19,10 @@ namespace HAF {
   /// </remarks>
   [MetadataAttribute]
   [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
-  public class ExportViewModelAttribute : ExportAttribute {
+  public class ExportViewModelAttribute: ExportAttribute {
     public string Name { get; private set; }
 
-    public ExportViewModelAttribute([CallerFilePath]string name = null) : base(typeof(ViewModel)) {
+    public ExportViewModelAttribute([CallerFilePath] string name = null) : base(typeof(ViewModel)) {
       Name = System.IO.Path.GetFileNameWithoutExtension(name);
     }
   }
@@ -35,15 +35,15 @@ namespace HAF {
   /// assign the view models directly and let MEF handle the dependency injection
   /// </summary>
   [TypeDescriptionProvider(typeof(ModelViewMapDescriptionProvider))]
-  public class ViewModelLocator : DynamicObject, ITypedList {
+  public class ViewModelLocator: DynamicObject, ITypedList {
 
     [ImportMany(typeof(ViewModel), AllowRecomposition = true)]
     private IEnumerable<Lazy<object, IViewModelMetadata>> viewModels { get; set; }
 
     private static Dictionary<string, object> cache = new Dictionary<string, object>();
 
-    public int Count { 
-      get { return ViewModelLocator.cache.Count; } 
+    public int Count {
+      get { return ViewModelLocator.cache.Count; }
     }
 
     public override bool TryGetMember(GetMemberBinder binder, out object result) {
@@ -79,7 +79,7 @@ namespace HAF {
       return "Models";
     }
 
-    internal class ModelViewPropertyDescriptor : PropertyDescriptor {
+    internal class ModelViewPropertyDescriptor: PropertyDescriptor {
       internal object ModelView { get; set; }
 
       public ModelViewPropertyDescriptor(string name, object modelView) : base(name, null) {
@@ -123,7 +123,7 @@ namespace HAF {
       }
     }
 
-    private class ModelViewMapDescriptionProvider : TypeDescriptionProvider {
+    private class ModelViewMapDescriptionProvider: TypeDescriptionProvider {
 
       public ModelViewMapDescriptionProvider() : this(TypeDescriptor.GetProvider(typeof(ViewModelLocator))) {
       }
@@ -136,7 +136,7 @@ namespace HAF {
       }
     }
 
-    private class ModelViewDescriptor : CustomTypeDescriptor {
+    private class ModelViewDescriptor: CustomTypeDescriptor {
 
       public ModelViewDescriptor(ICustomTypeDescriptor descriptor) : base(descriptor) {
       }

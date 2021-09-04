@@ -6,25 +6,25 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace HAF {
-  public class ChromeWindow : Window {
+namespace HAF.Controls {
+  public class ChromeWindow: Window {
 
     public object Header {
       get { return (object)GetValue(HeaderProperty); }
       set { SetValue(HeaderProperty, value); }
     }
 
-    public static readonly DependencyProperty HeaderProperty = DependencyProperty.Register("Header", typeof(object), typeof(ChromeWindow ), new UIPropertyMetadata(null));
+    public static readonly DependencyProperty HeaderProperty = DependencyProperty.Register("Header", typeof(object), typeof(ChromeWindow), new UIPropertyMetadata(null));
 
-    static ChromeWindow () {
-      DefaultStyleKeyProperty.OverrideMetadata(typeof(ChromeWindow ), new FrameworkPropertyMetadata(typeof(ChromeWindow)));
+    static ChromeWindow() {
+      DefaultStyleKeyProperty.OverrideMetadata(typeof(ChromeWindow), new FrameworkPropertyMetadata(typeof(ChromeWindow)));
     }
 
     public override void OnApplyTemplate() {
       var closeButton = this.GetTemplateChild("PART_Close") as Button;
       closeButton.Click += (s, e) => {
         this.Close();
-      }; 
+      };
       var minimizeButton = this.GetTemplateChild("PART_Minimize") as Button;
       minimizeButton.Click += (s, e) => {
         this.WindowState = WindowState.Minimized;
