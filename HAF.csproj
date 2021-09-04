@@ -77,8 +77,12 @@
     <Compile Include="Converters\IsEqualToBooleanConverter.cs" />
     <Compile Include="Enumeration.cs" />
     <Compile Include="Linked\LinkedObjectManager.cs" />
+    <Compile Include="Localization\ILocalizationProvider.cs" />
+    <Compile Include="Localization\LocalizeExtension.cs" />
     <Compile Include="Models\ITheme.cs" />
     <Compile Include="Services\IDockingWindowService.cs" />
+    <Compile Include="Services\LocalizationService.cs" />
+    <Compile Include="Services\ILocalizationService.cs" />
     <Compile Include="Services\IInspectorService.cs" />
     <Compile Include="Services\ITasksService.cs" />
     <Compile Include="Services\InspectorService.cs" />
