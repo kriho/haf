@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 
 namespace HAF {
-  public class Window : System.Windows.Window, INotifyPropertyChanged {
+  public class Window: System.Windows.Window, INotifyPropertyChanged {
     public event PropertyChangedEventHandler PropertyChanged;
 
     [Conditional("DEBUG")]

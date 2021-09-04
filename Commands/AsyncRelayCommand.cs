@@ -107,12 +107,12 @@ namespace HAF {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool CanExecute(object parameter) {
-    #if DEBUG
+#if DEBUG
       // disable all commands in designe time
       if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) {
         return false;
       }
-    #endif
+#endif
       if (this.isRunning) {
         return false;
       }
@@ -131,9 +131,9 @@ namespace HAF {
     }
 
     public void Execute(object parameter) {
-    #pragma warning disable CS4014 // async not supported
+#pragma warning disable CS4014 // async not supported
       this.ExecuteAsync();
-    #pragma warning restore CS4014
+#pragma warning restore CS4014
     }
 
     public async Task ExecuteAsync() {
@@ -272,13 +272,13 @@ namespace HAF {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool CanExecute(object parameter) {
-    #if DEBUG
+#if DEBUG
       // disable all commands in designe time
       if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) {
         return false;
       }
-    #endif
-      if(this.isRunning) {
+#endif
+      if (this.isRunning) {
         return false;
       }
       if (this.canExecute != null) {
@@ -296,9 +296,9 @@ namespace HAF {
     }
 
     public void Execute(object parameter) {
-    #pragma warning disable CS4014 // async not supported
+#pragma warning disable CS4014 // async not supported
       this.ExecuteAsync((T)parameter);
-    #pragma warning restore CS4014
+#pragma warning restore CS4014
     }
 
     public async Task ExecuteAsync(T parameter) {
@@ -325,10 +325,10 @@ namespace HAF {
     }
 
     public void Cancel() {
-      if(this.CanBeCanceled) {
+      if (this.CanBeCanceled) {
         this.cancellationTokenSource.Cancel();
       }
     }
   }
-  
+
 }

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
-namespace HAF {
+namespace HAF.Logging {
   public delegate void MessageReportedEventHandler<Tmessage, Tid>(Report<Tmessage, Tid> message);
 
   public class Reporter<Tmessage, Tid> {

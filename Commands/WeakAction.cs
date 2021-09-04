@@ -82,7 +82,7 @@ namespace HAF {
     }
   }
 
-  public class WeakAction<T> : WeakAction {
+  public class WeakAction<T>: WeakAction {
     private Action<T> staticAction;
 
     public override bool IsStatic {

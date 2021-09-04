@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace HAF {
+namespace HAF.Controls {
   public class IconLight: Image {
 
     private static ResourceDictionary dictionary;
@@ -38,7 +38,7 @@ namespace HAF {
 
     private static void OnKeyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args) {
       if (obj is IconLight icon) {
-        if(IconLight.dictionary["Icon" + args.NewValue.ToString()] is DrawingGroup drawingGroup) {
+        if (IconLight.dictionary["Icon" + args.NewValue.ToString()] is DrawingGroup drawingGroup) {
           icon.Source = new DrawingImage(drawingGroup.Clone());
           icon.ApplyBrush(icon.Foreground);
         }

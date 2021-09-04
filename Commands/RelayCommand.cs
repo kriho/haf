@@ -77,7 +77,7 @@ namespace HAF {
       this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
   }
-  
+
   public interface IRelayCommand<T>: ICommand {
     void Execute(T parameter);
     bool CanExecute(T parameter);

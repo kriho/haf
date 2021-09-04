@@ -84,7 +84,7 @@ namespace HAF {
     }
   }
 
-  public class WeakFunc<Tin, Tout> : WeakFunc<Tout> {
+  public class WeakFunc<Tin, Tout>: WeakFunc<Tout> {
     private Func<Tin, Tout> staticFunc;
 
     public override bool IsStatic {

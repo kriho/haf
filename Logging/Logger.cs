@@ -6,10 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace HAF {
+namespace HAF.Logging {
   public delegate void MessageLoggedEventHandler<Tmessage, Tid>(Report<Tmessage, Tid> message);
 
-  public class Logger<Tmessage, Tid> : ObservableObject {
+  public class Logger<Tmessage, Tid>: ObservableObject {
     public event MessageLoggedEventHandler<Tmessage, Tid> MessageLogged;
     public ObservableCollection<Report<Tmessage, Tid>> reports = new ObservableCollection<Report<Tmessage, Tid>>();
 
