@@ -18,8 +18,6 @@ namespace HAF {
     }
 
     public virtual void ClearConfiguration() {
-      // use defaults from LoadConfiguration()
-      this.LoadConfiguration(new ServiceConfiguration("empty"));
     }
   }
 }
