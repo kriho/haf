@@ -69,8 +69,6 @@
     <Compile Include="Behaviors\Attached\IsFocused.cs" />
     <Compile Include="Behaviors\Attached\IgnoreMouseWheel.cs" />
     <Compile Include="Commands\AsyncRelayCommand.cs" />
-    <Compile Include="Controls\IconRegular.cs" />
-    <Compile Include="Controls\IconLight.cs" />
     <Compile Include="Controls\Form.cs" />
     <Compile Include="Controls\FormGroup.cs" />
     <Compile Include="Controls\HeaderedFormGroup.cs" />
@@ -230,14 +228,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Resources\IconsLight.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Resources\IconsRegular.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Resources\Themes.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
