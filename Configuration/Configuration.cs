@@ -31,6 +31,27 @@ namespace HAF {
 
     private static readonly List<ServiceRegistration> serviceRegistrations = new List<ServiceRegistration>();
 
+    private static ILocalizationService localizationService;
+    public static ILocalizationService LocalizationService {
+      get {
+        if(Configuration.localizationService == null) {
+          Configuration.localizationService = Configuration.Container.GetExportedValue<ILocalizationService>();
+        }
+        return Configuration.localizationService;
+      }
+    }
+
+    static Configuration() {
+      if(ObservableObject.IsInDesignModeStatic) {
+        var catalog = new AggregateCatalog();
+        catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load("HAF.DesignTime, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")));
+        catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load("HAF, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")));
+        var serviceAwareCatalog = new ServiceAwareCatalog(catalog);
+        Configuration.Container = new CompositionContainer(serviceAwareCatalog);
+
+      }
+    }
+
     public static void Initialize() {
       // create directories if needed
       if (!Directory.Exists(Configuration.ConfigurationDirectory)) {
@@ -53,7 +74,10 @@ namespace HAF {
 #endif
       catalog.Catalogs.Add(new DirectoryCatalog(Configuration.ExtensionsDirectory));
       catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load(applicationAssemblyName)));
-      catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load($"HAF.{userInterfaceLibrary}, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")));
+      if (userInterfaceLibrary != null) {
+        catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load($"HAF.{userInterfaceLibrary}, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")));
+      }
+      catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load("HAF.DesignTime, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")));
       catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load("HAF, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")));
       // filter out all duplicate service exports, only the first export of a service export type identity remains
       // note that design time services have highest priority, then extension services and lastly application services

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using HAF.Localization;
 
 namespace HAF.Validation {
 
@@ -16,7 +15,7 @@ namespace HAF.Validation {
       get {
         // default message
         if (this.message == null) {
-          this.message = Strings.Validation_IsNotEmpty;
+          this.message = Configuration.LocalizationService.GetText("This field is mandatory.");
         }
         return this.message;
       }

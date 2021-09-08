@@ -7,15 +7,15 @@ using System.Windows.Data;
 
 namespace HAF {
   public class LocalizeExtension: Binding {
-    private static readonly ILocalizationService localizationService;
+    internal static readonly ILocalizationService LocalizationService;
 
     static LocalizeExtension() {
-      LocalizeExtension.localizationService = Configuration.Container.GetExportedValue<ILocalizationService>();
+      LocalizeExtension.LocalizationService = Configuration.Container.GetExportedValue<ILocalizationService>();
     }
 
-    public LocalizeExtension(string name) : base("[" + name + "]") {
+    public LocalizeExtension(string id) : base("[" + id + "]") {
       this.Mode = BindingMode.OneWay;
-      this.Source = LocalizeExtension.localizationService;
+      this.Source = LocalizeExtension.LocalizationService;
     }
   }
 }

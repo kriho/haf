@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace HAF.Validation {
 
-  public abstract class BasePatternValidationRule : ValidationRule {
+  public abstract class BasePatternValidationRule: ValidationRule {
     protected string pattern = string.Empty;
     protected RegexOptions options = RegexOptions.None;
     protected string message;
@@ -25,7 +25,7 @@ namespace HAF.Validation {
       // invalidate if needed
       var input = (value ?? string.Empty).ToString();
       var expression = new Regex(this.pattern, this.options);
-      if (!expression.IsMatch(input)) {
+      if(!expression.IsMatch(input)) {
         result = new ValidationResult(false, this.Message);
       }
       return result;
