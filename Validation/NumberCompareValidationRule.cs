@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using HAF.Localization;
 
 namespace HAF.Validation {
   public enum NumberCompareOperator {
@@ -35,7 +34,7 @@ namespace HAF.Validation {
         // default message
         if (this.message == null) {
           var compareMessage = new string[] { "larger then", "larger then or equal to", "smaller then", "smaller then or equal to" };
-          this.message = String.Format(Strings.Validation_NumberCompare, compareMessage[(int)this.comparison], this.refrence);
+          this.message = string.Format(Configuration.LocalizationService.GetText("Validation Rule", "The value has to be {0} {1}."), compareMessage[(int)this.comparison], this.refrence);
         }
         return this.message;
       }

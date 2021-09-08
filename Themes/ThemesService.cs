@@ -48,66 +48,66 @@ namespace HAF {
     }
 
     public Color BackgroundColor {
-      get => this.activeTheme.BackgroundColor;
+      get => this.activeTheme?.BackgroundColor ?? (Color)ColorConverter.ConvertFromString("#FFFFFFFF");
     }
 
     public Brush BackgroundBrush {
-      get => new SolidColorBrush(this.activeTheme.BackgroundColor);
+      get => new SolidColorBrush(this.BackgroundColor);
     }
 
     public Color TextColor {
-      get => this.activeTheme.TextColor;
+      get => this.activeTheme?.TextColor ?? (Color)ColorConverter.ConvertFromString("#FF000000");
     }
 
     public Brush TextBrush {
-      get => new SolidColorBrush(this.activeTheme.TextColor);
+      get => new SolidColorBrush(this.TextColor);
     }
 
     public Color AccentColor {
-      get => this.activeTheme.AccentColor;
+      get => this.activeTheme?.AccentColor ?? (Color)ColorConverter.ConvertFromString("#FF0B70BB");
     }
     public Brush AccentBrush {
-      get => new SolidColorBrush(this.activeTheme.AccentColor);
+      get => new SolidColorBrush(this.AccentColor);
     }
 
     public Color LightColor {
-      get => this.activeTheme.LightColor;
+      get => this.activeTheme?.LightColor ?? (Color)ColorConverter.ConvertFromString("#FFDFDFDF");
     }
 
     public Brush LightBrush {
-      get => new SolidColorBrush(this.activeTheme.LightColor);
+      get => new SolidColorBrush(this.LightColor);
     }
 
     public Color StrongColor {
-      get => this.activeTheme.StrongColor;
+      get => this.activeTheme?.StrongColor ?? (Color)ColorConverter.ConvertFromString("#FF7E7E7E");
     }
 
     public Brush StrongBrush {
-      get => new SolidColorBrush(this.activeTheme.StrongColor);
+      get => new SolidColorBrush(this.StrongColor);
     }
 
     public Color InfoColor {
-      get => this.activeTheme.InfoColor;
+      get => this.activeTheme?.InfoColor ?? (Color)ColorConverter.ConvertFromString("#FFD3EBFC");
     }
 
     public Brush InfoBrush {
-      get => new SolidColorBrush(this.activeTheme.InfoColor);
+      get => new SolidColorBrush(this.InfoColor);
     }
 
     public Color WarningColor {
-      get => this.activeTheme.WarningColor;
+      get => this.activeTheme?.WarningColor ?? (Color)ColorConverter.ConvertFromString("#FFFFFAC3");
     }
 
     public Brush WarningBrush {
-      get => new SolidColorBrush(this.activeTheme.WarningColor);
+      get => new SolidColorBrush(this.WarningColor);
     }
 
     public Color ErrorColor {
-      get => this.activeTheme.ErrorColor;
+      get => this.activeTheme?.ErrorColor ?? (Color)ColorConverter.ConvertFromString("#FFFFD2D2");
     }
 
     public Brush ErrorBrush {
-      get => new SolidColorBrush(this.activeTheme.ErrorColor);
+      get => new SolidColorBrush(this.ErrorColor);
     }
 
     public Color GetColor(ThemeKey key) {
@@ -139,7 +139,7 @@ namespace HAF {
     public RelayCommand<ITheme> DoSetTheme { get; private set; }
 
     public ITheme DefaultLightTheme { get; private set; } = new Theme() {
-      Name = "Light",
+      Name = new LocalizedText("Light"),
       AccentColor = (Color)ColorConverter.ConvertFromString("#FF0B70BB"),
       BackgroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
       LightColor = (Color)ColorConverter.ConvertFromString("#FFDFDFDF"),
@@ -151,7 +151,7 @@ namespace HAF {
     };
 
     public ITheme DefaultDarkTheme { get; private set; } = new Theme() {
-      Name = "Dark",
+      Name = new LocalizedText("Dark"),
       AccentColor = (Color)ColorConverter.ConvertFromString("#FFB6C8F7"),
       BackgroundColor = (Color)ColorConverter.ConvertFromString("#FF1E1E1E"),
       LightColor = (Color)ColorConverter.ConvertFromString("#FF535353"),

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using HAF.Localization;
 using System.Text.RegularExpressions;
 
 namespace HAF.Validation {
@@ -23,7 +22,7 @@ namespace HAF.Validation {
       get {
         // default message
         if (this.message == null) {
-          this.message = Strings.Validation_IsNumber;
+          this.message = Configuration.LocalizationService.GetText("The value is not a number.");
         }
         return this.message;
       }

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using HAF.Localization;
 
 namespace HAF.Validation {
   public class StringRangeValidationRule : ValidationRule {
@@ -27,7 +26,7 @@ namespace HAF.Validation {
       get {
         // default message
         if (this.message == null) {
-          this.message = String.Format(Strings.Validation_StringRange, this.minimum, this.maximum);
+          this.message = string.Format(Configuration.LocalizationService.GetText("The value has to be between {0} and {1} characters long."), this.minimum, this.maximum);
         }
         return this.message;
       }

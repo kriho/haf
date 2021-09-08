@@ -7,7 +7,7 @@ using System.Windows.Media;
 
 namespace HAF.Models {
   public class Theme: ITheme {
-    public string Name { get; set; }
+    public LocalizedText Name { get; set; }
     public Color BackgroundColor {get; set;}
     public Color TextColor {get; set;}
     public Color AccentColor { get; set; }
