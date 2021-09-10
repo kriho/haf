@@ -1,5 +1,4 @@
-﻿using HAF.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
@@ -69,21 +68,21 @@ namespace HAF {
     [ImportingConstructor]
     public WindowLayoutService([Import] IDockingWindowService dockingWindow) {
       this.dockingWindow = dockingWindow;
-      this.DoLoad = new RelayCommand<Models.WindowLayout>((windowLayout) => {
+      this.DoLoad = new RelayCommand<WindowLayout>((windowLayout) => {
         this.LoadWindowLayout(windowLayout);
       }, (windowLayout) => {
         return this.MayChangeWindowLayout;
       });
-      this.DoDelete = new RelayCommand<Models.WindowLayout>((windowLayout) => {
+      this.DoDelete = new RelayCommand<WindowLayout>((windowLayout) => {
         this.windowLayouts.Remove(windowLayout);
       });
-      this.DoSave = new RelayCommand<Models.WindowLayout>((windowLayout) => {
+      this.DoSave = new RelayCommand<WindowLayout>((windowLayout) => {
         windowLayout.Layout = this.dockingWindow.GetWindowLayout();
       });
       this.DoShowPane = new RelayCommand<PaneMeta>((meta) => {
         this.dockingWindow.ShowPane(meta.Name, meta.Type, meta.CanUserClose);
       });
-      this.DoSetDefault = new RelayCommand<Models.WindowLayout>((windowLayout) => {
+      this.DoSetDefault = new RelayCommand<WindowLayout>((windowLayout) => {
         this.DefaultWindowLayout = windowLayout;
       }, (windowLayout) => {
         return this.defaultWindowLayout != windowLayout;
@@ -108,7 +107,7 @@ namespace HAF {
       // load previous window layout and default
       if (configuration.ReadEntry("window", out var entry)) {
         foreach (var windowLayoutEntry in entry.ReadEntries("layout")) {
-          windowLayouts.Add(new Models.WindowLayout() {
+          windowLayouts.Add(new WindowLayout() {
             Name = windowLayoutEntry.ReadStringAttribute("name", "unnamed"),
             Layout = windowLayoutEntry.ReadStringAttribute("configuration", null),
           });
@@ -150,7 +149,7 @@ namespace HAF {
     }
 
     public void AddWindowLayout(string name) {
-      var windowLayout = new Models.WindowLayout() {
+      var windowLayout = new WindowLayout() {
         Name = name,
       };
       windowLayout.Layout = this.dockingWindow.GetWindowLayout();
