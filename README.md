@@ -41,6 +41,8 @@ theme.Name = new LocalizedText("Dark");
 ```
 The haf.tools CLI has a verb "localize" that scans a project for used strings and generates a pot file.
 
+Notable mentions: [adams85](https://github.com/adams85) for a great way to extract texts from the source files, [Christina Mosers](https://www.wpftutorial.net/LocalizeMarkupExtension.html) for a great overall concept
+
 ## Themes
 Applications that use the HAF theme infrastructure support live swithing of themes. The `IThemesService` provides default light and dark themes and allows provides means to switch the current theme. An `ITheme` is composed of the following colors:
 - **Control,** the main color (background) of controls, can be used to distinguish controls from the background
