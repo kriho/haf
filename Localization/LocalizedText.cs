@@ -10,36 +10,36 @@ namespace HAF {
   /// </summary>
   public class LocalizedText: ObservableObject {
 
-    private readonly string id;
-    private readonly string contextId;
-    private readonly string pluralId;
-    private readonly int count;
+    public readonly string Id;
+    public readonly string ContextId;
+    public readonly string PluralId;
+    public readonly int Count;
 
     public string Value => this.ToString();
 
     public LocalizedText(string id) {
-      this.id = id;
+      this.Id = id;
       this.Register();
     }
 
     public LocalizedText(string contextId, string id) {
-      this.contextId = contextId;
-      this.id = id;
+      this.ContextId = contextId;
+      this.Id = id;
       this.Register();
     }
 
     public LocalizedText(string id, string pluralId, int count) {
-      this.id = id;
-      this.pluralId = pluralId;
-      this.count = count;
+      this.Id = id;
+      this.PluralId = pluralId;
+      this.Count = count;
       this.Register();
     }
 
     public LocalizedText(string contextId, string id, string pluralId, int count) {
-      this.contextId = contextId;
-      this.id = id;
-      this.pluralId = pluralId;
-      this.count = count;
+      this.ContextId = contextId;
+      this.Id = id;
+      this.PluralId = pluralId;
+      this.Count = count;
       this.Register();
     }
 
@@ -50,13 +50,13 @@ namespace HAF {
     }
 
     public override string ToString() {
-      return this.contextId == null
-        ? this.pluralId == null
-          ? LocalizeExtension.LocalizationService.GetText(this.id)
-          : LocalizeExtension.LocalizationService.GetText(this.id, this.pluralId, this.count)
-        : this.pluralId == null
-          ? LocalizeExtension.LocalizationService.GetText(this.contextId, this.id)
-          : LocalizeExtension.LocalizationService.GetText(this.contextId, this.id, this.pluralId, this.count);
+      return this.ContextId == null
+        ? this.PluralId == null
+          ? LocalizeExtension.LocalizationService.GetText(this.Id)
+          : LocalizeExtension.LocalizationService.GetText(this.Id, this.PluralId, this.Count)
+        : this.PluralId == null
+          ? LocalizeExtension.LocalizationService.GetText(this.ContextId, this.Id)
+          : LocalizeExtension.LocalizationService.GetText(this.ContextId, this.Id, this.PluralId, this.Count);
     }
 
     public static implicit operator string(LocalizedText text) {
