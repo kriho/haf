@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using System.Xml;
 
@@ -33,118 +34,69 @@ namespace HAF {
       get { return this.activeTheme; }
       set {
         if (this.SetValue(ref this.activeTheme, value)) {
-          // update colors
-          this.NotifyPropertyChanged(() => this.BackgroundColor);
-          this.NotifyPropertyChanged(() => this.TextColor);
-          this.NotifyPropertyChanged(() => this.AccentColor);
-          this.NotifyPropertyChanged(() => this.LightColor);
-          this.NotifyPropertyChanged(() => this.StrongColor);
-          this.NotifyPropertyChanged(() => this.InfoColor);
-          this.NotifyPropertyChanged(() => this.WarningColor);
-          this.NotifyPropertyChanged(() => this.ErrorColor);
+          if(value != null) {
+            this.ApplyTheme(value);
+          }
           this.OnActiveThemeChanged.Fire();
         }
       }
     }
 
-    public Color BackgroundColor {
-      get => this.activeTheme?.BackgroundColor ?? (Color)ColorConverter.ConvertFromString("#FFFFFFFF");
-    }
-
-    public Brush BackgroundBrush {
-      get => new SolidColorBrush(this.BackgroundColor);
-    }
-
-    public Color TextColor {
-      get => this.activeTheme?.TextColor ?? (Color)ColorConverter.ConvertFromString("#FF000000");
-    }
-
-    public Brush TextBrush {
-      get => new SolidColorBrush(this.TextColor);
-    }
-
-    public Color AccentColor {
-      get => this.activeTheme?.AccentColor ?? (Color)ColorConverter.ConvertFromString("#FF0B70BB");
-    }
-    public Brush AccentBrush {
-      get => new SolidColorBrush(this.AccentColor);
-    }
-
-    public Color LightColor {
-      get => this.activeTheme?.LightColor ?? (Color)ColorConverter.ConvertFromString("#FFDFDFDF");
-    }
-
-    public Brush LightBrush {
-      get => new SolidColorBrush(this.LightColor);
-    }
-
-    public Color StrongColor {
-      get => this.activeTheme?.StrongColor ?? (Color)ColorConverter.ConvertFromString("#FF7E7E7E");
-    }
-
-    public Brush StrongBrush {
-      get => new SolidColorBrush(this.StrongColor);
-    }
-
-    public Color InfoColor {
-      get => this.activeTheme?.InfoColor ?? (Color)ColorConverter.ConvertFromString("#FFD3EBFC");
-    }
-
-    public Brush InfoBrush {
-      get => new SolidColorBrush(this.InfoColor);
-    }
-
-    public Color WarningColor {
-      get => this.activeTheme?.WarningColor ?? (Color)ColorConverter.ConvertFromString("#FFFFFAC3");
-    }
-
-    public Brush WarningBrush {
-      get => new SolidColorBrush(this.WarningColor);
-    }
-
-    public Color ErrorColor {
-      get => this.activeTheme?.ErrorColor ?? (Color)ColorConverter.ConvertFromString("#FFFFD2D2");
-    }
-
-    public Brush ErrorBrush {
-      get => new SolidColorBrush(this.ErrorColor);
+    protected virtual void ApplyTheme(ITheme theme) {
+      // update resources
+      Application.Current.Resources["ThemeActionColor"] = theme.ActionColor;
+      Application.Current.Resources["ThemeControlColor"] = theme.ControlColor;
+      Application.Current.Resources["ThemeBackgroundColor"] = theme.BackgroundColor;
+      Application.Current.Resources["ThemeBackgroundColor"] = theme.BackgroundColor;
+      Application.Current.Resources["ThemeTextColor"] = theme.TextColor;
+      Application.Current.Resources["ThemeAccentColor"] = theme.AccentColor;
+      Application.Current.Resources["ThemeLightColor"] = theme.LightColor;
+      Application.Current.Resources["ThemeStrongColor"] = theme.StrongColor;
+      Application.Current.Resources["ThemeInfoColor"] = theme.InfoColor;
+      Application.Current.Resources["ThemeWarningColor"] = theme.WarningColor;
+      Application.Current.Resources["ThemeErrorColor"] = theme.ErrorColor;
+      Application.Current.Resources["ThemeActionBrush"] = new SolidColorBrush(theme.ActionColor);
+      Application.Current.Resources["ThemeControlBrush"] = new SolidColorBrush(theme.ControlColor);
+      Application.Current.Resources["ThemeBackgroundBrush"] = new SolidColorBrush(theme.BackgroundColor);
+      Application.Current.Resources["ThemeTextBrush"] = new SolidColorBrush(theme.TextColor);
+      Application.Current.Resources["ThemeAccentBrush"] = new SolidColorBrush(theme.AccentColor);
+      Application.Current.Resources["ThemeLightBrush"] = new SolidColorBrush(theme.LightColor);
+      Application.Current.Resources["ThemeStrongBrush"] = new SolidColorBrush(theme.StrongColor);
+      Application.Current.Resources["ThemeInfoBrush"] = new SolidColorBrush(theme.InfoColor);
+      Application.Current.Resources["ThemeWarningBrush"] = new SolidColorBrush(theme.WarningColor);
+      Application.Current.Resources["ThemeErrorBrush"] = new SolidColorBrush(theme.ErrorColor);
     }
 
     public Color GetColor(ThemeKey key) {
       switch (key) {
-        case ThemeKey.Accent: return this.AccentColor;
-        case ThemeKey.Background: return this.BackgroundColor;
-        case ThemeKey.Light: return this.LightColor;
-        case ThemeKey.Strong: return this.StrongColor;
-        case ThemeKey.Warning: return this.WarningColor;
-        case ThemeKey.Info: return this.InfoColor;
-        case ThemeKey.Error: return this.ErrorColor;
-        default: return this.TextColor;
+        case ThemeKey.Control: return this.activeTheme.ControlColor;
+        case ThemeKey.Accent: return this.activeTheme.AccentColor;
+        case ThemeKey.Background: return this.activeTheme.BackgroundColor;
+        case ThemeKey.Action: return this.activeTheme.ActionColor;
+        case ThemeKey.Light: return this.activeTheme.LightColor;
+        case ThemeKey.Strong: return this.activeTheme.StrongColor;
+        case ThemeKey.Warning: return this.activeTheme.WarningColor;
+        case ThemeKey.Info: return this.activeTheme.InfoColor;
+        case ThemeKey.Error: return this.activeTheme.ErrorColor;
+        default: return this.activeTheme.TextColor;
       }
     }
 
     public Brush GetBrush(ThemeKey key) {
-      switch (key) {
-        case ThemeKey.Accent: return this.AccentBrush;
-        case ThemeKey.Background: return this.BackgroundBrush;
-        case ThemeKey.Light: return this.LightBrush;
-        case ThemeKey.Strong: return this.StrongBrush;
-        case ThemeKey.Warning: return this.WarningBrush;
-        case ThemeKey.Info: return this.InfoBrush;
-        case ThemeKey.Error: return this.ErrorBrush;
-        default: return this.TextBrush;
-      }
+      return new SolidColorBrush(this.GetColor(key));
     }
 
     public RelayCommand<ITheme> DoSetTheme { get; private set; }
 
     public ITheme DefaultLightTheme { get; private set; } = new Theme() {
       Name = new LocalizedText("Light"),
-      AccentColor = (Color)ColorConverter.ConvertFromString("#FF0B70BB"),
-      BackgroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
-      LightColor = (Color)ColorConverter.ConvertFromString("#FFDFDFDF"),
-      StrongColor = (Color)ColorConverter.ConvertFromString("#FF7E7E7E"),
-      TextColor = (Color)ColorConverter.ConvertFromString("#FF000000"),
+      AccentColor = (Color)ColorConverter.ConvertFromString("#FF2C61AC"),
+      BackgroundColor = (Color)ColorConverter.ConvertFromString("#FFF1F1F1"),
+      ControlColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
+      LightColor = (Color)ColorConverter.ConvertFromString("#FFE6E6E6"),
+      StrongColor = (Color)ColorConverter.ConvertFromString("#FFABABAB"),
+      TextColor = (Color)ColorConverter.ConvertFromString("#FF444444"),
+      ActionColor = (Color)ColorConverter.ConvertFromString("#FF527FC0"),
       InfoColor = (Color)ColorConverter.ConvertFromString("#FFD3EBFC"),
       WarningColor = (Color)ColorConverter.ConvertFromString("#FFFFFAC3"),
       ErrorColor = (Color)ColorConverter.ConvertFromString("#FFFFD2D2"),
@@ -152,11 +104,13 @@ namespace HAF {
 
     public ITheme DefaultDarkTheme { get; private set; } = new Theme() {
       Name = new LocalizedText("Dark"),
-      AccentColor = (Color)ColorConverter.ConvertFromString("#FFB6C8F7"),
-      BackgroundColor = (Color)ColorConverter.ConvertFromString("#FF1E1E1E"),
-      LightColor = (Color)ColorConverter.ConvertFromString("#FF535353"),
-      StrongColor = (Color)ColorConverter.ConvertFromString("#FFC0C0C0"),
+      AccentColor = (Color)ColorConverter.ConvertFromString("#FF8D9FC3"),
+      BackgroundColor = (Color)ColorConverter.ConvertFromString("#FF232323"),
+      ControlColor = (Color)ColorConverter.ConvertFromString("#FF303030"),
+      LightColor = (Color)ColorConverter.ConvertFromString("#FF414141"),
+      StrongColor = (Color)ColorConverter.ConvertFromString("#FF5B5B5B"),
       TextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
+      ActionColor = (Color)ColorConverter.ConvertFromString("#FFA5B9DE"),
       InfoColor = (Color)ColorConverter.ConvertFromString("#FF49555E"),
       WarningColor = (Color)ColorConverter.ConvertFromString("#FF7D7840"),
       ErrorColor = (Color)ColorConverter.ConvertFromString("#FF901818"),
@@ -176,7 +130,7 @@ namespace HAF {
     public override void LoadConfiguration(ServiceConfiguration configuration) {
       ITheme theme = null;
       if (configuration.ReadStringValue("theme", out var themeName)) {
-        theme = this.AvailableThemes.FirstOrDefault(t => t.Name == themeName);
+        theme = this.AvailableThemes.FirstOrDefault(t => t.Name.Id == themeName);
       }
       if(theme == null) {
         theme = this.AvailableThemes.FirstOrDefault();
@@ -187,7 +141,7 @@ namespace HAF {
     }
 
     public override void SaveConfiguration(ServiceConfiguration configuration) {
-      configuration.WriteValue("theme", this.activeTheme.Name);
+      configuration.WriteValue("theme", this.activeTheme.Name.Id);
     }
   }
 }

@@ -5,33 +5,19 @@ using System.Windows.Media;
 namespace HAF {
 
   public enum ThemeKey {
-    Background,
-    Text,
-    Accent,
-    Light,
-    Strong,
+    Control, // Office2016: main; Windows8: unused
+    Background, // Office2016: alternative, mouse over, marker inverted; Windows8: main
+    Text, // Office2016: marker; Windows8: marker
+    Accent, // Office2016: accent, accent pressed, complementary; Windows8: accent
+    Action, // Office2016: accent focused, accent mouse over; Windows8: unused
+    Light, // Office2016: primary, selected; Windows8: basic
+    Strong, // Office2016: icon, basic, pressed; Windows8: strong
     Info,
     Warning,
-    Error
+    Error // validation
   }
 
   public interface IThemesService: IService {
-    Color BackgroundColor { get; }
-    Brush BackgroundBrush { get; }
-    Color TextColor { get; }
-    Brush TextBrush { get; }
-    Color AccentColor { get; }
-    Brush AccentBrush { get; }
-    Color LightColor { get; }
-    Brush LightBrush { get; }
-    Color StrongColor { get; }
-    Brush StrongBrush { get; }
-    Color InfoColor { get; }
-    Brush InfoBrush { get; }
-    Color WarningColor { get; }
-    Brush WarningBrush { get; }
-    Color ErrorColor { get; }
-    Brush ErrorBrush { get; }
     RelayCommand<ITheme> DoSetTheme { get; }
     ITheme ActiveTheme { get; set; }
     IObservableCollection<ITheme> AvailableThemes { get; }
