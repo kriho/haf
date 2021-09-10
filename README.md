@@ -22,7 +22,7 @@ dependency | May | MayConnect
 
 ## Localization
 The framework provides a localization suite that provides everything that is needed to localize real-world applications while supporting a live switching of cultures.
-The `LocalizationService` provides a [gettext](https://www.gnu.org/software/gettext/) interface for resolving a translated text. The service is used to register `ILocalizationProvider` instances that provide translations. The `SystemLocalizationProvider` simply returns the original ids and thus provides the english translations. Use the included `PoFileLocalizationProvider` to provide translations via po files.
+The `ILocalizationService` provides a [gettext](https://www.gnu.org/software/gettext/) interface for resolving a translated text. The service is used to register `ILocalizationProvider` instances that provide translations. The `SystemLocalizationProvider` simply returns the original ids and thus provides the english translations. Use the included `PoFileLocalizationProvider` to provide translations via po files.
 ```
 this.Description = localizationService.GetText("Select folder that contains movies");
 ```
@@ -35,3 +35,21 @@ Dynamically created objects that contain translated texts and persist and must b
 theme.Name = new LocalizedText("Dark");
 ```
 The haf.tools CLI has a verb "localize" that scans a project for used strings and generates a pot file.
+
+## Themes
+Applications that use the HAF theme infrastructure support live swithing of themes. The `IThemesService` provides default light and dark themes and allows provides means to switch the current theme. An `ITheme` is composed of the following colors:
+- **Control,** the main color (background) of controls, can be used to distinguish controls from the background
+- **Background,** the primary background color
+- **Text,** the text color
+- **Accent,** a color that is used to bring more visual fidelity to the application, mainly used for headers and seperators
+- **Action,** a variation of the accent color that is used to visualize focused and hovered states
+- **Light,** a light deviation to the background color, used to seperate parts of the UI, 
+- **Strong,** a string deviation of the background color, used for control borders and icons
+- **Info,** a color that is used to represent information
+- **Warning,** a color that is used to represent warnings
+- **Error,** a color that is used to represent errors, also used for validation information
+
+The `ThemeBrush` and `ThemeColor` markup extensions allow easy access to the different colors of the theme.
+```
+<ComboBox Background="{haf:ThemeBrush Accent}"/>
+```
