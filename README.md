@@ -20,6 +20,11 @@ command | Do | DoConnect
 state | Is, Can | IsConnected, CanConnect
 dependency | May | MayConnect
 
+## Service infrastructure
+Services act as the main interface to the functionality of an application. If the application logic is split into fine grained services, it is easy to maintain, extend and test. The abstract `Service` class should be used for all services and provides the service configuration behaviour.
+All services can contribute to and retrive information from a global settings file using the `LoadConfiguration()`and `SaveConfiguration()` functions wich are used to access the `ServiceConfiguration` instance. This class allows easy manipulation of the XML based storage.
+Service dependencies are declared using the `LinkedDependency` and `LinkedState` classes. These allow a unified expression of service relations and have some handy integrated features that makes them usable in bindings and commands. Service events are issued using the `LinkedEvent` classes. All "linked" classes provide a visualization of the logic flow in the console (in debug builds).
+
 ## Localization
 The framework provides a localization suite that provides everything that is needed to localize real-world applications while supporting a live switching of cultures.
 The `ILocalizationService` provides a [gettext](https://www.gnu.org/software/gettext/) interface for resolving a translated text. The service is used to register `ILocalizationProvider` instances that provide translations. The `SystemLocalizationProvider` simply returns the original ids and thus provides the english translations. Use the included `PoFileLocalizationProvider` to provide translations via po files.
@@ -30,7 +35,7 @@ Using the `LocalizeExtension` binding, it is simple to place translated texts in
 ```
 <TextBlock Text="{haf:Localize 'Add from folder'}"/>
 ```
-Dynamically created objects that contain translated texts and persist and must be updated when the selected culture changes. This can be achieved using the `LocalizedText`. It has multiple constructory that mimic the gettext interface. The object is implicetly converted to string and has a `Value` member that can be used in XAML bindings and will update when appropriate.
+Dynamically created objects that contain translated texts and persist and must be updated when the selected culture changes. This can be achieved using the `LocalizedText`. It has multiple constructory that mimic the gettext interface. The object is implicitly converted to string and has a `Value` member that can be used in XAML bindings and will update when appropriate.
 ```
 theme.Name = new LocalizedText("Dark");
 ```
