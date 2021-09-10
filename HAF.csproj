@@ -18,7 +18,7 @@
     <TargetFrameworkProfile />
     <PackageId>$(AssemblyName)</PackageId>
     <Title>Holistic Application Framework</Title>
-    <Version>1.0.13</Version>
+    <Version>1.0.14</Version>
     <Authors>Kristjan Hornung</Authors>
     <PackageOutputPath>.</PackageOutputPath>
     <Description>
@@ -80,7 +80,7 @@
     <Compile Include="Localization\SystemLocalizationProvider.cs" />
     <Compile Include="Localization\ILocalizationProvider.cs" />
     <Compile Include="Localization\LocalizeExtension.cs" />
-    <Compile Include="Models\ITheme.cs" />
+    <Compile Include="Themes\ITheme.cs" />
     <Compile Include="IDockingWindowService.cs" />
     <Compile Include="Localization\LocalizationService.cs" />
     <Compile Include="Localization\ILocalizationService.cs" />
@@ -88,14 +88,14 @@
     <Compile Include="Tasks\ITasksService.cs" />
     <Compile Include="InspectorService.cs" />
     <Compile Include="Themes\ThemesService.cs" />
-    <Compile Include="Helpers\SystemFileOperation.cs" />
+    <Compile Include="Utils\CommandLineArguments.cs" />
+    <Compile Include="Utils\SystemFileOperations.cs" />
     <Compile Include="Tasks\IObservableTask.cs" />
     <Compile Include="Tasks\IObservableTaskPool.cs" />
     <Compile Include="Tasks\IObservableTaskProgress.cs" />
     <Compile Include="Tasks\ObservableTask.cs" />
     <Compile Include="Tasks\ObservableTaskPool.cs" />
     <Compile Include="Configuration\ServiceAwareCatalog.cs" />
-    <Compile Include="Helpers\CommandLineArguments.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\WeakAction.cs" />
     <Compile Include="Commands\WeakFunc.cs" />
@@ -158,11 +158,11 @@
     <Compile Include="Hotkeys\IHotkeysService.cs" />
     <Compile Include="Service\IService.cs" />
     <Compile Include="Messanger.cs" />
-    <Compile Include="Models\Theme.cs" />
-    <Compile Include="Models\Project.cs" />
-    <Compile Include="Models\WindowLayout.cs" />
-    <Compile Include="Models\PaneMeta.cs" />
-    <Compile Include="Helpers\ObjectCloner.cs" />
+    <Compile Include="Themes\Theme.cs" />
+    <Compile Include="Project.cs" />
+    <Compile Include="WindowLayout.cs" />
+    <Compile Include="PaneMeta.cs" />
+    <Compile Include="Utils\ObjectCloner.cs" />
     <Compile Include="Observable\View.cs" />
     <Compile Include="Observable\ViewModelLocator.cs" />
     <Compile Include="Observable\Window.cs" />
@@ -181,6 +181,7 @@
     <Compile Include="Tasks\TasksService.cs" />
     <Compile Include="Updates\UpdatesService.cs" />
     <Compile Include="ProjectsService.cs" />
+    <Compile Include="Utils\InstalledApplications.cs" />
     <Compile Include="WindowService.cs" />
     <Compile Include="WindowLayoutService.cs" />
     <Compile Include="Service\Service.cs" />
@@ -197,7 +198,6 @@
     <Compile Include="Tasks\ObservableTaskProgress.cs" />
     <Compile Include="Themes\ThemeBrush.cs" />
     <Compile Include="Themes\ThemeColor.cs" />
-    <Compile Include="Themes\ThemeResourceDictionary.cs" />
     <Compile Include="Updates\Snapshot.cs" />
     <Compile Include="Updates\SnapshotClient.cs" />
     <Compile Include="Updates\SnapshotFile.cs" />
