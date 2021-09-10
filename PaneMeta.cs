@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HAF.Models {
+namespace HAF {
 
   public class PaneMeta {
 

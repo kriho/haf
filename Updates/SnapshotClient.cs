@@ -95,9 +95,9 @@ namespace HAF.Updates {
           this.Reporter.Report(message.Type, Messages.FtpClientWarning, message.Message);
         }
       };
-      if (CommandLineArguments.HasValue("update")) {
+      if (Utils.HasCommandLineArgument("update")) {
         this.UpdateInstalled = true;
-        this.UpdateSuccess = CommandLineArguments.GetValue<bool>("update");
+        this.UpdateSuccess = Utils.GetCommandLineArgument<bool>("update");
       }
       // delete controller if update was successfull
       if (this.UpdateInstalled && this.UpdateSuccess) {
