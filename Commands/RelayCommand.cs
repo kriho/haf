@@ -46,7 +46,7 @@ namespace HAF {
 #if DEBUG
       // disable all commands in designe time
       if (ObservableObject.IsInDesignModeStatic) {
-        return false;
+        return true;
       }
 #endif
       if (this.canExecute != null) {
@@ -114,8 +114,8 @@ namespace HAF {
     public bool CanExecute(object parameter) {
 #if DEBUG
       // disable all commands in designe time
-      if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) {
-        return false;
+      if (ObservableObject.IsInDesignModeStatic) {
+        return true;
       }
 #endif
       if (this.canExecute != null) {
