@@ -33,6 +33,10 @@ namespace HAF {
     public ITheme ActiveTheme {
       get { return this.activeTheme; }
       set {
+        if(!this.MayChangeTheme) {
+          // theme changing is not allowed
+          return;
+        }
         if (this.SetValue(ref this.activeTheme, value)) {
           if(value != null) {
             this.ApplyTheme(value);
