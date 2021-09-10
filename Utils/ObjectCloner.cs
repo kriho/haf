@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace HAF {
-  public static class ObjectCloner {
+  public static partial class Utils {
     public static T Clone<T>(T source) {
       var xmlSerializer = new XmlSerializer(typeof(T));
-      using (Stream stream = new MemoryStream()) {
+      using(Stream stream = new MemoryStream()) {
         xmlSerializer.Serialize(stream, source);
-        stream.Seek(0, SeekOrigin.Begin);
+        _ = stream.Seek(0, SeekOrigin.Begin);
         return (T)xmlSerializer.Deserialize(stream);
       }
     }
