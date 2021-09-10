@@ -17,8 +17,10 @@ namespace HAF {
     public ThemeKey Key {
       get {
         switch (this.ResourceKey) {
+          case "ThemeControlBrush": return ThemeKey.Control;
           case "ThemeTextBrush": return ThemeKey.Text;
           case "ThemeAccentBrush": return ThemeKey.Accent;
+          case "ThemeActionBrush": return ThemeKey.Action;
           case "ThemeErrorBrush": return ThemeKey.Error;
           case "ThemeWarningBrush": return ThemeKey.Warning;
           case "ThemeInfoBrush": return ThemeKey.Info;
