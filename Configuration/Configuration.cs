@@ -70,6 +70,7 @@ namespace HAF {
         foreach(var designTimeAssemblyName in designTimeAssemblyNames) {
           catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load(designTimeAssemblyName)));
         }
+        catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load("HAF.DesignTime, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")));
       }
 #endif
       catalog.Catalogs.Add(new DirectoryCatalog(Configuration.ExtensionsDirectory));
@@ -77,7 +78,6 @@ namespace HAF {
       if (userInterfaceLibrary != null) {
         catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load($"HAF.{userInterfaceLibrary}, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")));
       }
-      catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load("HAF.DesignTime, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")));
       catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load("HAF, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")));
       // filter out all duplicate service exports, only the first export of a service export type identity remains
       // note that design time services have highest priority, then extension services and lastly application services
