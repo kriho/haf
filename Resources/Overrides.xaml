@@ -24,7 +24,7 @@
                                 <RowDefinition Height="28"/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <DockPanel Margin="5,0">
+                            <DockPanel Margin="5,1,5,0">
                                 <Image Source="{TemplateBinding TitleIcon}" MaxHeight="24" MaxWidth="24"/>
                                 <TextBlock Text="{TemplateBinding Title}" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" Margin="5,0"/>
                                 <Button x:Name="PART_Close" DockPanel.Dock="Right" WindowChrome.IsHitTestVisibleInChrome="True" Padding="0" BorderThickness="0" Focusable="False">
