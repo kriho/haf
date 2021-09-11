@@ -80,6 +80,10 @@
     <Compile Include="Localization\SystemLocalizationProvider.cs" />
     <Compile Include="Localization\ILocalizationProvider.cs" />
     <Compile Include="Localization\LocalizeExtension.cs" />
+    <Compile Include="Logging\LogEntry.cs" />
+    <Compile Include="Logging\ILogEntry.cs" />
+    <Compile Include="Logging\LogService.cs" />
+    <Compile Include="Logging\ILogService.cs" />
     <Compile Include="Themes\ITheme.cs" />
     <Compile Include="IDockingWindowService.cs" />
     <Compile Include="Localization\LocalizationService.cs" />
