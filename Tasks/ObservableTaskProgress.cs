@@ -70,7 +70,7 @@ namespace HAF {
       this.normalizer = null;
     }
 
-    public ObservableTaskProgress(string description, int maximum = 0, int value = 0) {
+    public ObservableTaskProgress(string description = "", int maximum = 0, int value = 0) {
       this.description = description;
       this.isIndeterminate = (maximum == value);
       this.maximum = maximum;

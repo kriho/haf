@@ -56,7 +56,7 @@ namespace HAF {
       }, pool);
     }
 
-    public ObservableTask(Func<IObservableTaskProgress, Task> work, string description, int maximum = 0, int value = 0, IObservableTaskPool pool = null) {
+    public ObservableTask(Func<IObservableTaskProgress, Task> work, string description = "", int maximum = 0, int value = 0, IObservableTaskPool pool = null) {
       this.initialProgress = new ObservableTaskProgress(description, maximum, value);
       this.Initialize(async () => {
         await work(this.progress);
@@ -70,7 +70,7 @@ namespace HAF {
       }, pool);
     }
 
-    public ObservableTask(Func<IObservableTaskProgress, CancellationToken, Task> work, string description, int maximum = 0, int value = 0, IObservableTaskPool pool = null) {
+    public ObservableTask(Func<IObservableTaskProgress, CancellationToken, Task> work, string description = "", int maximum = 0, int value = 0, IObservableTaskPool pool = null) {
       this.initialProgress = new ObservableTaskProgress(description, maximum, value);
       this.Initialize(async () => {
         await work(this.progress, this.cancellationTokenSource.Token);
