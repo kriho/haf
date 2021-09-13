@@ -19,20 +19,20 @@ namespace HAF {
 
     public LocalizedText(string id) {
       this.Id = id;
-      this.Register();
+      LocalizeExtension.LocalizationService.OnSelectedCultureChanged.RegisterWeak(this.NotifyValueChanged);
     }
 
     public LocalizedText(string contextId, string id) {
       this.ContextId = contextId;
       this.Id = id;
-      this.Register();
+      LocalizeExtension.LocalizationService.OnSelectedCultureChanged.RegisterWeak(this.NotifyValueChanged);
     }
 
     public LocalizedText(string id, string pluralId, int count) {
       this.Id = id;
       this.PluralId = pluralId;
       this.Count = count;
-      this.Register();
+      LocalizeExtension.LocalizationService.OnSelectedCultureChanged.RegisterWeak(this.NotifyValueChanged);
     }
 
     public LocalizedText(string contextId, string id, string pluralId, int count) {
@@ -40,13 +40,11 @@ namespace HAF {
       this.Id = id;
       this.PluralId = pluralId;
       this.Count = count;
-      this.Register();
+      LocalizeExtension.LocalizationService.OnSelectedCultureChanged.RegisterWeak(this.NotifyValueChanged);
     }
 
-    private void Register() {
-      LocalizeExtension.LocalizationService.OnSelectedCultureChanged.Register(() => {
-        this.NotifyPropertyChanged(() => this.Value);
-      });
+    private void NotifyValueChanged() {
+      this.NotifyPropertyChanged(() => this.Value);
     }
 
     public override string ToString() {
