@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -9,7 +10,6 @@ using System.Windows;
 namespace HAF {
 
   public class ObservableTask: IObservableTask {
-
     public IObservableTaskPool Pool { get; private set; }
 
     private readonly ObservableTaskProgress progress = new ObservableTaskProgress();
@@ -18,8 +18,6 @@ namespace HAF {
     private readonly ObservableTaskProgress initialProgress;
     
     private Func<Task> work;
-    
-    private Task task;
 
     private CancellationTokenSource cancellationTokenSource;
 
@@ -56,7 +54,7 @@ namespace HAF {
       }, pool);
     }
 
-    public ObservableTask(Func<IObservableTaskProgress, Task> work, string description, int maximum = 0, int value = 0, IObservableTaskPool pool = null) {
+    public ObservableTask(Func<IObservableTaskProgress, Task> work, string description = "", int maximum = 0, int value = 0, IObservableTaskPool pool = null) {
       this.initialProgress = new ObservableTaskProgress(description, maximum, value);
       this.Initialize(async () => {
         await work(this.progress);
@@ -70,7 +68,7 @@ namespace HAF {
       }, pool);
     }
 
-    public ObservableTask(Func<IObservableTaskProgress, CancellationToken, Task> work, string description, int maximum = 0, int value = 0, IObservableTaskPool pool = null) {
+    public ObservableTask(Func<IObservableTaskProgress, CancellationToken, Task> work, string description = "", int maximum = 0, int value = 0, IObservableTaskPool pool = null) {
       this.initialProgress = new ObservableTaskProgress(description, maximum, value);
       this.Initialize(async () => {
         await work(this.progress, this.cancellationTokenSource.Token);
@@ -85,9 +83,10 @@ namespace HAF {
       });
       this.work = work;
       this.Pool = pool;
+      Configuration.Container.ComposeParts(this);
     }
 
-    public async Task Run() {
+    public Task Run() {
       try {
         // revert progress to make tast restartable
         this.RevertProgress();
@@ -95,31 +94,25 @@ namespace HAF {
         this.progress.IsRunning = true;
         // create new cancellation token source
         this.cancellationTokenSource = new CancellationTokenSource();
-        this.task = this.work.Invoke();
-        await this.task;
+        return this.work.Invoke();
       } catch(TaskCanceledException) {
+        return Task.CompletedTask;
       } finally {
         this.progress.IsRunning = false;
       }
     }
 
-    public async Task Schedule() {
+    public Task Schedule() {
       if(this.Pool == null) {
-        await this.Run();
+        return this.Run();
       } else {
-        await this.Pool.ScheduleTask(this);
+        return this.Pool.ScheduleTask(this);
       }
     }
 
     public void Cancel() {
       if (this.cancellationTokenSource != null && !this.cancellationTokenSource.IsCancellationRequested) {
         this.cancellationTokenSource.Cancel();
-      }
-    }
-
-    public async Task WaitForCompletion() {
-      if(this.progress.IsRunning && this.task != null) {
-        await this.task;
       }
     }
   }

@@ -16,7 +16,8 @@ namespace HAF {
   /// event names must always start with On...
   /// </remarks>
   public class LinkedEvent<T> {
-    public List<Action<T>> Listeners = new List<Action<T>>();
+    private readonly List<Action<T>> listeners = new List<Action<T>>();
+    private readonly List<WeakAction<T>> weakListeners = new List<WeakAction<T>>();
 
 #if DEBUG
     public string Name;
@@ -26,8 +27,18 @@ namespace HAF {
     /// fire event
     /// </summary>
     public void Fire(T args) {
-      foreach (var listener in this.Listeners) {
+      // invoke strong references
+      foreach (var listener in this.listeners) {
         listener.Invoke(args);
+      }
+      // invoke weak references
+      var index = 0;
+      while(index < this.weakListeners.Count) {
+        if(this.weakListeners[index].IsAlive) {
+          this.weakListeners[index++].Execute(args);
+        } else {
+          this.weakListeners.RemoveAt(index);
+        }
       }
 #if DEBUG
       Console.WriteLine($"{this.Name}()");
@@ -35,10 +46,17 @@ namespace HAF {
     }
 
     /// <summary>
-    /// register event listener
+    /// register a strong referenced event listener
     /// </summary>
     public void Register(Action<T> listener) {
-      this.Listeners.Add(listener);
+      this.listeners.Add(listener);
+    }
+
+    /// <summary>
+    /// register a weak referenced event listener
+    /// </summary>
+    public void RegisterWeak(Action<T> listener) {
+      this.weakListeners.Add(new WeakAction<T>(listener));
     }
 
     public LinkedEvent(string name) {
@@ -55,7 +73,8 @@ namespace HAF {
   /// event names must always start with On...
   /// </remarks>
   public class LinkedEvent {
-    public List<Action> Listeners = new List<Action>();
+    private List<Action> listeners = new List<Action>();
+    private readonly List<WeakAction> weakListeners = new List<WeakAction>();
 
 #if DEBUG
     public string Name;
@@ -65,8 +84,18 @@ namespace HAF {
     /// fire event
     /// </summary>
     public void Fire() {
-      foreach (var listener in this.Listeners) {
+      // invoke strong references
+      foreach(var listener in this.listeners) {
         listener.Invoke();
+      }
+      // invoke weak references
+      var index = 0;
+      while(index < this.weakListeners.Count) {
+        if(this.weakListeners[index].IsAlive) {
+          this.weakListeners[index++].Execute();
+        } else {
+          this.weakListeners.RemoveAt(index);
+        }
       }
 #if DEBUG
       Console.WriteLine($"service event <{this.Name}> fired");
@@ -74,10 +103,17 @@ namespace HAF {
     }
 
     /// <summary>
-    /// register event listener
+    /// register a strong referenced event listener
     /// </summary>
     public void Register(Action listener) {
-      this.Listeners.Add(listener);
+      this.listeners.Add(listener);
+    }
+
+    /// <summary>
+    /// register a weak referenced event listener
+    /// </summary>
+    public void RegisterWeak(Action listener) {
+      this.weakListeners.Add(new WeakAction(listener));
     }
 
     public LinkedEvent(string name) {

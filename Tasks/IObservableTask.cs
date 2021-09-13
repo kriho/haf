@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Windows;
 
 namespace HAF {
-
   public interface IObservableTask {
     IObservableTaskPool Pool { get; }
     IObservableTaskProgress Progress { get; }
@@ -16,6 +15,5 @@ namespace HAF {
     Task Run();
     Task Schedule();
     void Cancel();
-    Task WaitForCompletion();
   }
 }

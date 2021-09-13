@@ -90,24 +90,19 @@ namespace HAF {
       if (collection == null) {
         throw new ArgumentNullException(nameof(collection));
       }
-      if (!this.AllowDuplicates) {
-        collection = collection.Distinct(this.comparer).Where(item => !this.Items.Contains(item, this.comparer)).ToList();
-      }
-      if (collection is ICollection<T> countable) {
-        if (countable.Count == 0) {
-          return;
-        }
-      } else if (!collection.Any()) {
-        return;
-      }
-      this.CheckReentrancy();
-      var target = (List<T>)this.Items;
-      target.InsertRange(index, collection);
-      this.OnCollectionPropertiesChanged();
-      if (!(collection is IList list)) {
+      if(!(collection is IList<T> list)) {
         list = new List<T>(collection);
       }
-      this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, list, index));
+      if (!this.AllowDuplicates) {
+        list = list.Distinct(this.comparer).Where(item => !this.Items.Contains(item, this.comparer)).ToList();
+      }
+      if (list.Count == 0) {
+        return;
+      }
+      this.CheckReentrancy(); 
+      ((List<T>)this.Items).AddRange(list);
+      this.OnCollectionPropertiesChanged();
+      this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, (IList)list, index));
     }
 
     public void RemoveRange(IEnumerable<T> collection) {
@@ -116,14 +111,14 @@ namespace HAF {
       }
       if (this.Count == 0) {
         return;
-      } else if (collection is ICollection<T> countable) {
-        if (countable.Count == 0) {
-          return;
-        } else if (countable.Count == 1) {
-          this.Remove(countable.First());
-          return;
-        }
-      } else if (!collection.Any()) {
+      }
+      if(!(collection is IList<T> list)) {
+        list = new List<T>(collection);
+      }
+      if(list.Count == 0) {
+        return;
+      } else if(list.Count == 1) {
+        this.Remove(list[0]);
         return;
       }
       this.CheckReentrancy();
