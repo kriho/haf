@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HAF {
-
   public interface IObservableTaskProgress: IProgress<int>, INotifyPropertyChanged {
     void ReportIndeterminate(string description = null);
     void ReportProgress(int? value = null);
@@ -21,5 +20,4 @@ namespace HAF {
     string Description { get; }
     int? Normalizer { get; }
   }
-
 }

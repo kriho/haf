@@ -7,9 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 
 namespace HAF {
-
   public class ObservableTaskProgress : ObservableObject, IObservableTaskProgress {
-
     private int maximum;
     public int Maximum {
       get {

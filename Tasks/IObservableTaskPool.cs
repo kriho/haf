@@ -10,7 +10,7 @@ using System.Windows.Data;
 namespace HAF {
   public interface IObservableTaskPool {
     string Name { get; }
-    bool AllowParallelExecution { get; }
+    int ParallelExecutionLimit { get; }
     LinkedState IsIdle { get; }
     IReadOnlyObservableCollection<IObservableTask> ActiveTasks { get; }
     Task ScheduleTask(IObservableTask task);
