@@ -8,14 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HAF {
-
   public class PaneMeta {
-
     public string Name { get; set; }
-
     public Type Type { get; set; }
-
     public bool CanUserClose { get; set; } = true;
   }
-
 }
