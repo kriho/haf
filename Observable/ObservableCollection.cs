@@ -12,7 +12,7 @@ namespace HAF {
   public interface IReadOnlyObservableCollection<T>: IReadOnlyCollection<T>, INotifyCollectionChanged, INotifyPropertyChanged {
   }
 
-  public interface IObservableCollection<T>: ICollection<T>, IList<T>, INotifyCollectionChanged, INotifyPropertyChanged {
+  public interface IObservableCollection<T>: IList<T>, ICollection<T>, IEnumerable<T>, INotifyCollectionChanged, INotifyPropertyChanged {
     void AddRange(IEnumerable<T> collection);
     void InsertRange(int index, IEnumerable<T> collection);
     void RemoveRange(IEnumerable<T> collection);
@@ -65,18 +65,22 @@ namespace HAF {
     }
 
     public T this[int index] {
-      get => this.items[index];
+      get {
+        this.CheckIndex(index);
+        return this.items[index];
+      }
       set {
         this.CheckReadOnly();
-        if (index < 0 || index >= this.items.Count) {
-          throw new ArgumentOutOfRangeException();
-        }
+        this.CheckIndex(index);
         this.SetItem(index, value);
       }
     }
 
     public void Add(T item) {
       this.CheckReadOnly();
+      if(this.items.Contains(item, this.comparer)) {
+        return;
+      }
       this.InsertItem(this.items.Count, item);
     }
 
@@ -369,7 +373,6 @@ namespace HAF {
       this.monitor.Enter();
       return (IDisposable)this.monitor;
     }
-
 
     protected virtual IDisposable DeferEvents() => new DeferredEventsCollection(this);
 
