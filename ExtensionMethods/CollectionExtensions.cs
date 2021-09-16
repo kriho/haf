@@ -12,8 +12,14 @@ namespace HAF {
       return collection == null || collection.Count == 0;
     }
 
-    public static void AddRangeIterative<T, S>(this ICollection<T> collection, params S[] values) where S : T {
+    public static void AddRangeIterative<T, S>(this ICollection<T> collection, IEnumerable<S> values) where S : T {
       foreach (var value in values) {
+        collection.Add(value);
+      }
+    }
+
+    public static void AddRangeIterative<T, S>(this ICollection<T> collection, params S[] values) where S : T {
+      foreach(var value in values) {
         collection.Add(value);
       }
     }
