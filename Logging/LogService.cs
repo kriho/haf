@@ -15,10 +15,27 @@ namespace HAF {
       this.DoClearLogEntries = new RelayCommand(this.ClearLogEntries);
     }
 
-    public void Log(string message) {
+    public void Info(string message) {
       this.logEntries.Add(new LogEntry() {
         Timestamp = DateTime.Now,
         Message = message,
+        Type = LogType.Info,
+      });
+    }
+
+    public void Warning(string message) {
+      this.logEntries.Add(new LogEntry() {
+        Timestamp = DateTime.Now,
+        Message = message,
+        Type = LogType.Warning,
+      });
+    }
+
+    public void Error(string message) {
+      this.logEntries.Add(new LogEntry() {
+        Timestamp = DateTime.Now,
+        Message = message,
+        Type = LogType.Error,
       });
     }
 
