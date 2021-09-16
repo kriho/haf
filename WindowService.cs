@@ -16,12 +16,12 @@ namespace HAF {
     public Window Window { get; set; }
 
     public override void LoadConfiguration(ServiceConfiguration configuration) {
-      if (configuration.ReadEntry("window", out var window)) {
-        this.Window.Topmost = window.ReadBooleanAttribute("topmost", false);
-        if (window.ReadIntegerAttribute("width", out var width)) {
+      if (configuration.TryReadEntry("window", out var window)) {
+        this.Window.Topmost = window.ReadAttribute("topmost", false);
+        if (window.TryReadAttribute("width", out int width)) {
           this.Window.Width = width;
         }
-        if (window.ReadIntegerAttribute("height", out var height)) {
+        if (window.TryReadAttribute("height", out int height)) {
           this.Window.Height = height;
         }
       }

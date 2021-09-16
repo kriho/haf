@@ -89,13 +89,11 @@ namespace HAF {
     }
 
     public override void SaveConfiguration(ServiceConfiguration configuration) {
-      if(this.selectedCulture != null) {
-        configuration.WriteValue("language", this.selectedCulture.Name);
-      }
+      configuration.WriteValue("language", this.selectedCulture?.Name);
     }
 
     public override void LoadConfiguration(ServiceConfiguration configuration) {
-      if(configuration.ReadStringValue("language", out var name)) {
+      if(configuration.TryReadValue("language", out string name)) {
         var culture = this.availableCultures.FirstOrDefault(c => c.Name == name);
         if(culture != null) {
           this.SelectedCulture = culture;

@@ -1,4 +1,4 @@
-﻿using HAF.Models;
+using HAF.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -133,7 +133,7 @@ namespace HAF {
 
     public override void LoadConfiguration(ServiceConfiguration configuration) {
       ITheme theme = null;
-      if (configuration.ReadStringValue("theme", out var themeName)) {
+      if (configuration.TryReadValue("theme", out string themeName)) {
         theme = this.AvailableThemes.FirstOrDefault(t => t.Name.Id == themeName);
       }
       if(theme == null) {
