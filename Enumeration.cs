@@ -41,7 +41,14 @@ namespace HAF {
     public static IEnumerable<T> GetAll<T>() where T : Enumeration {
       return typeof(T).GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
         .Select(f => f.GetValue(null))
-        .Cast<T>();
+        .OfType<T>();
+    }
+
+    public static T Get<T>(int id) where T : Enumeration {
+      return typeof(T).GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
+        .Select(f => f.GetValue(null))
+        .OfType<T>()
+        .First(e => e.Id == id);
     }
 
     public override bool Equals(object obj) {
