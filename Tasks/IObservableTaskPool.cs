@@ -12,6 +12,7 @@ namespace HAF {
     string Name { get; }
     int ParallelExecutionLimit { get; }
     LinkedState IsIdle { get; }
+    IReadOnlyObservableCollection<IWaitingObservableTask> WaitingTasks { get; }
     IReadOnlyObservableCollection<IObservableTask> ActiveTasks { get; }
     Task ScheduleTask(IObservableTask task);
   }
