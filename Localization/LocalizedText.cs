@@ -48,6 +48,11 @@ namespace HAF {
     }
 
     public override string ToString() {
+    #if DEBUG
+      if(this.IsInDesignMode) {
+        return $"${this.Id}$";
+      }
+    #endif
       return this.ContextId == null
         ? this.PluralId == null
           ? LocalizeExtension.LocalizationService.GetText(this.Id)
