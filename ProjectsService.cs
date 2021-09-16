@@ -28,8 +28,8 @@ namespace HAF {
 
     public RelayCommand DoOpenDirectory { get; private set; }
 
-    private readonly ObservableCollection<Project> projects = new ObservableCollection<Project>();
-    public IReadOnlyObservableCollection<Project> Projects => this.projects;
+    private readonly RangeObservableCollection<Project> projects = new RangeObservableCollection<Project>();
+    public IReadOnlyRangeObservableCollection<Project> Projects => this.projects;
 
     public List<IService> ConfiguredServices { get; private set; } = new List<IService>();
 
@@ -172,14 +172,12 @@ namespace HAF {
     }
 
     public override void LoadConfiguration(ServiceConfiguration configuration) {
-      var defaultProject = configuration.ReadStringValue("defaultProject", null);
+      var defaultProject = configuration.ReadValue("defaultProject", null);
       this.LoadProjects(defaultProject);
     }
 
     public override void SaveConfiguration(ServiceConfiguration configuration) {
-      if (this.defaultProject != null) {
-        configuration.WriteValue("defaultProject", this.defaultProject.Name);
-      }
+      configuration.WriteValue("defaultProject", this.defaultProject?.Name);
       if (this.CurrentProject != null) {
         this.SaveProject(this.currentProject);
       }

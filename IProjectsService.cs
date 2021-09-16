@@ -14,7 +14,7 @@ namespace HAF {
     Project CurrentProject { get; }
     Project DefaultProject { get; }
     List<IService> ConfiguredServices { get; }
-    IReadOnlyObservableCollection<Project> Projects { get; }
+    IReadOnlyRangeObservableCollection<Project> Projects { get; }
 
     void AddProject(string name);
     void ClearProject();
