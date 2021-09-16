@@ -18,7 +18,7 @@
     <TargetFrameworkProfile />
     <PackageId>$(AssemblyName)</PackageId>
     <Title>Holistic Application Framework</Title>
-    <Version>1.0.15</Version>
+    <Version>1.0.16</Version>
     <Authors>Kristjan Hornung</Authors>
     <PackageOutputPath>.</PackageOutputPath>
     <Description>
@@ -74,6 +74,7 @@
     <Compile Include="Controls\HeaderedFormGroup.cs" />
     <Compile Include="Converters\IsEqualToBooleanConverter.cs" />
     <Compile Include="Enumeration.cs" />
+    <Compile Include="LogType.cs" />
     <Compile Include="Linked\LinkedObjectManager.cs" />
     <Compile Include="Localization\LocalizedText.cs" />
     <Compile Include="Localization\PoFileLocalizationProvider.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Logging\ILogEntry.cs" />
     <Compile Include="Logging\LogService.cs" />
     <Compile Include="Logging\ILogService.cs" />
+    <Compile Include="Observable\ObservableCollection.cs" />
     <Compile Include="Tasks\WaitingObservableTask.cs" />
     <Compile Include="Tasks\IWaitingObservableTask.cs" />
     <Compile Include="Themes\ITheme.cs" />
@@ -95,6 +97,7 @@
     <Compile Include="InspectorService.cs" />
     <Compile Include="Themes\ThemesService.cs" />
     <Compile Include="Utils\CommandLineArguments.cs" />
+    <Compile Include="Utils\TryParse.cs" />
     <Compile Include="Utils\SystemFileOperations.cs" />
     <Compile Include="Tasks\IObservableTask.cs" />
     <Compile Include="Tasks\IObservableTaskPool.cs" />
@@ -155,7 +158,7 @@
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Logging\Report.cs" />
     <Compile Include="Logging\Reporter.cs" />
-    <Compile Include="Observable\ObservableCollection.cs" />
+    <Compile Include="Observable\RangeObservableCollection.cs" />
     <Compile Include="Observable\ValidatableView.cs" />
     <Compile Include="Observable\Model.cs" />
     <Compile Include="Observable\ViewModel.cs" />
