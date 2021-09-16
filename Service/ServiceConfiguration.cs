@@ -20,159 +20,109 @@ namespace HAF {
       this.context = element;
     }
 
-    #region attribute
-
     private string ReadAttribute(string name) {
       return this.context.Attribute(name)?.Value;
     }
 
-    public string ReadStringAttribute(string name, string fallbackValue) {
+    public string ReadAttribute(string name, string fallbackValue) {
       return this.ReadAttribute(name) ?? fallbackValue;
     }
 
-    public bool ReadStringAttribute(string name, out string value) {
+    public bool TryReadAttribute(string name, out string value) {
       value = this.ReadAttribute(name);
       return value != null;
     }
 
-    public bool ReadBooleanAttribute(string name, bool fallbackValue) {
-      if (bool.TryParse(this.ReadAttribute(name), out var value)) {
-        return value;
-      } else {
-        return fallbackValue;
-      }
+    public T ReadAttribute<T>(string name, T fallbackValue) {
+      return Utils.TryParse(this.ReadAttribute(name), fallbackValue);
     }
 
-    public bool ReadBooleanAttribute(string name, out bool value) {
-      return bool.TryParse(this.ReadAttribute(name), out value);
-    }
-
-    public int ReadIntegerAttribute(string name, int fallbackValue) {
-      if (int.TryParse(this.ReadAttribute(name), out var value)) {
-        return value;
-      } else {
-        return fallbackValue;
-      }
-    }
-
-    public bool ReadIntegerAttribute(string name, out int value) {
-      return int.TryParse(this.ReadAttribute(name), out value);
-    }
-
-    public double ReadDoubleAttribute(string name, double fallbackValue) {
-      if (double.TryParse(this.ReadAttribute(name), out var value)) {
-        return value;
-      } else {
-        return fallbackValue;
-      }
-    }
-
-    public bool ReadDoubleAttribute(string name, out double value) {
-      return double.TryParse(this.ReadAttribute(name), out value);
+    public bool TryReadAttribute<T>(string name, out T value) {
+      return Utils.TryParse(this.ReadAttribute(name), out value);
     }
 
     public ServiceConfigurationEntry WriteAttribute(string name, string value) {
-      this.context.SetAttributeValue(name, value);
+      if(value != null) {
+        this.context.SetAttributeValue(name, value);
+      }
       return this;
     }
 
-    public ServiceConfigurationEntry WriteAttribute(string name, bool value) {
-      return this.WriteAttribute(name, value.ToString());
+    public ServiceConfigurationEntry WriteAttribute<T>(string name, T value) {
+      return this.WriteAttribute(name, value?.ToString());
     }
 
-    public ServiceConfigurationEntry WriteAttribute(string name, int value) {
-      return this.WriteAttribute(name, value.ToString());
+    private string ReadValue(string name, int index = 0) {
+      if(index == 0) {
+        return this.context.Element(name)?.Value;
+      } else {
+        return this.context.Descendants(name).ElementAtOrDefault(index)?.Value;
+      }
     }
 
-    public ServiceConfigurationEntry WriteAttribute(string name, double value) {
-      return this.WriteAttribute(name, value.ToString());
+    public string ReadValue(string name, string fallbackValue, int index = 0) {
+      return this.ReadValue(name, index) ?? fallbackValue;
     }
 
-    #endregion
-
-    #region value
-
-    private string ReadValue(string name) {
-      return this.context.Element(name)?.Value;
-    }
-
-    public string ReadStringValue(string name, string fallbackValue) {
-      return this.ReadValue(name) ?? fallbackValue;
-    }
-
-    public bool ReadStringValue(string name, out string value) {
-      value = this.ReadValue(name);
+    public bool TryReadValue(string name, out string value, int index = 0) {
+      value = this.ReadValue(name, index);
       return value != null;
     }
 
-    public bool ReadBooleanValue(string name, bool fallbackValue) {
-      if(bool.TryParse(this.ReadValue(name), out var value)) {
-        return value;
-      } else {
-        return fallbackValue;
+    public T ReadValue<T>(string name, T fallbackValue, int index = 0) {
+      return Utils.TryParse(this.ReadValue(name, index), fallbackValue);
+    }
+
+    public bool TryReadValue<T>(string name, out T value, int index = 0) {
+      return Utils.TryParse(this.ReadValue(name, index), out value);
+    }
+
+    public IEnumerable<string> ReadValues(string name) {
+      var index = 0;
+      while(this.TryReadValue(name, out string value, index++)) {
+        yield return value;
       }
     }
 
-    public bool ReadBooleanValue(string name, out bool value) {
-      return bool.TryParse(this.ReadValue(name), out value);
-    }
-
-    public int ReadIntegerValue(string name, int fallbackValue) {
-      if (int.TryParse(this.ReadValue(name), out var value)) {
-        return value;
-      } else {
-        return fallbackValue;
+    public IEnumerable<T> ReadValues<T>(string name) {
+      var index = 0;
+      while(this.TryReadValue(name, out T value, index++)) {
+        yield return value;
       }
-    }
-
-    public bool ReadIntegerValue(string name, out int value) {
-      return int.TryParse(this.ReadValue(name), out value);
-    }
-
-    public double ReadDoubleValue(string name, double fallbackValue) {
-      if (double.TryParse(this.ReadValue(name), out var value)) {
-        return value;
-      } else {
-        return fallbackValue;
-      }
-    }
-
-    public bool ReadDoubleValue(string name, out double value) {
-      return double.TryParse(this.ReadValue(name), out value);
     }
 
     public ServiceConfigurationEntry WriteValue(string name, string value) {
-      var element = new XElement(name) {
-        Value = value
-      };
-      this.context.Add(element);
+      if(value != null) { 
+        this.context.Add(new XElement(name) {
+          Value = value
+        });
+      }
       return this;
     }
 
-    public ServiceConfigurationEntry WriteValue(string name, bool value) {
-      return this.WriteValue(name, value.ToString());
+    public ServiceConfigurationEntry WriteValue<T>(string name, T value) {
+      return this.WriteValue(name, value?.ToString());
     }
 
-    public ServiceConfigurationEntry WriteValue(string name, int value) {
-      return this.WriteValue(name, value.ToString());
+    public ServiceConfigurationEntry WriteValues<T>(string name, IEnumerable<T> values) {
+      foreach(var value in values) {
+        this.WriteValue(name, value);
+      }
+      return this;
     }
 
-    public ServiceConfigurationEntry WriteValue(string name, double value) {
-      return this.WriteValue(name, value.ToString());
-    }
-
-    #endregion
-
-    #region entry
-
-    public bool ReadEntry(string name, out ServiceConfigurationEntry entry) {
-      var element = this.context.Element(name);
+    public bool TryReadEntry(string name, out ServiceConfigurationEntry entry) {
+      var element = this.context.Descendants(name).FirstOrDefault();
       if(element != null) { 
         entry = new ServiceConfigurationEntry(element);
         return true;
       }
       entry = null;
       return false;
+    }
+
+    public IEnumerable<ServiceConfigurationEntry> ReadEntries(string name) {
+      return this.context.Descendants(name).Select(d => new ServiceConfigurationEntry(d));
     }
 
     public ServiceConfigurationEntry WriteEntry(string name, bool reuseExisting) {
@@ -188,16 +138,9 @@ namespace HAF {
       return new ServiceConfigurationEntry(element);
     }
 
-    #endregion
-
-    public IEnumerable<string> ReadValues(string name) {
-      return this.context.Descendants(name).Select(d => d.Value);
+    public ServiceConfigurationEntry Parent() {
+      return new ServiceConfigurationEntry(this.context.Parent ?? this.context);
     }
-
-    public IEnumerable<ServiceConfigurationEntry> ReadEntries(string name) {
-      return this.context.Descendants(name).Select(d => new ServiceConfigurationEntry(d));
-    }
-
   }
 
   public class ServiceConfiguration: ServiceConfigurationEntry {
