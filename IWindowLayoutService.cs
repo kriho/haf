@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 namespace HAF {
   public interface IWindowLayoutService : IService {
     WindowLayout ActiveWindowLayout { get; set; }
-    ObservableCollection<PaneMeta> AvailablePanes { get; }
+    IReadOnlyObservableCollection<PaneMeta> AvailablePanes { get; }
     LinkedDependency MayChangeWindowLayout { get; }
     WindowLayout DefaultWindowLayout { get; set; }
     IReadOnlyCollection<WindowLayout> DefaultWindowLayouts { get; }
@@ -15,7 +15,7 @@ namespace HAF {
     RelayCommand<WindowLayout> DoSave { get; }
     RelayCommand<WindowLayout> DoSetDefault { get; }
     RelayCommand<PaneMeta> DoShowPane { get; }
-    IReadOnlyObservableCollection<WindowLayout> WindowLayouts { get; }
+    IReadOnlyRangeObservableCollection<WindowLayout> WindowLayouts { get; }
 
     void AddWindowLayout(string name);
   }

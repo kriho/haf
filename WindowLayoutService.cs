@@ -27,13 +27,14 @@ namespace HAF {
 
     public RelayCommand<PaneMeta> DoShowPane { get; private set; }
 
-    private readonly ObservableCollection<WindowLayout> windowLayouts = new ObservableCollection<WindowLayout>();
-    public IReadOnlyObservableCollection<WindowLayout> WindowLayouts => this.windowLayouts;
+    private readonly RangeObservableCollection<WindowLayout> windowLayouts = new RangeObservableCollection<WindowLayout>();
+    public IReadOnlyRangeObservableCollection<WindowLayout> WindowLayouts => this.windowLayouts;
 
     private readonly List<WindowLayout> defaultindowLayouts = new List<WindowLayout>();
     public IReadOnlyCollection<WindowLayout> DefaultWindowLayouts => this.defaultindowLayouts;
 
-    public ObservableCollection<PaneMeta> AvailablePanes { get; private set; } = new ObservableCollection<PaneMeta>();
+    private readonly ObservableCollection<PaneMeta> availablePanes = new ObservableCollection<PaneMeta>();
+    public IReadOnlyObservableCollection<PaneMeta> AvailablePanes => this.availablePanes;
 
     private WindowLayout activeWindowLayout = null;
     public WindowLayout ActiveWindowLayout {
@@ -105,14 +106,14 @@ namespace HAF {
       var windowLayouts = new List<WindowLayout>();
       string defaultWindowLayoutName = null;
       // load previous window layout and default
-      if (configuration.ReadEntry("window", out var entry)) {
+      if (configuration.TryReadEntry("window", out var entry)) {
         foreach (var windowLayoutEntry in entry.ReadEntries("layout")) {
           windowLayouts.Add(new WindowLayout() {
-            Name = windowLayoutEntry.ReadStringAttribute("name", "unnamed"),
-            Layout = windowLayoutEntry.ReadStringAttribute("configuration", null),
+            Name = windowLayoutEntry.ReadAttribute("name", "unnamed"),
+            Layout = windowLayoutEntry.ReadAttribute("configuration", null),
           });
         }
-        defaultWindowLayoutName = entry.ReadStringAttribute("defaultLayout", null);
+        defaultWindowLayoutName = entry.ReadAttribute("defaultLayout", null);
       }
       // add default layouts
       foreach (var windowLayout in this.DefaultWindowLayouts) {
@@ -137,10 +138,9 @@ namespace HAF {
         this.activeWindowLayout.Layout = this.dockingWindow.GetWindowLayout();
       }
       // save window layouts
-      var entry = configuration.WriteEntry("window", true);
-      if (this.defaultWindowLayout != null) {
-        entry.WriteAttribute("defaultLayout", this.defaultWindowLayout.Name);
-      }
+      var entry = configuration
+        .WriteEntry("window", true)
+        .WriteAttribute("defaultLayout", this.defaultWindowLayout?.Name);
       foreach (var windowLayout in this.WindowLayouts) {
         entry.WriteEntry("layout", false)
           .WriteAttribute("name", windowLayout.Name)
