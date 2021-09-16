@@ -1,4 +1,4 @@
-using HAF.Models;
+﻿using HAF.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -129,6 +129,13 @@ namespace HAF {
       this.MayChangeTheme.RegisterUpdate(() => {
         this.DoSetTheme.RaiseCanExecuteChanged();
       });
+#if DEBUG
+      if(this.IsInDesignMode) {
+        this.AvailableThemes.Add(this.DefaultLightTheme);
+        this.AvailableThemes.Add(this.DefaultDarkTheme);
+        this.ActiveTheme = this.DefaultLightTheme;
+      }
+#endif
     }
 
     public override void LoadConfiguration(ServiceConfiguration configuration) {
