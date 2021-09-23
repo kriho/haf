@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 namespace HAF {
   public static partial class Utils {
 
+    // see https://stackoverflow.com/questions/2961656/generic-tryparse/25191788#25191788 for main inspiration
+
     public static T? TryParse<T>(string value) where T : struct {
       return TryParseHelper<T>.TryParse(value, out T result) ? result : default(T);
     }
