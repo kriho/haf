@@ -17,7 +17,9 @@ namespace HAF {
     public virtual void SaveConfiguration(ServiceConfiguration configuration) {
     }
 
-    public virtual void ClearConfiguration() {
+    public void ClearConfiguration() {
+      // load empty configuration
+      this.LoadConfiguration(new ServiceConfiguration("default"));
     }
   }
 }
