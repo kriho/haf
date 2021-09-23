@@ -18,7 +18,7 @@
     <TargetFrameworkProfile />
     <PackageId>$(AssemblyName)</PackageId>
     <Title>Holistic Application Framework</Title>
-    <Version>1.0.16</Version>
+    <Version>1.0.17</Version>
     <Authors>Kristjan Hornung</Authors>
     <PackageOutputPath>.</PackageOutputPath>
     <Description>
@@ -72,6 +72,8 @@
     <Compile Include="Controls\Form.cs" />
     <Compile Include="Controls\FormGroup.cs" />
     <Compile Include="Controls\HeaderedFormGroup.cs" />
+    <Compile Include="Converters\BooleanToSolidColorBrushConverter.cs" />
+    <Compile Include="Converters\DoubleToFormattedUnitConverter.cs" />
     <Compile Include="Converters\IsEqualToBooleanConverter.cs" />
     <Compile Include="Enumeration.cs" />
     <Compile Include="LogType.cs" />
@@ -86,6 +88,10 @@
     <Compile Include="Logging\LogService.cs" />
     <Compile Include="Logging\ILogService.cs" />
     <Compile Include="Observable\ObservableCollection.cs" />
+    <Compile Include="Plugins\ConfigurablePlugin.cs" />
+    <Compile Include="Plugins\IConfigurablePlugin.cs" />
+    <Compile Include="Plugins\Plugin.cs" />
+    <Compile Include="Plugins\IPlugin.cs" />
     <Compile Include="Tasks\WaitingObservableTask.cs" />
     <Compile Include="Tasks\IWaitingObservableTask.cs" />
     <Compile Include="Themes\ITheme.cs" />
