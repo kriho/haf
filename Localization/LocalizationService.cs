@@ -45,7 +45,7 @@ namespace HAF {
           return "$" + compoundId + "$";
         }
       #endif
-        var index = compoundId.IndexOf("//");
+        var index = compoundId.IndexOf("$$");
         if(index == -1) {
           return this.currentProvider?.GetText(compoundId) ?? compoundId;
         } else {
@@ -84,10 +84,6 @@ namespace HAF {
       return this.currentProvider.GetText(id, pluralId, count);
     }
 
-    public override void ClearConfiguration() {
-      this.SelectedCulture = this.AvailableCultures.First();
-    }
-
     public override void SaveConfiguration(ServiceConfiguration configuration) {
       configuration.WriteValue("language", this.selectedCulture?.Name);
     }
@@ -98,6 +94,9 @@ namespace HAF {
         if(culture != null) {
           this.SelectedCulture = culture;
         }
+      }
+      if(this.selectedCulture == null) {
+        this.SelectedCulture = this.AvailableCultures.First();
       }
     }
   }
