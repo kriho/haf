@@ -7,6 +7,8 @@ namespace HAF {
     void Error(string message);
     void Warning(string message);
     void ClearLogEntries();
+    LinkedEvent<ILogEntry> OnEntryAdded { get; }
     IRelayCommand DoClearLogEntries { get; }
+    IRelayCommand<ILogEntry> DoRemoveEntry { get; }
   }
 }

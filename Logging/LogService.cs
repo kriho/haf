@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using System.Globalization;
+using System.Windows;
 
 namespace HAF {
   [Export(typeof(ILogService)), PartCreationPolicy(CreationPolicy.Shared)]
@@ -11,31 +12,52 @@ namespace HAF {
 
     public IRelayCommand DoClearLogEntries { get; private set; }
 
+    public IRelayCommand<ILogEntry> DoRemoveEntry { get; private set; }
+
+    public LinkedEvent<ILogEntry> OnEntryAdded { get; private set; } = new LinkedEvent<ILogEntry>(nameof(OnEntryAdded));
+
     public LogService() {
       this.DoClearLogEntries = new RelayCommand(this.ClearLogEntries);
+      this.DoRemoveEntry = new RelayCommand<ILogEntry>(entry => {
+        if(this.logEntries.Contains(entry)) {
+          this.logEntries.Remove(entry);
+        }
+      });
     }
 
     public void Info(string message) {
-      this.logEntries.Add(new LogEntry() {
-        Timestamp = DateTime.Now,
-        Message = message,
-        Type = LogType.Info,
+      Application.Current.Dispatcher.Invoke(() => {
+        var entry = new LogEntry() {
+          Timestamp = DateTime.Now,
+          Message = message,
+          Type = LogType.Info,
+        };
+        this.logEntries.Add(entry);
+        this.OnEntryAdded.Fire(entry);
       });
     }
 
     public void Warning(string message) {
-      this.logEntries.Add(new LogEntry() {
-        Timestamp = DateTime.Now,
-        Message = message,
-        Type = LogType.Warning,
+      Application.Current.Dispatcher.Invoke(() => {
+        var entry = new LogEntry() {
+          Timestamp = DateTime.Now,
+          Message = message,
+          Type = LogType.Warning,
+        };
+        this.logEntries.Add(entry);
+        this.OnEntryAdded.Fire(entry);
       });
     }
 
     public void Error(string message) {
-      this.logEntries.Add(new LogEntry() {
-        Timestamp = DateTime.Now,
-        Message = message,
-        Type = LogType.Error,
+      Application.Current.Dispatcher.Invoke(() => {
+        var entry = new LogEntry() {
+          Timestamp = DateTime.Now,
+          Message = message,
+          Type = LogType.Error,
+        };
+        this.logEntries.Add(entry);
+        this.OnEntryAdded.Fire(entry);
       });
     }
 
