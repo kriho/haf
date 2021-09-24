@@ -9,12 +9,6 @@ using System.Runtime.CompilerServices;
 
 namespace HAF {
 
-  public interface IRelayCommand: ICommand {
-    void Execute();
-    bool CanExecute();
-    void RaiseCanExecuteChanged();
-  }
-
   public class RelayCommand: IRelayCommand {
     private readonly Action execute;
     private readonly Func<bool> canExecute;
@@ -42,25 +36,24 @@ namespace HAF {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool CanExecute() {
+      return this.CanExecute(null);
+    }
+
     public bool CanExecute(object parameter) {
 #if DEBUG
       // disable all commands in designe time
-      if (ObservableObject.IsInDesignModeStatic) {
+      if(ObservableObject.IsInDesignModeStatic) {
         return true;
       }
 #endif
-      if (this.canExecute != null) {
+      if(this.canExecute != null) {
         return this.canExecute.Invoke();
       }
-      if (this.dependency != null) {
+      if(this.dependency != null) {
         return this.dependency;
       }
       return true;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool CanExecute() {
-      return this.CanExecute(null);
     }
 
     public void Execute(object parameter) {
@@ -69,6 +62,7 @@ namespace HAF {
       }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Execute() {
       this.Execute(null);
     }
@@ -76,12 +70,6 @@ namespace HAF {
     public void RaiseCanExecuteChanged() {
       this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
-  }
-
-  public interface IRelayCommand<T>: ICommand {
-    void Execute(T parameter);
-    bool CanExecute(T parameter);
-    void RaiseCanExecuteChanged();
   }
 
   public class RelayCommand<T>: IRelayCommand<T> {
@@ -111,6 +99,10 @@ namespace HAF {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool CanExecute(T parameter) {
+      return this.CanExecute((object)parameter);
+    }
+
     public bool CanExecute(object parameter) {
 #if DEBUG
       // disable all commands in designe time
@@ -128,18 +120,14 @@ namespace HAF {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool CanExecute(T parameter) {
-      return this.CanExecute((object)parameter);
+    public void Execute(T parameter) {
+      this.Execute((object)parameter);
     }
 
     public void Execute(object parameter) {
       if (this.CanExecute(parameter)) {
         this.execute.Invoke((T)parameter);
       }
-    }
-
-    public void Execute(T parameter) {
-      this.Execute((object)parameter);
     }
 
     public void RaiseCanExecuteChanged() {
