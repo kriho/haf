@@ -15,17 +15,37 @@ using System.Windows;
 namespace HAF {
   public abstract class ValidatableObservableObject: ObservableObject, INotifyDataErrorInfo {
 
-    protected bool SetValueAndValidate<T>(ref T property, T value, bool subscribe = false, [CallerMemberName] string propertyName = "") {
+    protected bool SetValueAndValidate<T>(ref T property, T value, Func<IEnumerable<string>> validation, bool subscribe = false, [CallerMemberName] string propertyName = "") {
       if (!this.SetValue(ref property, value, subscribe, propertyName)) {
         return false;
       }
       // perform validation
-      this.ValidateProperty(value, propertyName);
+      lock(this.validationLock) {
+        var validationErrors = validation.Invoke().ToList();
+        if(this.errors.TryGetValue(propertyName, out var list)) {
+          if(validationErrors.Count == 0) {
+            if(list.Count > 0) {
+              list.Clear();
+              this.OnErrorsChanged(propertyName);
+              this.NotifyPropertyChanged(() => this.HasErrors);
+            }
+          } else {
+            list.Clear();
+            list.AddRange(validationErrors);
+            this.OnErrorsChanged(propertyName);
+            this.NotifyPropertyChanged(() => this.HasErrors);
+          }
+        } else if(validationErrors.Count > 0) {
+          _ = this.errors.TryAdd(propertyName, validationErrors);
+          this.OnErrorsChanged(propertyName);
+          this.NotifyPropertyChanged(() => this.HasErrors);
+        }
+      }
       return true;
     }
 
-    protected bool SetValueAndValidate<T>(ref T property, T value, Expression<Func<T>> expression, bool subscribe = false) {
-      return this.SetValueAndValidate(ref property, value, subscribe, this.GetExpressionMemberName(expression));
+    protected bool SetValueAndValidate<T>(ref T property, T value, Func<IEnumerable<string>> validation, Expression<Func<T>> expression, bool subscribe = false) {
+      return this.SetValueAndValidate(ref property, value, validation, subscribe, this.GetExpressionMemberName(expression));
     }
 
     private readonly ConcurrentDictionary<string, List<string>> errors = new ConcurrentDictionary<string, List<string>>();
@@ -40,66 +60,11 @@ namespace HAF {
     }
 
     public IEnumerable GetErrors(string propertyName) {
-      this.errors.TryGetValue(propertyName, out var errorsForProperty);
-      return errorsForProperty;
+      return this.errors.TryGetValue(propertyName, out var errorsForProperty) ? errorsForProperty : Enumerable.Empty<string>();
     }
 
     public void OnErrorsChanged(string propertyName) {
       ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
-    }
-
-    protected void ValidateProperty(object value, [CallerMemberName] string propertyName = "") {
-      lock (this.validationLock) {
-        // remove old validation errors
-        if (this.errors.ContainsKey(propertyName)) {
-          this.errors.TryRemove(propertyName, out var list);
-        }
-        // get error description
-        var propertyInfo = this.GetType().GetProperty(propertyName);
-        var validationErrors = (from validationAttribute in propertyInfo.GetCustomAttributes(true).OfType<ValidationAttribute>()
-                                where !validationAttribute.IsValid(value)
-                                select validationAttribute.FormatErrorMessage(string.Empty)).ToList();
-        // add to errors
-        this.errors.TryAdd(propertyName, validationErrors);
-        this.OnErrorsChanged(propertyName);
-        this.NotifyPropertyChanged("HasErrors");
-      }
-    }
-
-    protected Task ValidatePropertyAsync(object value, [CallerMemberName] string propertyName = "") {
-      return Task.Run(() => this.ValidateProperty(value, propertyName));
-    }
-
-    protected void Validate() {
-      lock (this.validationLock) {
-        var validationContext = new ValidationContext(this, null, null);
-        var validationResults = new List<ValidationResult>();
-        Validator.TryValidateObject(this, validationContext, validationResults, true);
-        // clear old validation errors
-        foreach (var error in this.errors.ToList()) {
-          if (validationResults.All(result => result.MemberNames.All(member => member != error.Key))) {
-            this.errors.TryRemove(error.Key, out var outLi);
-            this.OnErrorsChanged(error.Key);
-          }
-        }
-        // group results by membery
-        var q = from result in validationResults
-                from member in result.MemberNames
-                group result by member into groups
-                select groups;
-        foreach (var prop in q) {
-          var messages = prop.Select(r => r.ErrorMessage).ToList();
-          if (this.errors.ContainsKey(prop.Key)) {
-            this.errors.TryRemove(prop.Key, out var outLi);
-          }
-          this.errors.TryAdd(prop.Key, messages);
-          OnErrorsChanged(prop.Key);
-        }
-      }
-    }
-
-    protected Task ValidateAsync() {
-      return Task.Run(() => Validate());
     }
   }
 }
