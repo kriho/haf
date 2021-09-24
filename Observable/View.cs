@@ -35,9 +35,6 @@ namespace HAF {
       if (Application.Current.Dispatcher.CheckAccess()) {
         this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
       } else {
-#if DEBUG
-        Console.WriteLine($"dispatching change notification for {propertyName}");
-#endif
         if (this.PropertyChanged != null) {
           Application.Current.Dispatcher.Invoke(new Action(() => {
             this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
