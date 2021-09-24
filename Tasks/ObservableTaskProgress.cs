@@ -36,12 +36,6 @@ namespace HAF {
       internal set { this.SetValue(ref this.value, value); }
     }
 
-    private bool isRunning;
-    public bool IsRunning {
-      get { return this.isRunning; }
-      internal set { this.SetValue(ref this.isRunning, value); }
-    }
-
     private bool isIndeterminate;
     public bool IsIndeterminate {
       get { return this.isIndeterminate; }
@@ -74,7 +68,6 @@ namespace HAF {
       this.maximum = maximum;
       this.value = value;
       this.normalizer = null;
-      this.isRunning = false;
     }
 
     public void ReportIndeterminate(string description = null) {

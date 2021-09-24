@@ -15,7 +15,6 @@ namespace HAF {
     void NormalizeProgress(int? normalizer);
     int Maximum { get; }
     int Value { get; }
-    bool IsRunning { get; }
     bool IsIndeterminate { get; }
     string Description { get; }
     int? Normalizer { get; }

@@ -9,7 +9,7 @@ using System.Windows;
 
 namespace HAF {
 
-  public class ObservableTask: IObservableTask {
+  public class ObservableTask: ObservableObject, IObservableTask {
     public IObservableTaskPool Pool { get; private set; }
 
     private readonly ObservableTaskProgress progress = new ObservableTaskProgress();
@@ -21,6 +21,16 @@ namespace HAF {
 
     private CancellationTokenSource cancellationTokenSource;
 
+    private bool isRunning;
+    public bool IsRunning {
+      get { return this.isRunning; }
+      internal set { 
+        if(this.SetValue(ref this.isRunning, value)) {
+          this.DoCancel.RaiseCanExecuteChanged();
+        }
+      }
+    }
+
     public bool IsCancelled {
       get { return this.cancellationTokenSource?.IsCancellationRequested == true; }
     }
@@ -30,7 +40,6 @@ namespace HAF {
       this.progress.Value = this.initialProgress.Value;
       this.progress.Maximum = this.initialProgress.Maximum;
       this.progress.Description = this.initialProgress.Description;
-      this.progress.IsRunning = false;
     }
 
     public RelayCommand DoCancel { get; private set; }
@@ -79,7 +88,7 @@ namespace HAF {
       // apply initial progress
       this.RevertProgress();
       this.DoCancel = new RelayCommand(this.Cancel, () => {
-        return this.cancellationTokenSource != null && !this.cancellationTokenSource.IsCancellationRequested && this.progress.IsRunning;
+        return this.cancellationTokenSource != null && !this.cancellationTokenSource.IsCancellationRequested && this.IsRunning;
       });
       this.work = work;
       this.Pool = pool;
@@ -91,14 +100,14 @@ namespace HAF {
         // revert progress to make tast restartable
         this.RevertProgress();
         // add and indicate as running
-        this.progress.IsRunning = true;
+        this.IsRunning = true;
         // create new cancellation token source
         this.cancellationTokenSource = new CancellationTokenSource();
         return this.work.Invoke();
       } catch(TaskCanceledException) {
         return Task.CompletedTask;
       } finally {
-        this.progress.IsRunning = false;
+        this.IsRunning = false;
       }
     }
 
