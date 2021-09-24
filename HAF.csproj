@@ -69,6 +69,8 @@
     <Compile Include="Behaviors\Attached\IsFocused.cs" />
     <Compile Include="Behaviors\Attached\IgnoreMouseWheel.cs" />
     <Compile Include="Commands\AsyncRelayCommand.cs" />
+    <Compile Include="Commands\IAsyncRelayCommand.cs" />
+    <Compile Include="Commands\IRelayCommand.cs" />
     <Compile Include="Controls\Form.cs" />
     <Compile Include="Controls\FormGroup.cs" />
     <Compile Include="Controls\HeaderedFormGroup.cs" />
@@ -245,6 +247,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <PackageReference Include="Faker.Net">
+      <Version>1.5.148</Version>
+    </PackageReference>
     <PackageReference Include="Karambolo.PO.Compact">
       <Version>1.7.3</Version>
     </PackageReference>
