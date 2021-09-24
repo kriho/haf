@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 
 namespace HAF {
   public class ObservableObject: INotifyPropertyChanged {
@@ -23,7 +24,7 @@ namespace HAF {
             return;
           }
         }
-        if (propertyName == "Item[]") {
+        if (propertyName == Binding.IndexerName) {
           // TODO check if indexer property exists
           return;
         }
@@ -38,9 +39,6 @@ namespace HAF {
       if (Application.Current.Dispatcher.CheckAccess()) {
         this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
       } else {
-#if DEBUG
-        Console.WriteLine($"dispatching change notification for {propertyName}");
-#endif
         if (this.PropertyChanged != null) {
           Application.Current.Dispatcher.Invoke(new Action(() => {
             this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
