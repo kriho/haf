@@ -78,6 +78,7 @@
     <Compile Include="Converters\DoubleToFormattedUnitConverter.cs" />
     <Compile Include="Converters\IsEqualToBooleanConverter.cs" />
     <Compile Include="Enumeration.cs" />
+    <Compile Include="Localization\Localization.cs" />
     <Compile Include="LogType.cs" />
     <Compile Include="Linked\LinkedObjectManager.cs" />
     <Compile Include="Localization\LocalizedText.cs" />
@@ -90,7 +91,7 @@
     <Compile Include="Logging\LogService.cs" />
     <Compile Include="Logging\ILogService.cs" />
     <Compile Include="Observable\ObservableCollection.cs" />
-    <Compile Include="Observable\ValidationBatch.cs" />
+    <Compile Include="Validation\ValidationBatch.cs" />
     <Compile Include="Plugins\ConfigurablePlugin.cs" />
     <Compile Include="Plugins\IConfigurablePlugin.cs" />
     <Compile Include="Plugins\Plugin.cs" />
@@ -168,10 +169,10 @@
     <Compile Include="Logging\Report.cs" />
     <Compile Include="Logging\Reporter.cs" />
     <Compile Include="Observable\RangeObservableCollection.cs" />
-    <Compile Include="Observable\ValidatableView.cs" />
+    <Compile Include="Validation\ValidatableView.cs" />
     <Compile Include="Observable\Model.cs" />
     <Compile Include="Observable\ViewModel.cs" />
-    <Compile Include="Observable\ValidatableObservableObject.cs" />
+    <Compile Include="Validation\ValidatableObject.cs" />
     <Compile Include="Hotkeys\HotkeysService.cs" />
     <Compile Include="Hotkeys\IHotkeysService.cs" />
     <Compile Include="Service\IService.cs" />
@@ -220,16 +221,16 @@
     <Compile Include="Updates\SnapshotClient.cs" />
     <Compile Include="Updates\SnapshotFile.cs" />
     <Compile Include="Updates\SnapshotTask.cs" />
-    <Compile Include="Validation\BasePatternValidationRule.cs" />
-    <Compile Include="Validation\IsEmailAddressValidationRule.cs" />
-    <Compile Include="Validation\IsNotEmptyValidationRule.cs" />
-    <Compile Include="Validation\IsNumberValidationRule.cs" />
-    <Compile Include="Validation\IsPhoneNumberValidationRule.cs" />
-    <Compile Include="Validation\IsWebsiteAddressValidationRule.cs" />
-    <Compile Include="Validation\NumberCompareValidationRule.cs" />
-    <Compile Include="Validation\NumberRangeValidationRule.cs" />
-    <Compile Include="Validation\StringPatternValidationRule.cs" />
-    <Compile Include="Validation\StringRangeValidationRule.cs" />
+    <Compile Include="Validation\Old\BasePatternValidationRule.cs" />
+    <Compile Include="Validation\Old\IsEmailAddressValidationRule.cs" />
+    <Compile Include="Validation\Old\IsNotEmptyValidationRule.cs" />
+    <Compile Include="Validation\Old\IsNumberValidationRule.cs" />
+    <Compile Include="Validation\Old\IsPhoneNumberValidationRule.cs" />
+    <Compile Include="Validation\Old\IsWebsiteAddressValidationRule.cs" />
+    <Compile Include="Validation\Old\NumberCompareValidationRule.cs" />
+    <Compile Include="Validation\Old\NumberRangeValidationRule.cs" />
+    <Compile Include="Validation\Old\StringPatternValidationRule.cs" />
+    <Compile Include="Validation\Old\StringRangeValidationRule.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -257,5 +258,8 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.Windows.Interactivity.WPF" Version="2.0.20525" />
     <PackageReference Include="NuGet.Build.Tasks.Pack" Version="5.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="NewFolder1\" />
   </ItemGroup>
 </Project>
