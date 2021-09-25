@@ -52,39 +52,54 @@ namespace HAF {
     }
 
     public void Info(string message) {
-      Application.Current.Dispatcher.Invoke(() => {
-        var entry = new LogEntry() {
-          Timestamp = DateTime.Now,
-          Message = message,
-          Type = LogType.Info,
-        };
+      var entry = new LogEntry() {
+        Timestamp = DateTime.Now,
+        Message = message,
+        Type = LogType.Info,
+      };
+      if(Application.Current.Dispatcher.CheckAccess()) {
         this.logEntries.Add(entry);
         this.OnEntryAdded.Fire(entry);
-      });
+      } else {
+        Application.Current.Dispatcher.Invoke(() => {
+          this.logEntries.Add(entry);
+          this.OnEntryAdded.Fire(entry);
+        });
+      }
     }
 
     public void Warning(string message) {
-      Application.Current.Dispatcher.Invoke(() => {
-        var entry = new LogEntry() {
-          Timestamp = DateTime.Now,
-          Message = message,
-          Type = LogType.Warning,
-        };
+      var entry = new LogEntry() {
+        Timestamp = DateTime.Now,
+        Message = message,
+        Type = LogType.Warning,
+      };
+      if(Application.Current.Dispatcher.CheckAccess()) {
         this.logEntries.Add(entry);
         this.OnEntryAdded.Fire(entry);
-      });
+      } else {
+        Application.Current.Dispatcher.Invoke(() => {
+          this.logEntries.Add(entry);
+          this.OnEntryAdded.Fire(entry);
+        });
+      }
     }
 
     public void Error(string message) {
-      Application.Current.Dispatcher.Invoke(() => {
-        var entry = new LogEntry() {
-          Timestamp = DateTime.Now,
-          Message = message,
-          Type = LogType.Error,
-        };
+      var entry = new LogEntry() {
+        Timestamp = DateTime.Now,
+        Message = message,
+        Type = LogType.Error,
+      };
+      if(Application.Current.Dispatcher.CheckAccess()) {
         this.logEntries.Add(entry);
         this.OnEntryAdded.Fire(entry);
-      });
+      } else {
+        Application.Current.Dispatcher.Invoke(() => {
+          this.logEntries.Add(entry);
+          this.OnEntryAdded.Fire(entry);
+        });
+      }
     }
 
     public void ClearLogEntries() {

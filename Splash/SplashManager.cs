@@ -54,11 +54,15 @@ namespace HAF.Splash {
 
     public void Close() {
       this.wait.WaitOne();
-      this.window.Dispatcher.Invoke(() => {
+      if(this.window.Dispatcher.CheckAccess()) {
         this.window.Close();
         Dispatcher.ExitAllFrames();
-      });
-
+      } else {
+        this.window.Dispatcher.Invoke(() => {
+          this.window.Close();
+          Dispatcher.ExitAllFrames();
+        });
+      }
       this.worker.Abort();
     }
   }

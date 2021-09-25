@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 using System.Windows;
 
 namespace HAF {
-  public class ObservableTaskProgress : ObservableObject, IObservableTaskProgress {
+  public class ObservableTaskProgress: ObservableObject, IObservableTaskProgress {
     private int maximum;
     public int Maximum {
       get {
-        if (this.normalizer.HasValue) {
+        if(this.normalizer.HasValue) {
           return this.normalizer.Value;
         } else {
           return this.maximum;
@@ -23,8 +23,8 @@ namespace HAF {
     private int value;
     public int Value {
       get {
-        if (this.normalizer.HasValue) {
-          if (this.maximum == 0) {
+        if(this.normalizer.HasValue) {
+          if(this.maximum == 0) {
             return 0;
           } else {
             return this.value * this.normalizer.Value / this.maximum;
@@ -71,17 +71,31 @@ namespace HAF {
     }
 
     public void ReportIndeterminate(string description = null) {
-      Application.Current.Dispatcher.Invoke(new Action(() => {
+      if(Application.Current.Dispatcher.CheckAccess()) {
         this.IsIndeterminate = true;
-        if (description != null) {
+        if(description != null) {
           this.Description = description;
         }
-      }));
+      } else {
+        Application.Current.Dispatcher.Invoke(() => {
+          this.IsIndeterminate = true;
+          if(description != null) {
+            this.Description = description;
+          }
+        });
+      }
     }
 
     public void ReportProgress(int? value = null) {
-      Application.Current.Dispatcher.Invoke(new Action(() => {
-        if (value.HasValue) {
+      if(Application.Current.Dispatcher.CheckAccess()) {
+        if(value.HasValue) {
+          this.Value = value.Value;
+        } else {
+          this.IncreaseValue(1);
+        }
+      } else {
+        Application.Current.Dispatcher.Invoke(() => {
+          if(value.HasValue) {
           this.Value = value.Value;
         } else {
           this.IncreaseValue(1);
@@ -90,28 +104,47 @@ namespace HAF {
     }
 
     public void ReportProgress(string description) {
-      Application.Current.Dispatcher.Invoke(new Action(() => {
+      if(Application.Current.Dispatcher.CheckAccess()) {
         this.Description = description;
-      }));
+      } else {
+        Application.Current.Dispatcher.Invoke(() => {
+          this.Description = description;
+        });
+      }
     }
 
     public void ReportProgress(int value, string description) {
-      Application.Current.Dispatcher.Invoke(new Action(() => {
+      if(Application.Current.Dispatcher.CheckAccess()) {
         this.Value = value;
         this.Description = description;
-      }));
+      } else {
+        Application.Current.Dispatcher.Invoke(() => {
+          this.Value = value;
+          this.Description = description;
+        });
+      }
     }
 
     public void ReportProgress(int value, int maximum, string description = "", int? normalizer = null) {
-      Application.Current.Dispatcher.Invoke(new Action(() => {
-        this.IsIndeterminate = (value == maximum);
+      if(Application.Current.Dispatcher.CheckAccess()) {
+        this.IsIndeterminate = value == maximum;
         this.Value = value;
         this.Maximum = maximum;
         this.Normalizer = normalizer;
-        if (description != "") {
+        if(description != "") {
           this.Description = description;
         }
-      }));
+      } else {
+        Application.Current.Dispatcher.Invoke(() => {
+          this.IsIndeterminate = value == maximum;
+          this.Value = value;
+          this.Maximum = maximum;
+          this.Normalizer = normalizer;
+          if(description != "") {
+            this.Description = description;
+          }
+        });
+      }
     }
 
     public void NormalizeProgress(int? normalizer) {
