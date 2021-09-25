@@ -31,16 +31,6 @@ namespace HAF {
 
     private static readonly List<ServiceRegistration> serviceRegistrations = new List<ServiceRegistration>();
 
-    private static ILocalizationService localizationService;
-    public static ILocalizationService LocalizationService {
-      get {
-        if(Configuration.localizationService == null) {
-          Configuration.localizationService = Configuration.Container.GetExportedValue<ILocalizationService>();
-        }
-        return Configuration.localizationService;
-      }
-    }
-
     static Configuration() {
       if(ObservableObject.IsInDesignModeStatic) {
         var catalog = new AggregateCatalog();
