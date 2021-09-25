@@ -22,7 +22,7 @@ namespace HAF.Validation {
       get {
         // default message
         if (this.message == null) {
-          this.message = Configuration.LocalizationService.GetText("The value is not a number.");
+          this.message = Localization.GetText("The value is not a number.");
         }
         return this.message;
       }

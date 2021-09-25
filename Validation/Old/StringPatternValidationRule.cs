@@ -23,7 +23,7 @@ namespace HAF.Validation {
       get {
         // default message
         if (this.message == null) {
-          this.message = Configuration.LocalizationService.GetText("The value is has an incorrect format.");
+          this.message = Localization.GetText("The value is has an incorrect format.");
         }
         return this.message;
       }

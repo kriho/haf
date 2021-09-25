@@ -26,7 +26,7 @@ namespace HAF.Validation {
       get {
         // default message
         if (this.message == null) {
-          this.message = string.Format(Configuration.LocalizationService.GetText("The value has to be between {0} and {1} characters long."), this.minimum, this.maximum);
+          this.message = string.Format(Localization.GetText("The value has to be between {0} and {1} characters long."), this.minimum, this.maximum);
         }
         return this.message;
       }
