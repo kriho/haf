@@ -24,7 +24,7 @@ namespace HAF {
     private bool isRunning;
     public bool IsRunning {
       get { return this.isRunning; }
-      internal set { 
+      private set { 
         if(this.SetValue(ref this.isRunning, value)) {
           this.DoCancel.RaiseCanExecuteChanged();
         }
@@ -95,7 +95,7 @@ namespace HAF {
       Configuration.Container.ComposeParts(this);
     }
 
-    public Task Run() {
+    public async Task Run() {
       try {
         // revert progress to make tast restartable
         this.RevertProgress();
@@ -103,9 +103,8 @@ namespace HAF {
         this.IsRunning = true;
         // create new cancellation token source
         this.cancellationTokenSource = new CancellationTokenSource();
-        return this.work.Invoke();
+        await this.work.Invoke();
       } catch(TaskCanceledException) {
-        return Task.CompletedTask;
       } finally {
         this.IsRunning = false;
       }

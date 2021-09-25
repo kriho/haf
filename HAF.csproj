@@ -79,6 +79,7 @@
     <Compile Include="Converters\IsEqualToBooleanConverter.cs" />
     <Compile Include="Enumeration.cs" />
     <Compile Include="Localization\Localization.cs" />
+    <Compile Include="Logging\Log.cs" />
     <Compile Include="LogType.cs" />
     <Compile Include="Linked\LinkedObjectManager.cs" />
     <Compile Include="Localization\LocalizedText.cs" />
@@ -259,7 +260,5 @@
     <PackageReference Include="System.Windows.Interactivity.WPF" Version="2.0.20525" />
     <PackageReference Include="NuGet.Build.Tasks.Pack" Version="5.2.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="NewFolder1\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>
