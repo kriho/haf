@@ -11,6 +11,6 @@ using System.Threading.Tasks;
 using System.Windows;
 
 namespace HAF {
-  public class ViewModel: ValidatableObservableObject {
+  public class ViewModel: ValidatableObject {
   }
 }
