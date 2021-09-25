@@ -14,9 +14,13 @@ namespace HAF {
   public class ObservableObject: INotifyPropertyChanged {
     public event PropertyChangedEventHandler PropertyChanged;
 
+    /// <summary>
+    /// Verify the existance of a property.
+    /// </summary>
+    /// <param name="propertyName">the name of the property</param>
     [Conditional("DEBUG")]
     [DebuggerStepThrough]
-    public void VerifyPropertyName(string propertyName) {
+    private void VerifyPropertyName(string propertyName) {
       var myType = GetType();
       if (!string.IsNullOrEmpty(propertyName) && myType.GetProperty(propertyName) == null) {
         if (this is ICustomTypeDescriptor descriptor) {
@@ -32,6 +36,10 @@ namespace HAF {
       }
     }
 
+    /// <summary>
+    /// Use the PropertyChanged event to notify listeners about a changed property value.
+    /// </summary>
+    /// <param name="propertyName">the name of the property, provided by the compiler when called from within the property</param>
     protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "") {
       // validate property name
       this.VerifyPropertyName(propertyName);
@@ -40,17 +48,24 @@ namespace HAF {
         this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
       } else {
         if (this.PropertyChanged != null) {
-          Application.Current.Dispatcher.Invoke(new Action(() => {
+          Application.Current.Dispatcher.Invoke(() => {
             this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
-          }));
+          });
         }
       }
     }
 
+    /// <summary>
+    /// Use the PropertyChanged event to notify listeners about a changed property value.
+    /// </summary>
+    /// <param name="propertyName">an expresstion that resolves as the property, e.g. () => this.Name</param>
     protected void NotifyPropertyChanged<T>(Expression<Func<T>> expression) {
       this.NotifyPropertyChanged(this.GetExpressionMemberName(expression));
     }
 
+    /// <summary>
+    /// Get the name of a member expression.
+    /// </summary>
     protected string GetExpressionMemberName<T>(Expression<Func<T>> expression) {
       if (expression.Body is MemberExpression memberExpression) {
         if (memberExpression.Member != null) {
@@ -60,6 +75,15 @@ namespace HAF {
       throw new Exception("resolving the property name from a member expression has failed");
     }
 
+    /// <summary>
+    /// Set the property value and send a change notification when the value changed.
+    /// </summary>
+    /// <typeparam name="T">the value type</typeparam>
+    /// <param name="property">reference to the property, used to update the property value</param>
+    /// <param name="value">the new value</param>
+    /// <param name="subscribe">subsicibe to changes in the new property value, can be used to redirect change notification from the value object to this object</param>
+    /// <param name="propertyName">the name of the property, provided by the compiler when called from within the property</param>
+    /// <returns>true if the value has changed</returns>
     protected bool SetValue<T>(ref T property, T value, bool subscribe = false, [CallerMemberName] string propertyName = "") {
       if (Object.Equals(property, value)) {
         // no changes
@@ -76,24 +100,39 @@ namespace HAF {
       return true;
     }
 
+    /// <summary>
+    /// Set the property value and send a change notification when the value changed.
+    /// </summary>
+    /// <typeparam name="T">the value type</typeparam>
+    /// <param name="property">reference to the property, used to update the property value</param>
+    /// <param name="value">the new value</param>
+    /// <param name="expression">a member expression that is used to resolve the property name</param>
+    /// <param name="subscribe">subsicibe to changes in the new property value, can be used to redirect change notification from the value object to this object</param>
+    /// <returns>true if the value has changed</returns>
     protected bool SetValue<T>(ref T property, T value, Expression<Func<T>> expression, bool subscribe = false) {
       return this.SetValue(ref property, value, subscribe, this.GetExpressionMemberName(expression));
     }
 
     private static bool? isInDesignMode;
 
-    public bool IsInDesignMode {
-      get {
-        return ObservableObject.IsInDesignModeStatic;
-      }
-    }
-
+    /// <summary>
+    /// Check if the application running in design mode (Visual Studio or Expression Blend).
+    /// </summary>
     public static bool IsInDesignModeStatic {
       get {
         if (!ObservableObject.isInDesignMode.HasValue) {
           ObservableObject.isInDesignMode = (bool)DependencyPropertyDescriptor.FromProperty(DesignerProperties.IsInDesignModeProperty, typeof(FrameworkElement)).Metadata.DefaultValue;
         }
         return ObservableObject.isInDesignMode.Value;
+      }
+    }
+
+    /// <summary>
+    /// Check if the application running in design mode (Visual Studio or Expression Blend).
+    /// </summary>
+    public bool IsInDesignMode {
+      get {
+        return ObservableObject.IsInDesignModeStatic;
       }
     }
   }
