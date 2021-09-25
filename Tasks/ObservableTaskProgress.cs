@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -96,11 +96,34 @@ namespace HAF {
       } else {
         Application.Current.Dispatcher.Invoke(() => {
           if(value.HasValue) {
-          this.Value = value.Value;
-        } else {
-          this.IncreaseValue(1);
-        }
-      }));
+            this.Value = value.Value;
+          } else {
+            this.IncreaseValue(1);
+          }
+        });
+      }
+    }
+
+    public void ReportRelativeProgress(int value) {
+      if(Application.Current.Dispatcher.CheckAccess()) {
+        this.IncreaseValue(value);
+      } else {
+        Application.Current.Dispatcher.Invoke(() => {
+          this.IncreaseValue(value);
+        });
+      }
+    }
+
+    public void ReportRelativeProgress(int value, string description) {
+      if(Application.Current.Dispatcher.CheckAccess()) {
+        this.IncreaseValue(value);
+        this.Description = description;
+      } else {
+        Application.Current.Dispatcher.Invoke(() => {
+          this.IncreaseValue(value);
+          this.Description = description;
+        });
+      }
     }
 
     public void ReportProgress(string description) {

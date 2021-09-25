@@ -13,6 +13,8 @@ namespace HAF {
     void ReportProgress(int value, string description);
     void ReportProgress(int value, int maximum, string description = "", int? normalizer = null);
     void NormalizeProgress(int? normalizer);
+    void ReportRelativeProgress(int value);
+    void ReportRelativeProgress(int value, string description);
     int Maximum { get; }
     int Value { get; }
     bool IsIndeterminate { get; }
