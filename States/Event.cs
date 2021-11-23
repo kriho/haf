@@ -15,12 +15,12 @@ namespace HAF {
   /// <remarks>
   /// event names must always start with On...
   /// </remarks>
-  public class LinkedEvent<T> {
+  public class Event<T>: IEvent<T> {
     private readonly List<Action<T>> listeners = new List<Action<T>>();
     private readonly List<WeakAction<T>> weakListeners = new List<WeakAction<T>>();
 
 #if DEBUG
-    public string Name;
+    public string Link;
 #endif
 
     /// <summary>
@@ -28,7 +28,7 @@ namespace HAF {
     /// </summary>
     public void Fire(T args) {
       // invoke strong references
-      foreach (var listener in this.listeners) {
+      foreach(var listener in this.listeners) {
         listener.Invoke(args);
       }
       // invoke weak references
@@ -41,7 +41,7 @@ namespace HAF {
         }
       }
 #if DEBUG
-      Console.WriteLine($"{this.Name}()");
+      Console.WriteLine($"{this.Link}()");
 #endif
     }
 
@@ -59,9 +59,9 @@ namespace HAF {
       this.weakListeners.Add(new WeakAction<T>(listener));
     }
 
-    public LinkedEvent(string name) {
+    public Event(string name) {
 #if DEBUG
-      this.Name = name;
+      this.Link = name;
 #endif
     }
   }
@@ -72,12 +72,12 @@ namespace HAF {
   /// <remarks>
   /// event names must always start with On...
   /// </remarks>
-  public class LinkedEvent {
+  public class Event: IEvent {
     private List<Action> listeners = new List<Action>();
     private readonly List<WeakAction> weakListeners = new List<WeakAction>();
 
 #if DEBUG
-    public string Name;
+    public string Link;
 #endif
 
     /// <summary>
@@ -98,7 +98,7 @@ namespace HAF {
         }
       }
 #if DEBUG
-      Console.WriteLine($"service event <{this.Name}> fired");
+      Console.WriteLine($"service event <{this.Link}> fired");
 #endif
     }
 
@@ -116,9 +116,9 @@ namespace HAF {
       this.weakListeners.Add(new WeakAction(listener));
     }
 
-    public LinkedEvent(string name) {
+    public Event(string name) {
 #if DEBUG
-      this.Name = name;
+      this.Link = name;
 #endif
     }
   }

@@ -5,11 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HAF {
-  internal static class LinkedObjectManager {
-    private static List<WeakReference<LinkedObject>> references = new List<WeakReference<LinkedObject>>();
+  internal static class LinkedObservableObjectManager {
+    private static List<WeakReference<LinkedObservableObject>> references = new List<WeakReference<LinkedObservableObject>>();
 
-    public static void Register(LinkedObject obj) {
-      references.Add(new WeakReference<LinkedObject>(obj));
+    public static void Register(LinkedObservableObject obj) {
+      references.Add(new WeakReference<LinkedObservableObject>(obj));
     }
 
     public static void AssignLinks() {
