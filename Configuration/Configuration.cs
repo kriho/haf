@@ -11,25 +11,30 @@ using System.Threading.Tasks;
 using System.Windows;
 
 namespace HAF {
+
+  public enum ConfigurationStage {
+    Startup,
+    Composition,
+    Configuration,
+    WindowInitialization,
+    Running,
+    Exiting,
+  }
+
   public static class Configuration {
+    public static string ConfigurationDirectory { get; set; }
 
-    public class ServiceRegistration {
-      public IService Service { get; private set;}
-      public int Priority{ get; private set;}
+    public static string ExtensionsDirectory { get; set; }
 
-      public ServiceRegistration(IService service, int priority) {
-        this.Service = service;
-        this.Priority = priority;
-      }
-    }
-
-    public static string ConfigurationDirectory;
-
-    public static string ExtensionsDirectory;
+    public static string ApplicationDirectory => AppDomain.CurrentDomain.BaseDirectory;
 
     public static CompositionContainer Container { get; private set; }
 
-    private static readonly List<ServiceRegistration> serviceRegistrations = new List<ServiceRegistration>();
+    private static readonly List<IService> serviceRegistrations = new List<IService>();
+
+    private static List<Tuple<ConfigurationStage,Action>> compositionActions = new List<Tuple<ConfigurationStage, Action>>();
+
+    public static ConfigurationStage Stage { get; private set; } = ConfigurationStage.Startup;
 
     static Configuration() {
       if(ObservableObject.IsInDesignModeStatic) {
@@ -42,31 +47,12 @@ namespace HAF {
       }
     }
 
-    public static void Initialize() {
-      // create directories if needed
-      if (!Directory.Exists(Configuration.ConfigurationDirectory)) {
-        Directory.CreateDirectory(Configuration.ConfigurationDirectory);
-      }
-      if (!Directory.Exists(Configuration.ExtensionsDirectory)) {
-        Directory.CreateDirectory(Configuration.ExtensionsDirectory);
-      }
-    }
-
-    public static void ConfigureContainer(string userInterfaceLibrary, string applicationAssemblyName, params string[] designTimeAssemblyNames) {
+    public static void ConfigureContainer(params string[] assemblyNames) {
       // aggregate all catalogs
       var catalog = new AggregateCatalog();
-#if DEBUG
-      if (ObservableObject.IsInDesignModeStatic) {
-        foreach(var designTimeAssemblyName in designTimeAssemblyNames) {
-          catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load(designTimeAssemblyName)));
-        }
-        catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load("HAF.DesignTime, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")));
-      }
-#endif
       catalog.Catalogs.Add(new DirectoryCatalog(Configuration.ExtensionsDirectory));
-      catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load(applicationAssemblyName)));
-      if (userInterfaceLibrary != null) {
-        catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load($"HAF.{userInterfaceLibrary}, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")));
+      foreach(var assemblyName in assemblyNames) {
+        catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load(assemblyName)));
       }
       catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load("HAF, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")));
       // filter out all duplicate service exports, only the first export of a service export type identity remains
@@ -75,31 +61,55 @@ namespace HAF {
       Configuration.Container = new CompositionContainer(serviceAwareCatalog);
     }
 
-    public static void RegisterService(IService service, int priority = 0) {
-      if(Configuration.serviceRegistrations.Any(s => s.Service == service)) {
+    public static void RegisterService(IService service) {
+      if(Configuration.serviceRegistrations.Contains(service)) {
         throw new Exception($"the service {service.GetType().Name} is already registered in the HAF configuration");
       }
-      Configuration.serviceRegistrations.Add(new ServiceRegistration(service, priority));
+      Configuration.serviceRegistrations.Add(service);
     }
 
-    public static void LoadServiceConfigurations(int priority = 0) {
-      // assign links for all linked objects
-      LinkedObjectManager.AssignLinks();
-      // load configuration
-      var filePath = Path.Combine(Configuration.ConfigurationDirectory, "settings.xml");
-      var configuration = File.Exists(filePath) ? ServiceConfiguration.FromFile(filePath) : new ServiceConfiguration("settings");
-      foreach (var serviceRegistration in Configuration.serviceRegistrations.Where(s => s.Priority == priority)) {
-        serviceRegistration.Service.LoadConfiguration(configuration);
+    public static void StageAction(ConfigurationStage stage, Action action) {
+      if(stage <= Configuration.Stage) {
+        // execute directly as stage is current or passed
+        action();
+      }
+      // defer action
+      compositionActions.Add(new Tuple<ConfigurationStage, Action>(stage, action));
+    }
+
+    public static void EnterStage(ConfigurationStage stage) {
+      if(stage <= Configuration.Stage) {
+        throw new InvalidOperationException("the new configuration stage must be further along then the current stage");
+      }
+      Configuration.Stage = stage;
+      foreach(var action in compositionActions.Where(a => a.Item1 == Configuration.Stage)) {
+        action.Item2();
+      }
+      if(Configuration.Stage == ConfigurationStage.Composition) {
+        // create directories if needed
+        if(!Directory.Exists(Configuration.ConfigurationDirectory)) {
+          Directory.CreateDirectory(Configuration.ConfigurationDirectory);
+        }
+        if(!Directory.Exists(Configuration.ExtensionsDirectory)) {
+          Directory.CreateDirectory(Configuration.ExtensionsDirectory);
+        }
+      } else if(Configuration.Stage == ConfigurationStage.Configuration) {
+        // assign links for all linked objects
+        LinkedObservableObjectManager.AssignLinks();
+        // load service configurations
+        var filePath = Path.Combine(Configuration.ConfigurationDirectory, "settings.xml");
+        var configuration = File.Exists(filePath) ? ServiceConfiguration.FromFile(filePath) : new ServiceConfiguration("settings");
+        foreach(var serviceRegistration in Configuration.serviceRegistrations) {
+          serviceRegistration.LoadConfiguration(configuration);
+        }
+      } else if(Configuration.Stage == ConfigurationStage.Exiting) {
+        // save service configurations
+        var configuration = new ServiceConfiguration("settings");
+        foreach(var serviceRegistration in Configuration.serviceRegistrations) {
+          serviceRegistration.SaveConfiguration(configuration);
+        }
+        configuration.SaveToFile(Path.Combine(Configuration.ConfigurationDirectory, "settings.xml"));
       }
     }
-
-    public static void SaveServiceConfigurations() {
-      var configuration = new ServiceConfiguration("settings");
-      foreach (var serviceRegistration in Configuration.serviceRegistrations) {
-        serviceRegistration.Service.SaveConfiguration(configuration);
-      }
-      configuration.SaveToFile(Path.Combine(Configuration.ConfigurationDirectory, "settings.xml"));
-    }
-
   }
 }
