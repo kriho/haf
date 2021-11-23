@@ -3,14 +3,12 @@
 namespace HAF {
   public interface ILogService: IService {
     IReadOnlyObservableCollection<ILogEntry> LogEntries { get; }
-    void Info(string message);
-    void Error(string message);
-    void Warning(string message);
+    void Info(string message, string source = null);
+    void Error(string message, string source = null);
+    void Warning(string message, string source = null);
+    Event<ILogEntry> OnEntryAdded { get; }
+    IRelayCommand DoClearLogEntries { get; }
     void ClearLogEntries();
     ILogEntry SelectedEntry { get; set; }
-    LinkedEvent<ILogEntry> OnEntryAdded { get; }
-    IRelayCommand DoClearLogEntries { get; }
-    IRelayCommand<ILogEntry> DoRemoveEntry { get; }
-    IRelayCommand DoRemoveSelectedEntry { get; }
   }
 }

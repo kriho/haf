@@ -12,50 +12,34 @@ namespace HAF {
 
     public IRelayCommand DoClearLogEntries { get; private set; }
 
-    public IRelayCommand DoRemoveSelectedEntry { get; private set; }
-
-    public IRelayCommand<ILogEntry> DoRemoveEntry { get; private set; }
-
     private ILogEntry selectedEntry;
     public ILogEntry SelectedEntry {
       get => this.selectedEntry;
-      set {
-        if(this.SetValue(ref this.selectedEntry, value)) {
-          this.DoRemoveSelectedEntry.RaiseCanExecuteChanged();
-        }
-      }
+      set => this.SetValue(ref this.selectedEntry, value);
     }
 
-    public LinkedEvent<ILogEntry> OnEntryAdded { get; private set; } = new LinkedEvent<ILogEntry>(nameof(OnEntryAdded));
+    public Event<ILogEntry> OnEntryAdded { get; private set; } = new Event<ILogEntry>(nameof(OnEntryAdded));
 
     public LogService() {
       this.DoClearLogEntries = new RelayCommand(this.ClearLogEntries);
-      this.DoRemoveEntry = new RelayCommand<ILogEntry>(entry => {
-        if(this.logEntries.Contains(entry)) {
-          this.logEntries.Remove(entry);
-        }
-      });
-      this.DoRemoveSelectedEntry = new RelayCommand(() => {
-        if(this.logEntries.Contains(this.selectedEntry)) {
-          this.logEntries.Remove(this.selectedEntry);
-        }
-      }, () => this.selectedEntry != null);
       if(this.IsInDesignMode) {
         for(var index = 0; index < Faker.RandomNumber.Next(3, 50); index++) {
           this.logEntries.Add(new LogEntry() {
             Timestamp = DateTime.Now.Subtract(TimeSpan.FromSeconds(Faker.RandomNumber.Next(0, 600))),
             Message = Faker.Lorem.Sentence(10),
-            Type = Enumeration.Get<LogType>(Faker.RandomNumber.Next(1, 3)),
+            Severity = Enumeration.Get<LogSeverity>(Faker.RandomNumber.Next(1, 3)),
+            Source = Faker.Lorem.Sentence(10),
           });
         }
       }
     }
 
-    public void Info(string message) {
+    public void Info(string message, string source = null) {
       var entry = new LogEntry() {
         Timestamp = DateTime.Now,
         Message = message,
-        Type = LogType.Info,
+        Source = source,
+        Severity = LogSeverity.Info,
       };
       if(Application.Current.Dispatcher.CheckAccess()) {
         this.logEntries.Add(entry);
@@ -68,11 +52,12 @@ namespace HAF {
       }
     }
 
-    public void Warning(string message) {
+    public void Warning(string message, string source = null) {
       var entry = new LogEntry() {
         Timestamp = DateTime.Now,
         Message = message,
-        Type = LogType.Warning,
+        Source = source,
+        Severity = LogSeverity.Warning,
       };
       if(Application.Current.Dispatcher.CheckAccess()) {
         this.logEntries.Add(entry);
@@ -85,11 +70,12 @@ namespace HAF {
       }
     }
 
-    public void Error(string message) {
+    public void Error(string message, string source = null) {
       var entry = new LogEntry() {
         Timestamp = DateTime.Now,
         Message = message,
-        Type = LogType.Error,
+        Source = source,
+        Severity = LogSeverity.Error,
       };
       if(Application.Current.Dispatcher.CheckAccess()) {
         this.logEntries.Add(entry);

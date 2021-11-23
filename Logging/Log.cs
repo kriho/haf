@@ -12,16 +12,16 @@ namespace HAF {
       Log.LogService = Configuration.Container.GetExportedValue<ILogService>();
     }
 
-    public static void Info(string message) {
-      Log.LogService.Info(message);
+    public static void Info(string message, string source = null) {
+      Log.LogService.Info(message, source);
     }
 
-    public static void Warning(string message) {
-      Log.LogService.Warning(message);
+    public static void Warning(string message, string source = null) {
+      Log.LogService.Warning(message, source);
     }
 
-    public static void Error(string message) {
-      Log.LogService.Error(message);
+    public static void Error(string message, string source = null) {
+      Log.LogService.Error(message, source);
     }
   }
 }
