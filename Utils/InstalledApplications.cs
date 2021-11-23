@@ -14,31 +14,41 @@ namespace HAF {
       public string Version { get; set; }
     }
 
-    public static List<InstalledApplication> GetInstalledApplications(bool searchRegistry32 = true, bool searchRegistry64 = true) {
-      var applications = new List<InstalledApplication>();
-      void SearchInRootKey(RegistryKey rootKey) {
-        using(var uninstallKey = rootKey.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall", false)) {
-          applications.AddRange(uninstallKey
-               .GetSubKeyNames()
-               .Select(n => uninstallKey.OpenSubKey(n, false))
-               .Select(k => new InstalledApplication() {
-                 Name = k.GetValue("DisplayName")?.ToString(),
-                 Version = k.GetValue("DisplayVersion")?.ToString(),
-                 Directory = k.GetValue("InstallLocation")?.ToString(),
-               }));
-        }
-      }
+    public static IEnumerable<InstalledApplication> GetInstalledApplications(bool searchRegistry32 = true, bool searchRegistry64 = true) {
       if(searchRegistry32) {
-        using(var rootKey = Microsoft.Win32.RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, Microsoft.Win32.RegistryView.Registry32)) {
-          SearchInRootKey(rootKey);
+        using(var rootKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32)) {
+          using(var uninstallKey = rootKey.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall", false)) {
+            foreach(var subKey in uninstallKey.GetSubKeyNames().Select(n => uninstallKey.OpenSubKey(n, false))) {
+              var name = subKey.GetValue("DisplayName")?.ToString();
+              var directory = subKey.GetValue("InstallLocation")?.ToString();
+              if(!string.IsNullOrWhiteSpace(name) && !string.IsNullOrWhiteSpace(directory)) {
+                yield return new InstalledApplication() {
+                  Name = name,
+                  Version = subKey.GetValue("DisplayVersion")?.ToString(),
+                  Directory = directory,
+                };
+              }
+            }
+          }
         }
       }
       if(searchRegistry64) {
-        using(var rootKey = Microsoft.Win32.RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, Microsoft.Win32.RegistryView.Registry64)) {
-          SearchInRootKey(rootKey);
+        using(var rootKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64)) {
+          using(var uninstallKey = rootKey.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall", false)) {
+            foreach(var subKey in uninstallKey.GetSubKeyNames().Select(n => uninstallKey.OpenSubKey(n, false))) {
+              var name = subKey.GetValue("DisplayName")?.ToString();
+              var directory = subKey.GetValue("InstallLocation")?.ToString();
+              if(!string.IsNullOrWhiteSpace(name) && !string.IsNullOrWhiteSpace(directory)) {
+                yield return new InstalledApplication() {
+                  Name = name,
+                  Version = subKey.GetValue("DisplayVersion")?.ToString(),
+                  Directory = directory,
+                };
+              }
+            }
+          }
         }
       }
-      return applications;
     }
   }
 }
