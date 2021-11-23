@@ -9,12 +9,17 @@ using System.Windows.Media;
 
 namespace HAF {
 
-  public abstract class Service: LinkedObject, IService {
-
-    public virtual void LoadConfiguration(ServiceConfiguration configuration) {
+  public abstract class Service: LinkedObservableObject, IService {
+    public virtual Task LoadConfiguration(ServiceConfiguration configuration) {
+      return Task.CompletedTask;
     }
 
-    public virtual void SaveConfiguration(ServiceConfiguration configuration) {
+    public virtual Task SaveConfiguration(ServiceConfiguration configuration) {
+      return Task.CompletedTask;
+    }
+
+    public virtual Task Reset() {
+      return Task.CompletedTask;
     }
 
     public void ClearConfiguration() {
