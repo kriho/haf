@@ -15,5 +15,9 @@ namespace HAF {
         this.Errors.Add(error);
       }
     }
+
+    public void Throw(string error) {
+      this.Errors.Add(error);
+    }
   }
 }

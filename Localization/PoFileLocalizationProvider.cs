@@ -38,7 +38,7 @@ namespace HAF {
       if(result.Success) {
         this.catalog = result.Catalog;
       } else {
-        throw new Exception($"failed to parse PO file \"{this.filePath}\": {string.Join(", ", result.Diagnostics.Select(d => d.Message))}");
+        throw new Exception($"failed to parse PO file \"{this.filePath}\": {string.Join(", ", result.Diagnostics)}");
       }
     }
 
