@@ -15,8 +15,18 @@ namespace HAF {
   public interface IObservableCollection<T>: IList<T>, ICollection<T>, IEnumerable<T>, IList, ICollection, IEnumerable, INotifyCollectionChanged, INotifyPropertyChanged {
     new void Clear();
     new int Count { get; }
+    new void RemoveAt(int index);
   }
 
   public class ObservableCollection<T>: System.Collections.ObjectModel.ObservableCollection<T>, IObservableCollection<T>, IReadOnlyObservableCollection<T> {
+
+    public ObservableCollection(): base() {
+    }
+
+    public ObservableCollection(IEnumerable<T> collection): base(collection) {
+    }
+
+    public ObservableCollection(List<T> list): base(list) {
+    }
   }
 }

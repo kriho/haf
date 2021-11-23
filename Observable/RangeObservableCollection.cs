@@ -9,8 +9,6 @@ using System.Text;
 
 namespace HAF {
 
-  public interface IReadOnlyRangeObservableCollection<T>: IReadOnlyCollection<T>, INotifyCollectionChanged, INotifyPropertyChanged {
-  }
 
   public interface IRangeObservableCollection<T>: IList<T>, ICollection<T>, IEnumerable<T>, INotifyCollectionChanged, INotifyPropertyChanged {
     void AddRange(IEnumerable<T> collection);
@@ -23,7 +21,7 @@ namespace HAF {
 
   [DebuggerDisplay("Count = {Count}")]
   [Serializable]
-  public class RangeObservableCollection<T>: ObservableObject, IRangeObservableCollection<T>, IReadOnlyRangeObservableCollection<T> {
+  public class RangeObservableCollection<T>: ObservableObject, IRangeObservableCollection<T>, IReadOnlyObservableCollection<T> {
 
     private readonly SimpleMonitor monitor = new SimpleMonitor();
     private DeferredEventsCollection deferredEvents;
