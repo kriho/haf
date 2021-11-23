@@ -12,10 +12,9 @@ namespace HAF {
   [Export(typeof(IWindowLayoutService)), PartCreationPolicy(CreationPolicy.Shared)]
   public class WindowLayoutService : Service, IWindowLayoutService {
 
-    public LinkedDependency MayChangeWindowLayout { get; private set; } = new LinkedDependency();
+    public ICompoundState CanChangeWindowLayout { get; private set; } = new CompoundState();
 
-    public LinkedEvent OnActiveWindowLayoutChanged { get; private set; } = new LinkedEvent(nameof(OnActiveWindowLayoutChanged));
-
+    public Event OnActiveWindowLayoutChanged { get; private set; } = new Event(nameof(OnActiveWindowLayoutChanged));
 
     public RelayCommand<WindowLayout> DoLoad { get; private set; }
 
@@ -28,7 +27,7 @@ namespace HAF {
     public RelayCommand<PaneMeta> DoShowPane { get; private set; }
 
     private readonly RangeObservableCollection<WindowLayout> windowLayouts = new RangeObservableCollection<WindowLayout>();
-    public IReadOnlyRangeObservableCollection<WindowLayout> WindowLayouts => this.windowLayouts;
+    public IReadOnlyObservableCollection<WindowLayout> WindowLayouts => this.windowLayouts;
 
     private readonly List<WindowLayout> defaultindowLayouts = new List<WindowLayout>();
     public IReadOnlyCollection<WindowLayout> DefaultWindowLayouts => this.defaultindowLayouts;
@@ -71,9 +70,7 @@ namespace HAF {
       this.dockingWindow = dockingWindow;
       this.DoLoad = new RelayCommand<WindowLayout>((windowLayout) => {
         this.LoadWindowLayout(windowLayout);
-      }, (windowLayout) => {
-        return this.MayChangeWindowLayout;
-      });
+      }, this.CanChangeWindowLayout);
       this.DoDelete = new RelayCommand<WindowLayout>((windowLayout) => {
         this.windowLayouts.Remove(windowLayout);
       });
@@ -88,9 +85,6 @@ namespace HAF {
       }, (windowLayout) => {
         return this.defaultWindowLayout != windowLayout;
       });
-      this.MayChangeWindowLayout.RegisterUpdate(() => {
-        this.DoLoad.RaiseCanExecuteChanged();
-      });
     }
 
     private void LoadWindowLayout(WindowLayout windowLayout) {
@@ -99,7 +93,7 @@ namespace HAF {
       this.ActiveWindowLayout = windowLayout;
     }
 
-    public override void LoadConfiguration(ServiceConfiguration configuration) {
+    public override Task LoadConfiguration(ServiceConfiguration configuration) {
       this.windowLayouts.Clear();
       this.DefaultWindowLayout = null;
       this.ActiveWindowLayout = null;
@@ -130,9 +124,10 @@ namespace HAF {
         this.DefaultWindowLayout = null;
         this.ActiveWindowLayout = null;
       }
+      return Task.CompletedTask;
     }
 
-    public override void SaveConfiguration(ServiceConfiguration configuration) {
+    public override Task SaveConfiguration(ServiceConfiguration configuration) {
       // apply current changes
       if (this.activeWindowLayout != null) {
         this.activeWindowLayout.Layout = this.dockingWindow.GetWindowLayout();
@@ -146,6 +141,7 @@ namespace HAF {
           .WriteAttribute("name", windowLayout.Name)
           .WriteAttribute("configuration", windowLayout.Layout);
       }
+      return Task.CompletedTask;
     }
 
     public void AddWindowLayout(string name) {

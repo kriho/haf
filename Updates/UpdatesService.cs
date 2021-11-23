@@ -15,11 +15,12 @@ namespace HAF {
   [Export(typeof(IUpdatesService)), PartCreationPolicy(CreationPolicy.Shared)]
   public class UpdatesService : Service, IUpdatesService {
 
-    public LinkedDependency MayUpdate { get; private set; } = new LinkedDependency();
+    public ICompoundState MayUpdate { get; private set; } = new CompoundState();
 
-    public LinkedEvent OnAvailableVersionChanged { get; private set; } = new LinkedEvent(nameof(OnAvailableVersionChanged));
+    public Event OnAvailableVersionChanged { get; private set; } = new Event(nameof(OnAvailableVersionChanged));
 
-    public LinkedState CanUpdate { get; private set; } = new LinkedState(false);
+    public IState CanUpdate { get; private set; } = new State(false);
+    IReadOnlyState IUpdatesService.CanUpdate => (IReadOnlyState)this.CanUpdate;
 
     private int progress = 0;
     public int Progress {
@@ -88,6 +89,7 @@ namespace HAF {
     public RelayCommand DoCancel { get; private set; }
 
     public UpdatesService() {
+      this.MayUpdate.AddStates(this.CanUpdate);
       // commands
       this.DoFetch = new RelayCommand(() => {
         this.IsBusy = true;
@@ -103,20 +105,20 @@ namespace HAF {
           ApplicationDeployment.CurrentDeployment.UpdateAsync();
         });
       }, () => {
-        return this.isUpdateAvaliable && !this.isBusy && this.MayUpdate;
+        return this.isUpdateAvaliable && !this.isBusy && this.MayUpdate.Value;
       });
       this.DoApply = new RelayCommand(() => {
         System.Windows.Forms.Application.Restart();
         System.Windows.Application.Current.Shutdown();
       }, () => {
-        return this.isRestartRequired && !this.isBusy && this.MayUpdate;
+        return this.isRestartRequired && !this.isBusy && this.MayUpdate.Value;
       });
       this.DoCancel = new RelayCommand(() => {
         ApplicationDeployment.CurrentDeployment.UpdateAsyncCancel();
       });
       // check if updates are supported
       this.CanUpdate.Value = ApplicationDeployment.IsNetworkDeployed;
-      if (this.CanUpdate) {
+      if (this.MayUpdate.Value) {
         // register event handlers
         ApplicationDeployment.CurrentDeployment.CheckForUpdateCompleted += (s, e) => {
           this.IsBusy = false;
@@ -147,7 +149,7 @@ namespace HAF {
         };
         this.DoFetch.Execute(null);
       }
-      this.MayUpdate.RegisterUpdate(() => {
+      this.CanUpdate.RegisterUpdate(() => {
         this.DoInstall.RaiseCanExecuteChanged();
         this.DoApply.RaiseCanExecuteChanged();
       });

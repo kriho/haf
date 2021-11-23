@@ -14,9 +14,9 @@ namespace HAF {
   [Export(typeof(IProjectsService)), PartCreationPolicy(CreationPolicy.Shared)]
   public class ProjectsService : Service, IProjectsService {
 
-    public LinkedEvent OnProjectsChanged { get; private set; } = new LinkedEvent(nameof(OnProjectsChanged));
+    public Event OnProjectsChanged { get; private set; } = new Event(nameof(OnProjectsChanged));
 
-    public LinkedDependency MayChangeProject { get; private set; } = new LinkedDependency();
+    public ICompoundState MayChangeProject { get; private set; } = new CompoundState();
 
     public RelayCommand DoRefresh { get; private set; }
 
@@ -29,7 +29,7 @@ namespace HAF {
     public RelayCommand DoOpenDirectory { get; private set; }
 
     private readonly RangeObservableCollection<Project> projects = new RangeObservableCollection<Project>();
-    public IReadOnlyRangeObservableCollection<Project> Projects => this.projects;
+    public IReadOnlyObservableCollection<Project> Projects => this.projects;
 
     public List<IService> ConfiguredServices { get; private set; } = new List<IService>();
 
@@ -107,7 +107,7 @@ namespace HAF {
         // load new project
         this.LoadProject(project);
       }, (project) => {
-        return this.currentProject != project && this.MayChangeProject;
+        return this.currentProject != project && this.MayChangeProject.Value;
       });
       this.DoDeleteProject = new RelayCommand<Project>((project) => {
         this.DeleteProject(project);
@@ -124,15 +124,12 @@ namespace HAF {
         this.SaveProject(this.currentProject);
         // reload projects
         this.LoadProjects(this.defaultProject?.Name);
-      }, () => {
-        return this.MayChangeProject;
-      });
+      }, this.MayChangeProject);
       this.DoOpenDirectory = new RelayCommand(() => {
         System.Diagnostics.Process.Start(Configuration.ConfigurationDirectory);
       });
       this.MayChangeProject.RegisterUpdate(() => {
         this.DoLoadProject.RaiseCanExecuteChanged();
-        this.DoRefresh.RaiseCanExecuteChanged();
       });
       this.projects.CollectionChanged += (sender, e) => {
         this.DoDeleteProject.RaiseCanExecuteChanged();
@@ -165,26 +162,28 @@ namespace HAF {
       this.CurrentProject = project;
     }
 
-    public void ClearProject() {
+    public async Task ClearProject() {
       foreach (var service in this.ConfiguredServices) {
-        service.ClearConfiguration();
+        await service.Reset();
       }
     }
 
-    public override void LoadConfiguration(ServiceConfiguration configuration) {
+    public override Task LoadConfiguration(ServiceConfiguration configuration) {
       var defaultProject = configuration.ReadValue("defaultProject", null);
-      this.LoadProjects(defaultProject);
+      this.LoadProjects(defaultProject); 
+      return Task.CompletedTask;
     }
 
-    public override void SaveConfiguration(ServiceConfiguration configuration) {
+    public override Task SaveConfiguration(ServiceConfiguration configuration) {
       configuration.WriteValue("defaultProject", this.defaultProject?.Name);
       if (this.CurrentProject != null) {
         this.SaveProject(this.currentProject);
       }
+      return Task.CompletedTask;
     }
 
-    public void AddProject(string name) {
-      this.ClearProject();
+    public async Task AddProject(string name) {
+      await this.ClearProject();
       var project = new Project() {
         Name = name,
         FilePath = Path.Combine(Configuration.ConfigurationDirectory, name + ".xml"),

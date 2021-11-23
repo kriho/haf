@@ -6,16 +6,16 @@ namespace HAF {
   public interface IWindowLayoutService : IService {
     WindowLayout ActiveWindowLayout { get; set; }
     IReadOnlyObservableCollection<PaneMeta> AvailablePanes { get; }
-    LinkedDependency MayChangeWindowLayout { get; }
+    ICompoundState CanChangeWindowLayout { get; }
     WindowLayout DefaultWindowLayout { get; set; }
     IReadOnlyCollection<WindowLayout> DefaultWindowLayouts { get; }
     RelayCommand<WindowLayout> DoDelete { get; }
     RelayCommand<WindowLayout> DoLoad { get; }
-    LinkedEvent OnActiveWindowLayoutChanged { get; }
+    Event OnActiveWindowLayoutChanged { get; }
     RelayCommand<WindowLayout> DoSave { get; }
     RelayCommand<WindowLayout> DoSetDefault { get; }
     RelayCommand<PaneMeta> DoShowPane { get; }
-    IReadOnlyRangeObservableCollection<WindowLayout> WindowLayouts { get; }
+    IReadOnlyObservableCollection<WindowLayout> WindowLayouts { get; }
 
     void AddWindowLayout(string name);
   }

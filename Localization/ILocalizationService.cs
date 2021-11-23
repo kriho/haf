@@ -10,6 +10,6 @@ namespace HAF {
     string GetText(string contextId, string id);
     string GetText(string id, string pluralId, int count);
     string GetText(string contextId, string id, string pluralId, int count);
-    LinkedEvent OnSelectedCultureChanged { get; }
+    Event OnSelectedCultureChanged { get; }
   }
 }

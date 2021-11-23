@@ -13,33 +13,28 @@ namespace HAF {
   public class AsyncRelayCommand: ObservableObject, IAsyncRelayCommand {
     public IObservableTask Task { get; private set; }
     private readonly Func<bool> canExecute;
-    private LinkedDependency dependency;
-    private CancellationTokenSource cancellationTokenSource;
+    private IReadOnlyState dependentState;
 
     public event EventHandler CanExecuteChanged;
-
-    public bool IsCancellationRequested {
-      get => this.cancellationTokenSource != null && this.cancellationTokenSource.IsCancellationRequested;
-    }
 
     public AsyncRelayCommand(IObservableTask task) {
       this.Task = task ?? throw new ArgumentNullException(nameof(task));
       this.canExecute = null;
-      this.dependency = null;
+      this.dependentState = null;
       task.PropertyChanged += this.Task_PropertyChanged;
     }
 
     public AsyncRelayCommand(IObservableTask task, Func<bool> canExecute) {
       this.Task = task ?? throw new ArgumentNullException(nameof(task));
       this.canExecute = canExecute ?? throw new ArgumentNullException(nameof(canExecute));
-      this.dependency = null;
+      this.dependentState = null;
     }
 
-    public AsyncRelayCommand(IObservableTask task, LinkedDependency dependency) {
+    public AsyncRelayCommand(IObservableTask task, IReadOnlyState dependentState) {
       this.Task = task ?? throw new ArgumentNullException(nameof(task));
       this.canExecute = null;
-      this.dependency = dependency ?? throw new ArgumentNullException(nameof(dependency));
-      this.dependency.RegisterUpdate(this.RaiseCanExecuteChanged);
+      this.dependentState = dependentState ?? throw new ArgumentNullException(nameof(dependentState));
+      this.dependentState.RegisterUpdate(this.RaiseCanExecuteChanged);
     }
 
     private void Task_PropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -63,11 +58,11 @@ namespace HAF {
       if(this.Task.IsRunning) {
         return false;
       }
-      if(this.canExecute != null) {
-        return this.canExecute.Invoke();
+      if(this.canExecute != null && !this.canExecute.Invoke()) {
+        return false;
       }
-      if(this.dependency != null) {
-        return this.dependency;
+      if(this.dependentState != null && !this.dependentState.Value) {
+        return false;
       }
       return true;
     }

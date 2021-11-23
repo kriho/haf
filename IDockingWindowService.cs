@@ -3,7 +3,6 @@
 namespace HAF {
   public interface IDockingWindowService : IWindowService {
     object Docking { get; set; }
-
     string GetWindowLayout();
     void SetWindowLayout(string layout);
     void ShowPane(string name);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace HAF {
   [Export(typeof(ILocalizationService)), PartCreationPolicy(CreationPolicy.Shared)]
@@ -36,7 +37,7 @@ namespace HAF {
     private ObservableCollection<CultureInfo> availableCultures = new ObservableCollection<CultureInfo>();
     public IReadOnlyObservableCollection<CultureInfo> AvailableCultures => this.availableCultures;
 
-    public LinkedEvent OnSelectedCultureChanged { get; private set; } = new LinkedEvent(nameof(OnSelectedCultureChanged));
+    public Event OnSelectedCultureChanged { get; private set; } = new Event(nameof(OnSelectedCultureChanged));
 
     public string this[string compoundId] {
       get {
@@ -84,11 +85,12 @@ namespace HAF {
       return this.currentProvider.GetText(id, pluralId, count);
     }
 
-    public override void SaveConfiguration(ServiceConfiguration configuration) {
+    public override Task SaveConfiguration(ServiceConfiguration configuration) {
       configuration.WriteValue("language", this.selectedCulture?.Name);
+      return Task.CompletedTask;
     }
 
-    public override void LoadConfiguration(ServiceConfiguration configuration) {
+    public override Task LoadConfiguration(ServiceConfiguration configuration) {
       if(configuration.TryReadValue("language", out string name)) {
         var culture = this.availableCultures.FirstOrDefault(c => c.Name == name);
         if(culture != null) {
@@ -98,6 +100,7 @@ namespace HAF {
       if(this.selectedCulture == null) {
         this.SelectedCulture = this.AvailableCultures.First();
       }
+      return Task.CompletedTask;
     }
   }
 }

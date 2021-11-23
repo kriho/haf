@@ -18,11 +18,11 @@ namespace HAF {
   }
 
   public interface IThemesService: IService {
-    RelayCommand<ITheme> DoSetTheme { get; }
+    IRelayCommand<ITheme> DoSetTheme { get; }
     ITheme ActiveTheme { get; set; }
     IObservableCollection<ITheme> AvailableThemes { get; }
-    LinkedDependency MayChangeTheme { get; }
-    LinkedEvent OnActiveThemeChanged { get; }
+    ICompoundState CanChangeTheme { get; }
+    IEvent OnActiveThemeChanged { get; }
     ITheme DefaultLightTheme { get; }
     ITheme DefaultDarkTheme { get; }
     Color GetColor(ThemeKey key);

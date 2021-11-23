@@ -11,7 +11,7 @@ namespace HAF {
   public interface IObservableTaskPool {
     string Name { get; }
     int ParallelExecutionLimit { get; }
-    LinkedState IsIdle { get; }
+    State IsIdle { get; }
     IReadOnlyObservableCollection<IWaitingObservableTask> WaitingTasks { get; }
     IReadOnlyObservableCollection<IObservableTask> ActiveTasks { get; }
     Task ScheduleTask(IObservableTask task);

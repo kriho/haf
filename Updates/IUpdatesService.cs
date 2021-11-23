@@ -10,7 +10,8 @@
     bool IsRestartRequired { get; }
     bool IsUpdateAvaliable { get; }
     int Progress { get; }
-    LinkedState CanUpdate { get; }
-    LinkedEvent OnAvailableVersionChanged { get; }
+    ICompoundState MayUpdate { get; }
+    IReadOnlyState CanUpdate { get; }
+    Event OnAvailableVersionChanged { get; }
   }
 }

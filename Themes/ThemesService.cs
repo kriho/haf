@@ -16,10 +16,9 @@ namespace HAF {
 
   [Export(typeof(IThemesService)), PartCreationPolicy(CreationPolicy.Shared)]
   public class ThemesService : Service, IThemesService {
+    public ICompoundState CanChangeTheme { get; private set; } = new CompoundState();
 
-    public LinkedDependency MayChangeTheme { get; private set; } = new LinkedDependency();
-
-    public LinkedEvent OnActiveThemeChanged { get; private set; } = new LinkedEvent(nameof(OnActiveThemeChanged));
+    public IEvent OnActiveThemeChanged { get; private set; } = new Event(nameof(OnActiveThemeChanged));
 
     /// <summary>
     /// the list of themes that can be selected and applied
@@ -33,7 +32,7 @@ namespace HAF {
     public ITheme ActiveTheme {
       get { return this.activeTheme; }
       set {
-        if(!this.MayChangeTheme) {
+        if(!this.CanChangeTheme.Value) {
           // theme changing is not allowed
           return;
         }
@@ -90,7 +89,7 @@ namespace HAF {
       return new SolidColorBrush(this.GetColor(key));
     }
 
-    public RelayCommand<ITheme> DoSetTheme { get; private set; }
+    public IRelayCommand<ITheme> DoSetTheme { get; private set; }
 
     public ITheme DefaultLightTheme { get; private set; } = new Theme() {
       Name = new LocalizedText("Light"),
@@ -124,9 +123,9 @@ namespace HAF {
       this.DoSetTheme = new RelayCommand<ITheme>(theme => {
         this.ActiveTheme = theme;
       }, (theme) => {
-        return theme != null && this.MayChangeTheme;
+        return theme != null && this.CanChangeTheme.Value;
       });
-      this.MayChangeTheme.RegisterUpdate(() => {
+      this.CanChangeTheme.RegisterUpdate(() => {
         this.DoSetTheme.RaiseCanExecuteChanged();
       });
 #if DEBUG
@@ -138,7 +137,7 @@ namespace HAF {
 #endif
     }
 
-    public override void LoadConfiguration(ServiceConfiguration configuration) {
+    public override Task LoadConfiguration(ServiceConfiguration configuration) {
       ITheme theme = null;
       if (configuration.TryReadValue("theme", out string themeName)) {
         theme = this.AvailableThemes.FirstOrDefault(t => t.Name.Id == themeName);
@@ -149,10 +148,12 @@ namespace HAF {
       if(theme != null) {
         this.ActiveTheme = theme;
       }
+      return Task.CompletedTask;
     }
 
-    public override void SaveConfiguration(ServiceConfiguration configuration) {
-      configuration.WriteValue("theme", this.activeTheme.Name.Id);
+    public override Task SaveConfiguration(ServiceConfiguration configuration) {
+      configuration.WriteValue("theme", this.activeTheme.Name.Id); 
+      return Task.CompletedTask;
     }
   }
 }

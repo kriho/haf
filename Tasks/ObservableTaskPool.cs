@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 
 namespace HAF {
-  public class ObservableTaskPool: LinkedObject, IObservableTaskPool {
+  public class ObservableTaskPool: LinkedObservableObject, IObservableTaskPool {
     public string Name { get; private set; }
 
     public int ParallelExecutionLimit { get; private set; }
 
-    public LinkedState IsIdle { get; private set; } = new LinkedState(true);
+    public State IsIdle { get; private set; } = new State(true);
 
     private readonly ObservableCollection<WaitingObservableTask> waitingTasks = new ObservableCollection<WaitingObservableTask>();
     public IReadOnlyObservableCollection<IWaitingObservableTask> WaitingTasks => (IReadOnlyObservableCollection<IWaitingObservableTask>)this.waitingTasks;
@@ -29,7 +29,7 @@ namespace HAF {
 
     public ObservableTaskPool(string name, int parallelExecutionLimit) {
       this.Name = name;
-      this.Link = name;
+      this.Name = name;
       this.ParallelExecutionLimit = parallelExecutionLimit;
     }
 
