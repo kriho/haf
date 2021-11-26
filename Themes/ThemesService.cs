@@ -20,12 +20,6 @@ namespace HAF {
 
     public IEvent OnActiveThemeChanged { get; private set; } = new Event(nameof(OnActiveThemeChanged));
 
-    /// <summary>
-    /// the list of themes that can be selected and applied
-    /// </summary>
-    /// <remarks>
-    /// the first theme is the default theme
-    /// </remarks>
     public IObservableCollection<ITheme> AvailableThemes { get; private set; } = new ObservableCollection<ITheme>();
 
     private ITheme activeTheme;

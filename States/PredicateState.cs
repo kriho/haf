@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Media;
 
 namespace HAF {
-  public class PredicateState: ObservableObject, IState, IUpdateValue {
+  public class PredicateState: ObservableObject, IState {
 #if DEBUG
     public string Link;
 #endif
