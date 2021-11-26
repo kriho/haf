@@ -8,23 +8,21 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HAF {
-
-  public class WindowLayout : ObservableObject {
-
+  public class WindowLayout: ObservableObject, IWindowLayout {
     public string Name { get; set; }
 
     public string Layout { get; set; }
 
     private bool isDefault = false;
     public bool IsDefault {
-      get { return this.isDefault; }
-      set { this.SetValue(ref this.isDefault, value); }
+      get => this.isDefault;
+      set => this.SetValue(ref this.isDefault, value);
     }
 
     private bool isCurrent = false;
     public bool IsCurrent {
-      get { return this.isCurrent; }
-      set { this.SetValue(ref this.isCurrent, value); }
+      get => this.isCurrent;
+      set => this.SetValue(ref this.isCurrent, value);
     }
 
   }

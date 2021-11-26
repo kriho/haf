@@ -11,54 +11,66 @@ namespace HAF {
 
   [Export(typeof(IWindowLayoutService)), PartCreationPolicy(CreationPolicy.Shared)]
   public class WindowLayoutService : Service, IWindowLayoutService {
-
     public ICompoundState CanChangeWindowLayout { get; private set; } = new CompoundState();
 
-    public Event OnActiveWindowLayoutChanged { get; private set; } = new Event(nameof(OnActiveWindowLayoutChanged));
+    private Event onActiveWindowLayoutChanged = new Event(nameof(OnActiveWindowLayoutChanged));
+    public IReadOnlyEvent OnActiveWindowLayoutChanged => this.OnActiveWindowLayoutChanged;
 
-    public RelayCommand<WindowLayout> DoLoad { get; private set; }
+    public IRelayCommand<IWindowLayout> DoLoadWindowLayout { get; private set; }
 
-    public RelayCommand<WindowLayout> DoSave { get; private set; }
+    public IRelayCommand<IWindowLayout> DoSaveWindowLayout { get; private set; }
 
-    public RelayCommand<WindowLayout> DoDelete { get; private set; }
+    public IRelayCommand<IWindowLayout> DoDeleteWindowLayout { get; private set; }
 
-    public RelayCommand<WindowLayout> DoSetDefault { get; private set; }
+    public IRelayCommand<IWindowLayout> DoSetDefaultWindowLayout { get; private set; }
 
-    public RelayCommand<PaneMeta> DoShowPane { get; private set; }
+    public IRelayCommand<IPaneMeta> DoShowPane { get; private set; }
 
-    private readonly RangeObservableCollection<WindowLayout> windowLayouts = new RangeObservableCollection<WindowLayout>();
-    public IReadOnlyObservableCollection<WindowLayout> WindowLayouts => this.windowLayouts;
+    public IRelayCommand DoAddWindowLayout { get; private set; }
 
-    private readonly List<WindowLayout> defaultindowLayouts = new List<WindowLayout>();
-    public IReadOnlyCollection<WindowLayout> DefaultWindowLayouts => this.defaultindowLayouts;
+    private readonly RangeObservableCollection<IWindowLayout> windowLayouts = new RangeObservableCollection<IWindowLayout>();
+    public IReadOnlyObservableCollection<IWindowLayout> WindowLayouts => this.windowLayouts;
 
-    private readonly ObservableCollection<PaneMeta> availablePanes = new ObservableCollection<PaneMeta>();
-    public IReadOnlyObservableCollection<PaneMeta> AvailablePanes => this.availablePanes;
+    private readonly List<IWindowLayout> defaultindowLayouts = new List<IWindowLayout>();
+    public IReadOnlyCollection<IWindowLayout> DefaultWindowLayouts => this.defaultindowLayouts;
 
-    private WindowLayout activeWindowLayout = null;
-    public WindowLayout ActiveWindowLayout {
+    private readonly ObservableCollection<IPaneMeta> availablePanes = new ObservableCollection<IPaneMeta>();
+    public IReadOnlyObservableCollection<IPaneMeta> AvailablePanes => this.availablePanes;
+
+    private IWindowLayout activeWindowLayout = null;
+    public IWindowLayout ActiveWindowLayout {
       get { return this.activeWindowLayout; }
       set {
         if (this.SetValue(ref this.activeWindowLayout, value)) {
-          foreach (var windowLayout in this.WindowLayouts) {
-            windowLayout.IsCurrent = windowLayout == value;
+          foreach (var other in this.WindowLayouts) {
+            other.IsCurrent = other == value;
           }
-          this.DoLoad.RaiseCanExecuteChanged();
-          this.DoDelete.RaiseCanExecuteChanged();
-          this.OnActiveWindowLayoutChanged.Fire();
+          this.DoLoadWindowLayout.RaiseCanExecuteChanged();
+          this.DoDeleteWindowLayout.RaiseCanExecuteChanged();
+          this.onActiveWindowLayoutChanged.Fire();
         }
       }
     }
 
-    private WindowLayout defaultWindowLayout = null;
-    public WindowLayout DefaultWindowLayout {
+    private IWindowLayout defaultWindowLayout = null;
+    public IWindowLayout DefaultWindowLayout {
       get { return this.defaultWindowLayout; }
       set {
         if (this.SetValue(ref this.defaultWindowLayout, value)) {
-          foreach (var project in this.WindowLayouts) {
-            project.IsDefault = project == value;
+          foreach (var other in this.WindowLayouts) {
+            other.IsDefault = other == value;
           }
-          this.DoSetDefault.RaiseCanExecuteChanged();
+          this.DoSetDefaultWindowLayout.RaiseCanExecuteChanged();
+        }
+      }
+    }
+
+    private string editName = null;
+    public string EditName {
+      get { return this.editName; }
+      set {
+        if(this.SetValue(ref this.editName, value)) {
+          this.DoAddWindowLayout.RaiseCanExecuteChanged();
         }
       }
     }
@@ -66,38 +78,52 @@ namespace HAF {
     private readonly IDockingWindowService dockingWindow;
 
     [ImportingConstructor]
-    public WindowLayoutService([Import] IDockingWindowService dockingWindow) {
+    public WindowLayoutService(IDockingWindowService dockingWindow) {
       this.dockingWindow = dockingWindow;
-      this.DoLoad = new RelayCommand<WindowLayout>((windowLayout) => {
+      this.DoLoadWindowLayout = new RelayCommand<IWindowLayout>((windowLayout) => {
         this.LoadWindowLayout(windowLayout);
       }, this.CanChangeWindowLayout);
-      this.DoDelete = new RelayCommand<WindowLayout>((windowLayout) => {
+      this.DoDeleteWindowLayout = new RelayCommand<IWindowLayout>((windowLayout) => {
         this.windowLayouts.Remove(windowLayout);
       });
-      this.DoSave = new RelayCommand<WindowLayout>((windowLayout) => {
+      this.DoSaveWindowLayout = new RelayCommand<IWindowLayout>((windowLayout) => {
         windowLayout.Layout = this.dockingWindow.GetWindowLayout();
       });
-      this.DoShowPane = new RelayCommand<PaneMeta>((meta) => {
+      this.DoShowPane = new RelayCommand<IPaneMeta>((meta) => {
         this.dockingWindow.ShowPane(meta.Name, meta.Type, meta.CanUserClose);
       });
-      this.DoSetDefault = new RelayCommand<WindowLayout>((windowLayout) => {
+      this.DoSetDefaultWindowLayout = new RelayCommand<IWindowLayout>((windowLayout) => {
         this.DefaultWindowLayout = windowLayout;
       }, (windowLayout) => {
         return this.defaultWindowLayout != windowLayout;
       });
+      this.DoAddWindowLayout = new RelayCommand(async () => {
+        this.AddWindowLayout(this.editName);
+        this.EditName = "";
+      }, () => {
+        return !string.IsNullOrWhiteSpace(this.editName) && !this.windowLayouts.Any(w => w.Name == this.editName);
+      });
     }
 
-    private void LoadWindowLayout(WindowLayout windowLayout) {
+    private void LoadWindowLayout(IWindowLayout windowLayout) {
       this.dockingWindow.SetWindowLayout(windowLayout.Layout);
       // set as current
       this.ActiveWindowLayout = windowLayout;
+    }
+
+    public void RegisterAvailablePane(string name, Type type, bool canUserClose = true) {
+      this.availablePanes.Add(new PaneMeta() {
+        Name = name,
+        Type = type,
+        CanUserClose = canUserClose,
+      });
     }
 
     public override Task LoadConfiguration(ServiceConfiguration configuration) {
       this.windowLayouts.Clear();
       this.DefaultWindowLayout = null;
       this.ActiveWindowLayout = null;
-      var windowLayouts = new List<WindowLayout>();
+      var windowLayouts = new List<IWindowLayout>();
       string defaultWindowLayoutName = null;
       // load previous window layout and default
       if (configuration.TryReadEntry("window", out var entry)) {
