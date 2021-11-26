@@ -7,9 +7,7 @@ using System.Xml;
 using System.Xml.Linq;
 
 namespace HAF {
-
   public class ServiceConfigurationEntry {
-
     protected XElement context;
 
     public ServiceConfigurationEntry() {
