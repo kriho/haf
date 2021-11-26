@@ -12,21 +12,23 @@ using System.Xml;
 namespace HAF {
 
   [Export(typeof(IProjectsService)), PartCreationPolicy(CreationPolicy.Shared)]
-  public class ProjectsService : Service, IProjectsService {
-
-    public Event OnProjectsChanged { get; private set; } = new Event(nameof(OnProjectsChanged));
+  public class ProjectsService: Service, IProjectsService {
+    private Event onProjectsChanged = new Event(nameof(OnProjectsChanged));
+    public IReadOnlyEvent OnProjectsChanged => this.onProjectsChanged;
 
     public ICompoundState MayChangeProject { get; private set; } = new CompoundState();
 
-    public RelayCommand DoRefresh { get; private set; }
+    public IRelayCommand DoRefresh { get; private set; }
 
-    public RelayCommand<Project> DoLoadProject { get; private set; }
+    public IRelayCommand<Project> DoLoadProject { get; private set; }
 
-    public RelayCommand<Project> DoDeleteProject { get; private set; }
+    public IRelayCommand<Project> DoDeleteProject { get; private set; }
 
-    public RelayCommand<Project> DoSetDefaultProject { get; private set; }
+    public IRelayCommand<Project> DoSetDefaultProject { get; private set; }
 
-    public RelayCommand DoOpenDirectory { get; private set; }
+    public IRelayCommand DoOpenDirectory { get; private set; }
+
+    public IRelayCommand DoAddProject { get; private set; }
 
     private readonly RangeObservableCollection<Project> projects = new RangeObservableCollection<Project>();
     public IReadOnlyObservableCollection<Project> Projects => this.projects;
@@ -37,13 +39,13 @@ namespace HAF {
     public Project CurrentProject {
       get { return this.currentProject; }
       set {
-        if (this.SetValue(ref this.currentProject, value)) {
-          foreach (var project in this.projects) {
+        if(this.SetValue(ref this.currentProject, value)) {
+          foreach(var project in this.projects) {
             project.IsCurrent = project == value;
           }
           this.DoLoadProject.RaiseCanExecuteChanged();
           this.DoDeleteProject.RaiseCanExecuteChanged();
-          this.OnProjectsChanged.Fire();
+          this.onProjectsChanged.Fire();
         }
       }
     }
@@ -52,12 +54,22 @@ namespace HAF {
     public Project DefaultProject {
       get { return this.defaultProject; }
       set {
-        if (this.SetValue(ref this.defaultProject, value)) {
-          foreach (var project in this.projects) {
+        if(this.SetValue(ref this.defaultProject, value)) {
+          foreach(var project in this.projects) {
             project.IsDefault = project == value;
           }
           this.DoSetDefaultProject.RaiseCanExecuteChanged();
-          this.OnProjectsChanged.Fire();
+          this.onProjectsChanged.Fire();
+        }
+      }
+    }
+
+    private string editName = null;
+    public string EditName {
+      get { return this.editName; }
+      set {
+        if(this.SetValue(ref this.editName, value)) {
+          this.DoAddProject.RaiseCanExecuteChanged();
         }
       }
     }
@@ -70,7 +82,7 @@ namespace HAF {
                        try {
                          var document = new XmlDocument();
                          document.Load(filePath);
-                         if (document.SelectSingleNode("/project") != null) {
+                         if(document.SelectSingleNode("/project") != null) {
                            return true;
                          }
                        } catch { }
@@ -84,7 +96,7 @@ namespace HAF {
       this.projects.AddRange(projects);
       Project defaultProject = null;
       // add default project if none exist
-      if (this.projects.Count == 0) {
+      if(this.projects.Count == 0) {
         var project = new Project() {
           Name = "default project",
           FilePath = Path.Combine(Configuration.ConfigurationDirectory, "default project.xml"),
@@ -95,7 +107,7 @@ namespace HAF {
       } else {
         defaultProject = this.projects.FirstOrDefault(p => p.Name == defaultProjectName);
       }
-      if (defaultProject == null) {
+      if(defaultProject == null) {
         defaultProject = this.projects[0];
       }
       this.DefaultProject = defaultProject;
@@ -131,31 +143,37 @@ namespace HAF {
       this.MayChangeProject.RegisterUpdate(() => {
         this.DoLoadProject.RaiseCanExecuteChanged();
       });
+      this.DoAddProject = new RelayCommand(async () => {
+        await this.AddProject(this.editName);
+        this.EditName = "";
+      }, () => {
+        return !string.IsNullOrWhiteSpace(this.editName) && !this.projects.Any(p => p.Name == this.editName);
+      });
       this.projects.CollectionChanged += (sender, e) => {
         this.DoDeleteProject.RaiseCanExecuteChanged();
-        this.OnProjectsChanged.Fire();
+        this.onProjectsChanged.Fire();
       };
     }
 
     public void SaveProject(Project project) {
       var configuration = new ServiceConfiguration("project");
-      foreach (var service in this.ConfiguredServices) {
+      foreach(var service in this.ConfiguredServices) {
         service.SaveConfiguration(configuration);
       }
       configuration.SaveToFile(project.FilePath);
     }
 
     public void LoadProject(Project project) {
-      if (!File.Exists(project.FilePath)) {
+      if(!File.Exists(project.FilePath)) {
         return;
       }
       // save current project
-      if (this.currentProject != null) {
+      if(this.currentProject != null) {
         this.SaveProject(this.currentProject);
       }
       // load from configuration
       var configuration = ServiceConfiguration.FromFile(project.FilePath);
-      foreach (var service in this.ConfiguredServices) {
+      foreach(var service in this.ConfiguredServices) {
         service.LoadConfiguration(configuration);
       }
       // set current project
@@ -163,20 +181,20 @@ namespace HAF {
     }
 
     public async Task ClearProject() {
-      foreach (var service in this.ConfiguredServices) {
+      foreach(var service in this.ConfiguredServices) {
         await service.Reset();
       }
     }
 
     public override Task LoadConfiguration(ServiceConfiguration configuration) {
       var defaultProject = configuration.ReadValue("defaultProject", null);
-      this.LoadProjects(defaultProject); 
+      this.LoadProjects(defaultProject);
       return Task.CompletedTask;
     }
 
     public override Task SaveConfiguration(ServiceConfiguration configuration) {
       configuration.WriteValue("defaultProject", this.defaultProject?.Name);
-      if (this.CurrentProject != null) {
+      if(this.CurrentProject != null) {
         this.SaveProject(this.currentProject);
       }
       return Task.CompletedTask;
@@ -194,12 +212,12 @@ namespace HAF {
     }
 
     public void DeleteProject(Project project) {
-      if (this.currentProject == project) {
+      if(this.currentProject == project) {
         return;
       }
       this.projects.Remove(project);
       File.Delete(project.FilePath);
-      if (this.defaultProject == project) {
+      if(this.defaultProject == project) {
         this.DefaultProject = this.projects.FirstOrDefault();
       }
     }

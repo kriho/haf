@@ -5,13 +5,15 @@ using System.Threading.Tasks;
 
 namespace HAF {
   public interface IProjectsService : IService {
-    Event OnProjectsChanged { get; }
+    IReadOnlyEvent OnProjectsChanged { get; }
     ICompoundState MayChangeProject { get; }
-    RelayCommand<Project> DoDeleteProject { get; }
-    RelayCommand<Project> DoLoadProject { get; }
-    RelayCommand DoOpenDirectory { get; }
-    RelayCommand DoRefresh { get; }
-    RelayCommand<Project> DoSetDefaultProject { get; }
+    IRelayCommand<Project> DoDeleteProject { get; }
+    IRelayCommand<Project> DoLoadProject { get; }
+    IRelayCommand DoOpenDirectory { get; }
+    IRelayCommand DoRefresh { get; }
+    IRelayCommand DoAddProject { get; }
+    string EditName { get; set; }
+    IRelayCommand<Project> DoSetDefaultProject { get; }
     Project CurrentProject { get; }
     Project DefaultProject { get; }
     List<IService> ConfiguredServices { get; }
