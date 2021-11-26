@@ -22,6 +22,16 @@ namespace HAF {
   }
 
   public static class Configuration {
+    private class ServiceRegistration {
+      public IService Service { get; private set; }
+      public int Priority { get; private set; }
+
+      public ServiceRegistration(IService service, int priority) {
+        this.Service = service;
+        this.Priority = priority;
+      }
+    }
+
     public static string ConfigurationDirectory { get; set; }
 
     public static string ExtensionsDirectory { get; set; }
@@ -30,7 +40,7 @@ namespace HAF {
 
     public static CompositionContainer Container { get; private set; }
 
-    private static readonly List<IService> serviceRegistrations = new List<IService>();
+    private static readonly List<ServiceRegistration> serviceRegistrations = new List<ServiceRegistration>();
 
     private static List<Tuple<ConfigurationStage,Action>> compositionActions = new List<Tuple<ConfigurationStage, Action>>();
 
@@ -61,11 +71,11 @@ namespace HAF {
       Configuration.Container = new CompositionContainer(serviceAwareCatalog);
     }
 
-    public static void RegisterService(IService service) {
-      if(Configuration.serviceRegistrations.Contains(service)) {
+    public static void RegisterService(IService service, int priority = 0) {
+      if(Configuration.serviceRegistrations.Any(r => r.Service == service)) {
         throw new Exception($"the service {service.GetType().Name} is already registered in the HAF configuration");
       }
-      Configuration.serviceRegistrations.Add(service);
+      Configuration.serviceRegistrations.Add(new ServiceRegistration(service, priority));
     }
 
     public static void StageAction(ConfigurationStage stage, Action action) {
@@ -99,14 +109,14 @@ namespace HAF {
         // load service configurations
         var filePath = Path.Combine(Configuration.ConfigurationDirectory, "settings.xml");
         var configuration = File.Exists(filePath) ? ServiceConfiguration.FromFile(filePath) : new ServiceConfiguration("settings");
-        foreach(var serviceRegistration in Configuration.serviceRegistrations) {
-          serviceRegistration.LoadConfiguration(configuration);
+        foreach(var serviceRegistration in Configuration.serviceRegistrations.OrderBy(r => r.Priority)) {
+          serviceRegistration.Service.LoadConfiguration(configuration);
         }
       } else if(Configuration.Stage == ConfigurationStage.Exiting) {
         // save service configurations
         var configuration = new ServiceConfiguration("settings");
-        foreach(var serviceRegistration in Configuration.serviceRegistrations) {
-          serviceRegistration.SaveConfiguration(configuration);
+        foreach(var serviceRegistration in Configuration.serviceRegistrations.OrderByDescending(r => r.Priority)) {
+          serviceRegistration.Service.SaveConfiguration(configuration);
         }
         configuration.SaveToFile(Path.Combine(Configuration.ConfigurationDirectory, "settings.xml"));
       }
