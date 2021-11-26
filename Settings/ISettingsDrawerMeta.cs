@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace HAF {
-  public class StringSetting: Setting<string>, IStringSetting {
-    public string Mask { get; set; }
+  public interface ISettingsDrawerMeta {
+    Type AssociatedType { get; }
+    string Features { get; }
   }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace HAF {
-  public interface IStringSetting: ISetting<string> {
+  public interface ISettingString: ISetting<string> {
     string Mask { get; }
   }
 }
