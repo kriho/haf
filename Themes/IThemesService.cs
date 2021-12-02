@@ -19,6 +19,8 @@ namespace HAF {
 
   public interface IThemesService: IService {
     IRelayCommand<ITheme> DoSetTheme { get; }
+    IRelayCommand DoDuplicateTheme { get; }
+    IRelayCommand<ITheme> DoDeleteTheme { get; }
     ITheme ActiveTheme { get; set; }
     IObservableCollection<ITheme> AvailableThemes { get; }
     ICompoundState CanChangeTheme { get; }
@@ -27,5 +29,6 @@ namespace HAF {
     ITheme DefaultDarkTheme { get; }
     Color GetColor(ThemeKey key);
     Brush GetBrush(ThemeKey key);
+    void UpdateTheme(ITheme theme);
   }
 }
