@@ -104,7 +104,10 @@ namespace HAF {
       this.CheckReentrancy(); 
       ((List<T>)this.Items).AddRange(list);
       this.OnCollectionPropertiesChanged();
-      this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, (IList)list, index));
+      if(!(collection is IList list2)) {
+        list2 = new List<T>(collection);
+      }
+      this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, list2, index));
     }
 
     public void RemoveRange(IEnumerable<T> collection) {
