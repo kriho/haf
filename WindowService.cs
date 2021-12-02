@@ -42,17 +42,15 @@ namespace HAF {
     }
 
     public override Task LoadConfiguration(ServiceConfiguration configuration) {
-      Configuration.StageAction(ConfigurationStage.WindowInitialization, () => {
-        if(configuration.TryReadEntry("window", out var window)) {
-          this.Window.Topmost = window.ReadAttribute("topmost", false);
-          if(window.TryReadAttribute("width", out int width)) {
-            this.Window.Width = width;
-          }
-          if(window.TryReadAttribute("height", out int height)) {
-            this.Window.Height = height;
-          }
+      if (configuration.TryReadEntry("window", out var window)) {
+        this.Window.Topmost = window.ReadAttribute("topmost", false);
+        if (window.TryReadAttribute("width", out int width)) {
+          this.Window.Width = width;
         }
-      });
+        if (window.TryReadAttribute("height", out int height)) {
+          this.Window.Height = height;
+        }
+      }
       return Task.CompletedTask;
     }
 

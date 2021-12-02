@@ -106,9 +106,11 @@ namespace HAF {
     }
 
     private void LoadWindowLayout(IWindowLayout windowLayout) {
-      this.dockingWindow.SetWindowLayout(windowLayout.Layout);
-      // set as current
-      this.ActiveWindowLayout = windowLayout;
+      HAF.Configuration.StageAction(ConfigurationStage.WindowInitialization, () => {
+        this.dockingWindow.SetWindowLayout(windowLayout.Layout);
+        // set as current
+        this.ActiveWindowLayout = windowLayout;
+      });
     }
 
     public void RegisterAvailablePane(string name, Type type, bool canUserClose = true) {
