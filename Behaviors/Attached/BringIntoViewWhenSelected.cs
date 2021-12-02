@@ -8,8 +8,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace HAF {
-  public partial class Behaviors {
-    public static readonly DependencyProperty BringIntoViewWhenSelectedProperty = DependencyProperty.RegisterAttached("BringIntoViewWhenSelected", typeof(bool), typeof(Behaviors), new UIPropertyMetadata(false, OnBringIntoViewWhenSelectedPropertyChanged));
+  public partial class Behaviors2 {
+    public static readonly DependencyProperty BringIntoViewWhenSelectedProperty = DependencyProperty.RegisterAttached("BringIntoViewWhenSelected", typeof(bool), typeof(Behaviors2), new UIPropertyMetadata(false, OnBringIntoViewWhenSelectedPropertyChanged));
 
     public static bool GetBringIntoViewWhenSelected(DependencyObject obj) {
       return (bool)obj.GetValue(BringIntoViewWhenSelectedProperty);

@@ -13,8 +13,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 
 namespace HAF {
-  public partial class Behaviors {
-    public static readonly DependencyProperty WatermarkProperty = DependencyProperty.RegisterAttached("Watermark", typeof(object), typeof(Behaviors), new FrameworkPropertyMetadata((object)null, new PropertyChangedCallback(OnWatermarkChanged)));
+  public partial class Behaviors2 {
+    public static readonly DependencyProperty WatermarkProperty = DependencyProperty.RegisterAttached("Watermark", typeof(object), typeof(Behaviors2), new FrameworkPropertyMetadata((object)null, new PropertyChangedCallback(OnWatermarkChanged)));
 
     private static readonly Dictionary<object, ItemsControl> itemsControls = new Dictionary<object, ItemsControl>();
 
