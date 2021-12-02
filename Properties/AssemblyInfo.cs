@@ -20,3 +20,4 @@ using System.Windows.Markup;
 [assembly: XmlnsDefinition("http://www.hornung.dev/xaml/presentation", "HAF.Controls")]
 [assembly: XmlnsDefinition("http://www.hornung.dev/xaml/presentation", "HAF.Converters")]
 [assembly: XmlnsDefinition("http://www.hornung.dev/xaml/presentation", "HAF.Validation")]
+[assembly: XmlnsDefinition("http://www.hornung.dev/xaml/presentation", "HAF.Behaviors")]

@@ -62,6 +62,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdornerContentPresenter.cs" />
     <Compile Include="Behaviors\Attached\BringIntoViewWhenSelected.cs" />
     <Compile Include="Behaviors\Attached\DisabledVisibility.cs" />
     <Compile Include="Behaviors\Attached\ServiceLocator.cs" />
@@ -77,9 +78,11 @@
     <Compile Include="Controls\HeaderedFormGroup.cs" />
     <Compile Include="Converters\BooleanToSolidColorBrushConverter.cs" />
     <Compile Include="Converters\DoubleToFormattedUnitConverter.cs" />
+    <Compile Include="Converters\StringToBooleanConverter.cs" />
     <Compile Include="Converters\IsEqualToBooleanConverter.cs" />
     <Compile Include="Converters\StringDefaultConverter.cs" />
     <Compile Include="Enumeration.cs" />
+    <Compile Include="ExtensionMethods\DependencyObject.cs" />
     <Compile Include="Settings\ISettingsDrawerMeta.cs" />
     <Compile Include="Settings\ISettingsValueBase.cs" />
     <Compile Include="Settings\SettingBoolean.cs" />
