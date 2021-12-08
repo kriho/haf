@@ -20,23 +20,24 @@ namespace HAF {
 
     public IRelayCommand DoRefresh { get; private set; }
 
-    public IRelayCommand<Project> DoLoadProject { get; private set; }
+    public IRelayCommand<IProject> DoLoadProject { get; private set; }
 
-    public IRelayCommand<Project> DoDeleteProject { get; private set; }
+    public IRelayCommand<IProject> DoDeleteProject { get; private set; }
 
-    public IRelayCommand<Project> DoSetDefaultProject { get; private set; }
+    public IRelayCommand<IProject> DoSetDefaultProject { get; private set; }
 
     public IRelayCommand DoOpenDirectory { get; private set; }
 
     public IRelayCommand DoAddProject { get; private set; }
 
-    private readonly RangeObservableCollection<Project> projects = new RangeObservableCollection<Project>();
-    public IReadOnlyObservableCollection<Project> Projects => this.projects;
+    private readonly RangeObservableCollection<IProject> projects = new RangeObservableCollection<IProject>();
+    public IReadOnlyObservableCollection<IProject> Projects => this.projects;
 
-    public List<IService> ConfiguredServices { get; private set; } = new List<IService>();
+    private List<IService> configuredServices = new List<IService>();
+    public IReadOnlyList<IService> ConfiguredServices => this.configuredServices;
 
-    private Project currentProject = null;
-    public Project CurrentProject {
+    private IProject currentProject = null;
+    public IProject CurrentProject {
       get { return this.currentProject; }
       set {
         if(this.SetValue(ref this.currentProject, value)) {
@@ -50,8 +51,8 @@ namespace HAF {
       }
     }
 
-    private Project defaultProject = null;
-    public Project DefaultProject {
+    private IProject defaultProject = null;
+    public IProject DefaultProject {
       get { return this.defaultProject; }
       set {
         if(this.SetValue(ref this.defaultProject, value)) {
@@ -94,7 +95,7 @@ namespace HAF {
                      });
       this.projects.Clear();
       this.projects.AddRange(projects);
-      Project defaultProject = null;
+      IProject defaultProject = null;
       // add default project if none exist
       if(this.projects.Count == 0) {
         var project = new Project() {
@@ -115,18 +116,18 @@ namespace HAF {
     }
 
     public ProjectsService() {
-      this.DoLoadProject = new RelayCommand<Project>((project) => {
+      this.DoLoadProject = new RelayCommand<IProject>((project) => {
         // load new project
         this.LoadProject(project);
       }, (project) => {
         return this.currentProject != project && this.MayChangeProject.Value;
       });
-      this.DoDeleteProject = new RelayCommand<Project>((project) => {
+      this.DoDeleteProject = new RelayCommand<IProject>((project) => {
         this.DeleteProject(project);
       }, (project) => {
         return this.currentProject != project && this.projects.Count > 1;
       });
-      this.DoSetDefaultProject = new RelayCommand<Project>((project) => {
+      this.DoSetDefaultProject = new RelayCommand<IProject>((project) => {
         this.DefaultProject = project;
       }, (project) => {
         return this.defaultProject != project;
@@ -155,7 +156,7 @@ namespace HAF {
       };
     }
 
-    public void SaveProject(Project project) {
+    public void SaveProject(IProject project) {
       var configuration = new ServiceConfiguration("project");
       foreach(var service in this.ConfiguredServices) {
         service.SaveConfiguration(configuration);
@@ -163,7 +164,7 @@ namespace HAF {
       configuration.SaveToFile(project.FilePath);
     }
 
-    public void LoadProject(Project project) {
+    public void LoadProject(IProject project) {
       if(!File.Exists(project.FilePath)) {
         return;
       }
@@ -211,7 +212,7 @@ namespace HAF {
       this.SaveProject(project);
     }
 
-    public void DeleteProject(Project project) {
+    public void DeleteProject(IProject project) {
       if(this.currentProject == project) {
         return;
       }
@@ -220,6 +221,13 @@ namespace HAF {
       if(this.defaultProject == project) {
         this.DefaultProject = this.projects.FirstOrDefault();
       }
+    }
+
+    public void RegisterService(IService service) {
+      if(this.configuredServices.Contains(service)) {
+        throw new InvalidOperationException($"the service of type {service.GetType().Name} was already registered");
+      }
+      this.configuredServices.Add(service);
     }
   }
 }

@@ -7,22 +7,23 @@ namespace HAF {
   public interface IProjectsService : IService {
     IReadOnlyEvent OnProjectsChanged { get; }
     ICompoundState MayChangeProject { get; }
-    IRelayCommand<Project> DoDeleteProject { get; }
-    IRelayCommand<Project> DoLoadProject { get; }
+    IRelayCommand<IProject> DoDeleteProject { get; }
+    IRelayCommand<IProject> DoLoadProject { get; }
     IRelayCommand DoOpenDirectory { get; }
     IRelayCommand DoRefresh { get; }
     IRelayCommand DoAddProject { get; }
     string EditName { get; set; }
-    IRelayCommand<Project> DoSetDefaultProject { get; }
-    Project CurrentProject { get; }
-    Project DefaultProject { get; }
-    List<IService> ConfiguredServices { get; }
-    IReadOnlyObservableCollection<Project> Projects { get; }
+    IRelayCommand<IProject> DoSetDefaultProject { get; }
+    IProject CurrentProject { get; }
+    IProject DefaultProject { get; }
+    IReadOnlyList<IService> ConfiguredServices { get; }
+    IReadOnlyObservableCollection<IProject> Projects { get; }
     Task AddProject(string name);
     Task ClearProject();
-    void DeleteProject(Project project);
-    void LoadProject(Project project);
+    void DeleteProject(IProject project);
+    void LoadProject(IProject project);
     void LoadProjects(string defaultProjectName);
-    void SaveProject(Project project);
+    void SaveProject(IProject project);
+    void RegisterService(IService service);
   }
 }

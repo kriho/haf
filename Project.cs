@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace HAF.Models {
 
-  public class Project : ObservableObject {
+  public class Project: ObservableObject, IProject {
 
     public string Name { get; set; }
 
