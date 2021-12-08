@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Media;
 
 namespace HAF {
-  public class PredicateState: ObservableObject, IState {
+  public class PredicateState: ObservableObject, IPredicateState {
 #if DEBUG
     public string Link;
 #endif
@@ -71,6 +71,19 @@ namespace HAF {
     public PredicateState(Func<bool> predicate, params IReadOnlyState[] states) {
       this.SetPredicate(predicate);
       this.AddStates(states);
+    }
+
+    private State negated;
+    public IReadOnlyState Negated {
+      get {
+        if(this.negated == null) {
+          this.negated = new State(!this.Value);
+          this.RegisterUpdate(() => {
+            this.negated.Value = !this.Value;
+          });
+        }
+        return this.negated;
+      }
     }
 
     public static implicit operator bool(PredicateState state) {

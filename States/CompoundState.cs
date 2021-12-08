@@ -15,7 +15,7 @@ namespace HAF {
 
     private readonly List<WeakAction> callbacks = new List<WeakAction>();
 
-    private readonly List<IReadOnlyState> states = new List<IReadOnlyState>();
+    protected readonly List<IReadOnlyState> states = new List<IReadOnlyState>();
 
     private bool lastValue = true;
     public bool Value {
@@ -25,9 +25,26 @@ namespace HAF {
       }
     }
 
+    private State negated;
+    public IReadOnlyState Negated {
+      get {
+        if(this.negated == null) {
+          this.negated = new State(!this.Value);
+          this.RegisterUpdate(() => {
+            this.negated.Value = !this.Value;
+          });
+        }
+        return this.negated;
+      }
+    }
+
+    protected virtual bool Evaluate() {
+      return this.states.All(s => s.Value);
+    }
+
     private void UpdateValue() {
       // calculate new value
-      var value = this.states.All(s => s.Value);
+      var value = this.Evaluate();
       if(value != this.lastValue) {
         this.lastValue = value;
 #if DEBUG
@@ -61,6 +78,7 @@ namespace HAF {
     public CompoundState(params IReadOnlyState[] states) {
       this.AddStates(states);
     }
+
     public static implicit operator bool(CompoundState state) {
       return state.Value;
     }

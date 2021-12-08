@@ -9,9 +9,7 @@ using System.Windows;
 using System.Windows.Media;
 
 namespace HAF {
-  public interface IReadOnlyState: INotifyPropertyChanged  {
-    bool Value { get; }
-    void RegisterUpdate(Action callback);
-    IReadOnlyState Negated { get; }
+  public interface IPredicateState: IReadOnlyState {
+    void UpdateValue();
   }
 }
