@@ -25,7 +25,7 @@ namespace HAF.Converters {
     public IValueConverter Prepare { get; set; }
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-      if (targetType != typeof(Tout)) {
+      if (!targetType.IsAssignableFrom(typeof(Tout))) {
         throw new NotImplementedException("This converter can not be used for the given type.");
       }
       this.culture = culture;
