@@ -13,6 +13,11 @@ namespace HAF {
   public class Window: System.Windows.Window, INotifyPropertyChanged {
     public event PropertyChangedEventHandler PropertyChanged;
 
+    protected override Size ArrangeOverride(Size arrangeBounds) {
+      arrangeBounds = new Size(Math.Ceiling(arrangeBounds.Width), Math.Ceiling(arrangeBounds.Height));
+      return base.ArrangeOverride(arrangeBounds);
+    }
+
     [Conditional("DEBUG")]
     [DebuggerStepThrough]
     public void VerifyPropertyName(string propertyName) {
