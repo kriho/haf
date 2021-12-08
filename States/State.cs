@@ -32,6 +32,19 @@ namespace HAF {
       }
     }
 
+    private State negated;
+    public IReadOnlyState Negated {
+      get {
+        if(this.negated == null) {
+          this.negated = new State(!this.Value);
+          this.RegisterUpdate(() => {
+            this.negated.Value = !this.Value;
+          });
+        }
+        return this.negated;
+      }
+    }
+
     public void RegisterUpdate(Action callback) {
       this.callbacks.Add(new WeakAction(callback));
     }
