@@ -14,7 +14,7 @@ namespace HAF {
     public ICompoundState CanChangeWindowLayout { get; private set; } = new CompoundState();
 
     private Event onActiveWindowLayoutChanged = new Event(nameof(OnActiveWindowLayoutChanged));
-    public IReadOnlyEvent OnActiveWindowLayoutChanged => this.OnActiveWindowLayoutChanged;
+    public IReadOnlyEvent OnActiveWindowLayoutChanged => this.onActiveWindowLayoutChanged;
 
     public IRelayCommand<IWindowLayout> DoLoadWindowLayout { get; private set; }
 
