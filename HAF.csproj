@@ -18,7 +18,7 @@
     <TargetFrameworkProfile />
     <PackageId>$(AssemblyName)</PackageId>
     <Title>Holistic Application Framework</Title>
-    <Version>1.0.20</Version>
+    <Version>1.0.21</Version>
     <Authors>Kristjan Hornung</Authors>
     <PackageOutputPath>.</PackageOutputPath>
     <Description>
@@ -69,6 +69,7 @@
     <Compile Include="Behaviors\Attached\Watermark.cs" />
     <Compile Include="Behaviors\Attached\IsFocused.cs" />
     <Compile Include="Behaviors\Attached\IgnoreMouseWheel.cs" />
+    <Compile Include="Behaviors\CollapseDisabled.cs" />
     <Compile Include="Commands\AsyncRelayCommand.cs" />
     <Compile Include="Commands\IAsyncRelayCommand.cs" />
     <Compile Include="Commands\IRelayCommand.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="Converters\StringDefaultConverter.cs" />
     <Compile Include="Enumeration.cs" />
     <Compile Include="ExtensionMethods\DependencyObject.cs" />
+    <Compile Include="IProject.cs" />
     <Compile Include="Settings\ISettingsDrawerMeta.cs" />
     <Compile Include="Settings\ISettingsValueBase.cs" />
     <Compile Include="Settings\SettingBoolean.cs" />
@@ -90,6 +92,8 @@
     <Compile Include="Settings\ISettingInteger.cs" />
     <Compile Include="Settings\SettingInteger.cs" />
     <Compile Include="Settings\ISettingsDrawer.cs" />
+    <Compile Include="States\CompoundOrState.cs" />
+    <Compile Include="States\IPredicateState.cs" />
     <Compile Include="States\PredicateState.cs" />
     <Compile Include="States\CompoundState.cs" />
     <Compile Include="States\Event.cs" />
