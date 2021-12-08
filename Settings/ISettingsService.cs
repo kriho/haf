@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 
 namespace HAF {
@@ -10,5 +11,6 @@ namespace HAF {
     bool TryFindSetting<T>(string regionName, string name, out T value);
     IReadOnlyObservableCollection<ISettingsRegion> Regions { get; }
     ISettingsDrawer GetDrawer(ISettingsValueBase settingsValue);
+    IReadOnlyList<ExportFactory<ISettingsDrawer, ISettingsDrawerMeta>> Drawers { get; }
   }
 }

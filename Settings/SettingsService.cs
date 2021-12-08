@@ -16,11 +16,11 @@ namespace HAF {
     private ObservableCollection<ISettingsRegion> regions = new ObservableCollection<ISettingsRegion>();
     public IReadOnlyObservableCollection<ISettingsRegion> Regions => (IReadOnlyObservableCollection<ISettingsRegion>)this.regions;
 
-    public IEnumerable<ExportFactory<ISettingsDrawer, ISettingsDrawerMeta>> Adapters { get; private set; }
+    public IReadOnlyList<ExportFactory<ISettingsDrawer, ISettingsDrawerMeta>> Drawers { get; private set; }
 
     [ImportingConstructor]
-    public SettingsService([ImportMany] IEnumerable<ExportFactory<ISettingsDrawer, ISettingsDrawerMeta>> adapters) {
-      this.Adapters = adapters;
+    public SettingsService([ImportMany] IEnumerable<ExportFactory<ISettingsDrawer, ISettingsDrawerMeta>> drawers) {
+      this.Drawers = drawers.ToList();
     }
 
     public ISettingsRegion RegisterRegion(string name, string displayName = null, string description = null, int? displayOrder = 0) {
@@ -132,7 +132,7 @@ namespace HAF {
     }
 
     public ISettingsDrawer GetDrawer(ISettingsValueBase settingsValue) {
-      var factories = this.Adapters.Where(a => a.Metadata.AssociatedType.IsAssignableFrom(settingsValue.GetType()));
+      var factories = this.Drawers.Where(a => a.Metadata.AssociatedType.IsAssignableFrom(settingsValue.GetType()));
       if(factories.Count() == 0) {
         throw new Exception($"failed to get drawer for settings value of type {settingsValue.GetType()}");
       }
