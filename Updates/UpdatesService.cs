@@ -14,6 +14,7 @@ namespace HAF {
 
   [Export(typeof(IUpdatesService)), PartCreationPolicy(CreationPolicy.Shared)]
   public class UpdatesService : Service, IUpdatesService {
+    public Dictionary<string, string[]> PatchNotes { get; private set; } = new Dictionary<string, string[]>();
 
     public ICompoundState MayUpdate { get; private set; } = new CompoundState();
 
@@ -22,46 +23,20 @@ namespace HAF {
     public IState CanUpdate { get; private set; } = new State(false);
     IReadOnlyState IUpdatesService.CanUpdate => (IReadOnlyState)this.CanUpdate;
 
+    public IState HasUpdate { get; private set; } = new State(false);
+    IReadOnlyState IUpdatesService.HasUpdate => (IReadOnlyState)this.HasUpdate;
+
+    public IState IsBusy { get; private set; } = new State(false);
+    IReadOnlyState IUpdatesService.IsBusy => (IReadOnlyState)this.IsBusy;
+
+
+    public IState IsRestartRequired { get; private set; } = new State(false);
+    IReadOnlyState IUpdatesService.IsRestartRequired => (IReadOnlyState)this.IsRestartRequired;
+
     private int progress = 0;
     public int Progress {
       get { return this.progress; }
       set { this.SetValue(ref this.progress, value); }
-    }
-
-    private bool isBusy = false;
-    public bool IsBusy {
-      get { return this.isBusy; }
-      set {
-        if (this.SetValue(ref this.isBusy, value)) {
-          if (value) {
-            // reset progress
-            this.Progress = 0;
-          }
-          this.DoFetch.RaiseCanExecuteChanged();
-          this.DoInstall.RaiseCanExecuteChanged();
-          this.DoApply.RaiseCanExecuteChanged();
-        }
-      }
-    }
-
-    private bool isUpdateAvaliable = false;
-    public bool IsUpdateAvaliable {
-      get { return this.isUpdateAvaliable; }
-      set {
-        if (this.SetValue(ref this.isUpdateAvaliable, value)) {
-          this.DoInstall.RaiseCanExecuteChanged();
-        }
-      }
-    }
-
-    private bool isRestartRequired = false;
-    public bool IsRestartRequired {
-      get { return this.isRestartRequired; }
-      set {
-        if (this.SetValue(ref this.isRestartRequired, value)) {
-          this.DoApply.RaiseCanExecuteChanged();
-        }
-      }
     }
 
     private string avaliableVersion;
@@ -92,43 +67,39 @@ namespace HAF {
       this.MayUpdate.AddStates(this.CanUpdate);
       // commands
       this.DoFetch = new RelayCommand(() => {
-        this.IsBusy = true;
+        this.IsBusy.Value = true;
+        this.Progress = 0;
         Task.Factory.StartNew(() => {
           ApplicationDeployment.CurrentDeployment.CheckForUpdateAsync();
         });
-      }, () => {
-        return !this.isBusy;
-      });
+      }, this.IsBusy.Negated);
       this.DoInstall = new RelayCommand(() => {
-        this.IsBusy = true;
+        this.IsBusy.Value = true;
+        this.Progress = 0;
         Task.Factory.StartNew(() => {
           ApplicationDeployment.CurrentDeployment.UpdateAsync();
         });
-      }, () => {
-        return this.isUpdateAvaliable && !this.isBusy && this.MayUpdate.Value;
-      });
+      }, new CompoundState(this.HasUpdate, this.MayUpdate, this.IsBusy.Negated));
       this.DoApply = new RelayCommand(() => {
         System.Windows.Forms.Application.Restart();
         System.Windows.Application.Current.Shutdown();
-      }, () => {
-        return this.isRestartRequired && !this.isBusy && this.MayUpdate.Value;
-      });
+      }, new CompoundState(this.IsRestartRequired, this.IsBusy.Negated, this.MayUpdate));
       this.DoCancel = new RelayCommand(() => {
         ApplicationDeployment.CurrentDeployment.UpdateAsyncCancel();
-      });
+      }, this.IsBusy);
       // check if updates are supported
       this.CanUpdate.Value = ApplicationDeployment.IsNetworkDeployed;
       if (this.MayUpdate.Value) {
         // register event handlers
         ApplicationDeployment.CurrentDeployment.CheckForUpdateCompleted += (s, e) => {
-          this.IsBusy = false;
+          this.IsBusy.Value = false;
           if (e.Error != null) {
             // TODO log $"failed to get update description, {e.Error.Message}"
-            this.IsUpdateAvaliable = false;
+            this.HasUpdate.Value = false;
           } else {
-            this.IsUpdateAvaliable = e.UpdateAvailable;
+            this.HasUpdate.Value = e.UpdateAvailable;
           }
-          if (this.IsUpdateAvaliable) {
+          if (this.HasUpdate.Value) {
             this.AvaliableVersion = e.AvailableVersion.Major.ToString() + "." + e.AvailableVersion.Revision.ToString();
           } else {
             this.AvaliableVersion = null;
@@ -138,10 +109,10 @@ namespace HAF {
           this.Progress = e.ProgressPercentage;
         };
         ApplicationDeployment.CurrentDeployment.UpdateCompleted += (s, e) => {
-          this.IsBusy = false;
+          this.IsBusy.Value = false;
           if (e.Error == null && !e.Cancelled) {
-            this.IsRestartRequired = true;
-            this.IsUpdateAvaliable = false;
+            this.IsRestartRequired.Value = true;
+            this.HasUpdate.Value = false;
           }
         };
         ApplicationDeployment.CurrentDeployment.UpdateProgressChanged += (s, e) => {
