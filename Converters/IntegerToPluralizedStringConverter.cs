@@ -14,9 +14,9 @@ namespace HAF.Converters {
 
     protected override string convert(int value) {
       if (value == 1) {
-        return String.Format(this.SingularFormat, value);
+        return String.Format(this.SingularFormat ?? this.PluralFormat, value);
       } else if (value == 0 && this.ZeroFormat != null) {
-        return String.Format(this.ZeroFormat, value);
+        return String.Format(this.ZeroFormat ?? this.PluralFormat, value);
       } else {
         return String.Format(this.PluralFormat, value);
       }
