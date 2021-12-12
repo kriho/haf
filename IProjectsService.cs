@@ -21,9 +21,9 @@ namespace HAF {
     Task AddProject(string name);
     Task ClearProject();
     void DeleteProject(IProject project);
-    void LoadProject(IProject project);
+    Task LoadProject(IProject project);
     void LoadProjects(string defaultProjectName);
-    void SaveProject(IProject project);
+    Task SaveProject(IProject project);
     void RegisterService(IService service);
   }
 }

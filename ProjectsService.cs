@@ -156,26 +156,28 @@ namespace HAF {
       };
     }
 
-    public void SaveProject(IProject project) {
+    public async Task SaveProject(IProject project) {
       var configuration = new ServiceConfiguration("project");
       foreach(var service in this.ConfiguredServices) {
-        service.SaveConfiguration(configuration);
+        await service.SaveConfiguration(configuration);
       }
       configuration.SaveToFile(project.FilePath);
     }
 
-    public void LoadProject(IProject project) {
+    public async Task LoadProject(IProject project) {
       if(!File.Exists(project.FilePath)) {
         return;
       }
       // save current project
       if(this.currentProject != null) {
-        this.SaveProject(this.currentProject);
+        await this.SaveProject(this.currentProject);
       }
-      // load from configuration
+      // clear project
+      await this.ClearProject();
+      // load project from configuration
       var configuration = ServiceConfiguration.FromFile(project.FilePath);
       foreach(var service in this.ConfiguredServices) {
-        service.LoadConfiguration(configuration);
+        await service.LoadConfiguration(configuration);
       }
       // set current project
       this.CurrentProject = project;
@@ -193,12 +195,11 @@ namespace HAF {
       return Task.CompletedTask;
     }
 
-    public override Task SaveConfiguration(ServiceConfiguration configuration) {
+    public override async Task SaveConfiguration(ServiceConfiguration configuration) {
       configuration.WriteValue("defaultProject", this.defaultProject?.Name);
       if(this.CurrentProject != null) {
-        this.SaveProject(this.currentProject);
+        await this.SaveProject(this.currentProject);
       }
-      return Task.CompletedTask;
     }
 
     public async Task AddProject(string name) {
@@ -209,7 +210,7 @@ namespace HAF {
       };
       this.projects.Add(project);
       this.CurrentProject = project;
-      this.SaveProject(project);
+      await this.SaveProject(project);
     }
 
     public void DeleteProject(IProject project) {
