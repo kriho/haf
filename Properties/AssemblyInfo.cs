@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Windows;
 using System.Windows.Markup;
 
 [assembly: AssemblyTitle("HAF")]
@@ -15,6 +16,7 @@ using System.Windows.Markup;
 [assembly: Guid("2350a0ff-7af9-4a41-aa57-00bf4ea22c84")]
 [assembly: AssemblyVersion("1.0.0")]
 [assembly: AssemblyFileVersion("1.0.0")]
+[assembly: ThemeInfo(ResourceDictionaryLocation.None, ResourceDictionaryLocation.SourceAssembly)]
 [assembly: XmlnsPrefix("http://www.hornung.dev/xaml/presentation", "haf")]
 [assembly: XmlnsDefinition("http://www.hornung.dev/xaml/presentation", "HAF")]
 [assembly: XmlnsDefinition("http://www.hornung.dev/xaml/presentation", "HAF.Controls")]
