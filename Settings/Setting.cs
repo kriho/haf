@@ -13,10 +13,6 @@ namespace HAF {
 
     public Action<ValidationBatch> Validation { get; set; }
 
-    public Action<ServiceConfigurationEntry> SaveSetting { get; set; }
-
-    public Action<ServiceConfigurationEntry> LoadSetting { get; set; }
-
     public FrameworkElement Drawer { get; set; }
 
     private T value;

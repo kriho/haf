@@ -25,14 +25,14 @@ namespace HAF {
 
     public ISettingsRegion RegisterRegion(string name, string displayName = null, string description = null, int? displayOrder = 0) {
       var region = this.regions.FirstOrDefault(r => r.Name == name);
-      if (region == null) {
+      if(region == null) {
         region = new SettingsRegion(this) {
           Name = name,
           DisplayName = displayName,
           Description = description,
           DisplayOrder = displayOrder,
         };
-        if(displayOrder.HasValue) {
+        if(displayOrder != null) {
           int insertIndex;
           for(insertIndex = 0; insertIndex < this.regions.Count; insertIndex++) {
             if(this.regions[insertIndex].DisplayOrder >= displayOrder) {
@@ -43,17 +43,21 @@ namespace HAF {
         } else {
           this.regions.Add(region);
         }
-      }
-      if(displayOrder != null) {
-        int insertIndex;
-        for(insertIndex = 0; insertIndex < this.regions.Count; insertIndex++) {
-          if(this.regions[insertIndex].DisplayOrder >= displayOrder) {
-            break;
+      } else {
+        if(displayOrder != null) {
+          int insertIndex;
+          for(insertIndex = 0; insertIndex < this.regions.Count; insertIndex++) {
+            if(this.regions[insertIndex].DisplayOrder >= displayOrder) {
+              break;
+            }
           }
+          if(insertIndex == this.regions.Count) {
+            insertIndex--;
+          }
+          regions.Move(regions.IndexOf(region), insertIndex);
         }
-        regions.Move(regions.IndexOf(region), insertIndex);
+        region.Reconfigure(displayName, description, displayOrder);
       }
-      region.Reconfigure(displayName, description, displayOrder);
       return region;
     }
 
@@ -70,65 +74,65 @@ namespace HAF {
 
     public bool TryFindSetting<T>(string regionName, string name, out T value) {
       var region = this.GetRegion(regionName);
-      var setting = region.Settings.FirstOrDefault(r => r.Name == name);
-      if(setting == null) {
+      var registration = region.Registrations.FirstOrDefault(r => r.Name == name);
+      if(registration == null) {
         value = default(T);
         return false;
       }
-      value = (T)setting.SettingsValue;
+      value = (T)registration.Setting;
       return true;
     }
 
-    public override Task LoadConfiguration(ServiceConfiguration configuration) {
+    public Task LoadConfiguration(ISettingsOwner owner, ServiceConfiguration configuration) {
       foreach(var region in this.regions) {
         configuration.TryReadEntry(region.Name, out var regionEntry);
-        foreach(var setting in region.Settings) {
-          if(setting.SettingsValue == null) {
-            // just a drawer
+        foreach(var registration in region.Registrations) {
+          if(registration.Setting == null || registration.Owner != owner) {
+            // just a drawer or owned by other service
             continue;
           }
-          if(setting.SettingsValue is SettingInteger intSetting) {
-            intSetting.Value = regionEntry?.ReadValue(setting.Name, intSetting.DefaultValue) ?? intSetting.DefaultValue;
-          } else if(setting.SettingsValue is SettingString stringSetting) {
-            stringSetting.Value = regionEntry?.ReadValue(setting.Name, stringSetting.DefaultValue) ?? stringSetting.DefaultValue;
-          } else if(setting.SettingsValue is SettingBoolean boolSetting) {
-            boolSetting.Value = regionEntry?.ReadValue(setting.Name, boolSetting.DefaultValue) ?? boolSetting.DefaultValue;
+          if(registration.Setting is SettingInteger intSetting) {
+            intSetting.Value = regionEntry?.ReadValue(registration.Name, intSetting.DefaultValue) ?? intSetting.DefaultValue;
+          } else if(registration.Setting is SettingString stringSetting) {
+            stringSetting.Value = regionEntry?.ReadValue(registration.Name, stringSetting.DefaultValue) ?? stringSetting.DefaultValue;
+          } else if(registration.Setting is SettingBoolean boolSetting) {
+            boolSetting.Value = regionEntry?.ReadValue(registration.Name, boolSetting.DefaultValue) ?? boolSetting.DefaultValue;
           } else {
-            throw new Exception($"failes to load setting \"{setting.Name}\" from region \"{region.Name}\" of type {setting.SettingsValue.GetType().Name}");
+            throw new Exception($"failes to load setting \"{registration.Name}\" from region \"{region.Name}\" of type {registration.Setting.GetType().Name}");
           }
         }
       }
       return Task.CompletedTask;
     }
 
-    public override Task SaveConfiguration(ServiceConfiguration configuration) {
+    public override async Task LoadConfiguration(ServiceConfiguration configuration) {
+      await this.LoadConfiguration(null, configuration);
+    }
+
+    public Task SaveConfiguration(ISettingsOwner owner, ServiceConfiguration configuration) {
       foreach(var region in this.regions) {
         var regionEntry = configuration.WriteEntry(region.Name, true);
-        foreach(var setting in region.Settings) {
-          if(setting.SettingsValue == null) {
-            // just a drawer
+        foreach(var registration in region.Registrations) {
+          if(registration.Setting == null || registration.Owner != owner) {
+            // just a drawer or owned by other service
             continue;
           }
-          if(setting.SettingsValue.SaveSetting == null) {
-            if(setting.SettingsValue is SettingInteger intSetting) {
-              if(intSetting.SaveSetting == null) {
-                regionEntry.WriteValue(setting.Name, intSetting.Value);
-              } else {
-                intSetting.SaveSetting(regionEntry);
-              }
-            } else if(setting.SettingsValue is SettingString stringSetting) {
-              regionEntry.WriteValue(setting.Name, stringSetting.Value);
-            } else if(setting.SettingsValue is SettingBoolean boolSetting) {
-              regionEntry.WriteValue(setting.Name, boolSetting.Value);
-            } else {
-              throw new Exception($"failes to save setting \"{setting.Name}\" from region \"{region.Name}\" of type {setting.SettingsValue.GetType().Name}");
-            }
+          if(registration.Setting is SettingInteger intSetting) {
+            regionEntry.WriteValue(registration.Name, intSetting.Value);
+          } else if(registration.Setting is SettingString stringSetting) {
+            regionEntry.WriteValue(registration.Name, stringSetting.Value);
+          } else if(registration.Setting is SettingBoolean boolSetting) {
+            regionEntry.WriteValue(registration.Name, boolSetting.Value);
           } else {
-            setting.SettingsValue.SaveSetting(regionEntry);
+            throw new Exception($"failes to save setting \"{registration.Name}\" from region \"{region.Name}\" of type {registration.Setting.GetType().Name}");
           }
         }
       }
       return Task.CompletedTask;
+    }
+
+    public override async Task SaveConfiguration(ServiceConfiguration configuration) {
+      await this.SaveConfiguration(null, configuration);
     }
 
     public ISettingsDrawer GetDrawer(ISettingsValueBase settingsValue) {

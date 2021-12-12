@@ -5,6 +5,7 @@ namespace HAF {
     string Name { get; }
     int DisplayOrder { get; }
     ISettingsDrawer Drawer { get; }
-    ISettingsValueBase SettingsValue { get; }
+    ISettingsValueBase Setting { get; }
+    ISettingsOwner Owner { get; }
   }
 }

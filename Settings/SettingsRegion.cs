@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 
@@ -16,20 +17,20 @@ namespace HAF {
     public int? DisplayOrder { get; set; }
 
     private ObservableCollection<ISettingsRegistration> settings = new ObservableCollection<ISettingsRegistration>();
-    public IReadOnlyObservableCollection<ISettingsRegistration> Settings => this.settings;
+    public IReadOnlyObservableCollection<ISettingsRegistration> Registrations => this.settings;
 
     public SettingsRegion(ISettingsService settingsService) {
       this.parent = settingsService;
     }
 
-    public void Reconfigure(string displayName = null, string description = null, int? displayOrder = 0) {
-      if(displayName != null && this.DisplayName == null) {
+    public void Reconfigure(string displayName = null, string description = null, int? displayOrder = null) {
+      if(displayName != null) {
         this.DisplayName = displayName;
       }
-      if(description != null && this.Description == null) {
+      if(description != null) {
         this.Description = description;
       }
-      if(displayOrder != null && this.DisplayOrder == null) {
+      if(displayOrder != null) {
         this.DisplayOrder = displayOrder;
       }
     }
@@ -43,13 +44,13 @@ namespace HAF {
       }
       this.settings.Insert(insertIndex, new SettingsRegistration() {
         Name = null,
-        SettingsValue = null,
+        Setting = null,
         DisplayOrder = displayOrder,
         Drawer = drawer,
       });
     }
 
-    public ISetting<T> RegisterValue<T>(string name, ISetting<T> value, ISettingsDrawer drawer = null, int displayOrder = 0) {
+    public ISetting<T> RegisterValue<T>(string name, ISetting<T> value, ISettingsDrawer drawer = null, int displayOrder = 0, ISettingsOwner owner = null) {
       if(this.settings.Any(r => r.Name == name)) {
         throw new InvalidOperationException($"the setting \"{name}\" was already registered in region \"{this.Name}\"");
       }
@@ -62,14 +63,20 @@ namespace HAF {
       if(drawer == null) {
         drawer = this.parent.GetDrawer(value);
       }
-      drawer.DataContext = value;
-      this.settings.Insert(insertIndex, new SettingsRegistration() {
+      var registration = new SettingsRegistration() {
         Name = name,
-        SettingsValue = value,
+        Setting = value,
         DisplayOrder = displayOrder,
         Drawer = drawer,
-      });
+        Owner = owner,
+      };
+      drawer.DataContext = registration;
+      this.settings.Insert(insertIndex, registration);
       return value;
+    }
+
+    public override string ToString() {
+      return $"{this.Name}:{this.DisplayOrder ?? '-'} ({this.Registrations.Count})";
     }
   }
 }
