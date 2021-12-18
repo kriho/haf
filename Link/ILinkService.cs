@@ -3,10 +3,9 @@ using System.ServiceModel;
 using System.Threading.Tasks;
 
 namespace HAF {
-  public interface ILinkService<T, S>: IService where T : ClientBase<S> where S : class {
+  public interface ILinkService {
     IReadOnlyState IsConnected { get; }
     IReadOnlyState IsServerInstalled { get; }
-    T Proxy { get; }
     string ServerFilePath { get; }
     IRelayCommand DoConnect { get; }
 

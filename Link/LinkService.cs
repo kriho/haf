@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HAF {
-  public abstract class LinkService<T, S>: Service, ILinkService<T, S> where T : ClientBase<S>, IRequestHandshake where S : class {
+  public abstract class LinkService<T, S>: Service, ILinkService where T : ClientBase<S>, IRequestHandshake where S : class {
     private ILogService logService;
 
     private readonly string applicationFamily;
@@ -22,6 +22,8 @@ namespace HAF {
     private readonly int protocolVersion;
 
     private ServiceHost serviceHost;
+
+    protected T proxy;
 
     public IRelayCommand DoConnect { get; private set; }
 
@@ -47,15 +49,6 @@ namespace HAF {
       private set {
         if(this.SetValue(ref this.reportedServerName, value)) {
           this.isServerInstalled.UpdateValue();
-        }
-      }
-    }
-
-    private T proxy;
-    public T Proxy {
-      get => this.proxy;
-      set {
-        if(this.SetValue(ref this.proxy, value)) {
         }
       }
     }
@@ -89,7 +82,7 @@ namespace HAF {
         if(this.proxy != null) {
           this.proxy.Abort();
         }
-        this.Proxy = Activator.CreateInstance(typeof(T)) as T;
+        this.proxy = Activator.CreateInstance(typeof(T)) as T;
         this.proxy.InnerChannel.Opened += (s, e) => {
           this.isConnected.Value = true;
         };
