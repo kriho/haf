@@ -20,6 +20,7 @@ namespace HAF {
     IReadOnlyObservableCollection<IWindowLayout> WindowLayouts { get; }
     string EditName { get; set; }
     void AddWindowLayout(string name);
+    void AddDefaultWindowLayout(string name, string layout);
     void RegisterAvailablePane(string name, Type type, bool canUserClose = true);
   }
 }

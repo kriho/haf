@@ -97,7 +97,7 @@ namespace HAF {
       }, (windowLayout) => {
         return this.defaultWindowLayout != windowLayout;
       });
-      this.DoAddWindowLayout = new RelayCommand(async () => {
+      this.DoAddWindowLayout = new RelayCommand(() => {
         this.AddWindowLayout(this.editName);
         this.EditName = "";
       }, () => {
@@ -118,6 +118,22 @@ namespace HAF {
         Name = name,
         Type = type,
         CanUserClose = canUserClose,
+      });
+    }
+
+    public void AddWindowLayout(string name) {
+      var windowLayout = new WindowLayout() {
+        Name = name,
+      };
+      windowLayout.Layout = this.dockingWindow.GetWindowLayout();
+      this.windowLayouts.Add(windowLayout);
+      this.ActiveWindowLayout = windowLayout;
+    }
+
+    public void AddDefaultWindowLayout(string name, string layout) {
+      this.defaultindowLayouts.Add(new WindowLayout() {
+        Name = name,
+        Layout = layout,
       });
     }
 
@@ -170,15 +186,6 @@ namespace HAF {
           .WriteAttribute("configuration", windowLayout.Layout);
       }
       return Task.CompletedTask;
-    }
-
-    public void AddWindowLayout(string name) {
-      var windowLayout = new WindowLayout() {
-        Name = name,
-      };
-      windowLayout.Layout = this.dockingWindow.GetWindowLayout();
-      this.windowLayouts.Add(windowLayout);
-      this.ActiveWindowLayout = windowLayout;
     }
   }
 }
