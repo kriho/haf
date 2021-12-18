@@ -32,5 +32,25 @@ namespace HAF {
         }
       }
     }
+
+    public static bool TryParseInt(string value, out int result) {
+      if(value.ToLower().StartsWith("0x")) {
+        try {
+          result = Convert.ToInt32(value, 16);
+          return true;
+        } catch {
+          result = 0;
+          return false;
+        }
+      }
+      return int.TryParse(value, out result);
+    }
+
+    public static int ParseInt(string value) {
+     if(TryParseInt(value, out var result)) {
+        return result;
+      }
+      throw new InvalidOperationException($"the value \"{value}\" can not be parsed as integer");
+    }
   }
 }

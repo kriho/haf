@@ -18,7 +18,7 @@
     <TargetFrameworkProfile />
     <PackageId>$(AssemblyName)</PackageId>
     <Title>Holistic Application Framework</Title>
-    <Version>1.0.22</Version>
+    <Version>1.0.23</Version>
     <Authors>Kristjan Hornung</Authors>
     <PackageOutputPath>.</PackageOutputPath>
     <Description>
@@ -92,6 +92,10 @@
     <Compile Include="Link\LinkHandshake.cs" />
     <Compile Include="Link\ILinkService.cs" />
     <Compile Include="IProject.cs" />
+    <Compile Include="Plugins\IPluginMetadata.cs" />
+    <Compile Include="Plugins\IPluginsService.cs" />
+    <Compile Include="Plugins\PluginEntry.cs" />
+    <Compile Include="Plugins\IPluginEntry.cs" />
     <Compile Include="Settings\ISettingsDrawerMeta.cs" />
     <Compile Include="Settings\ISettingsOwner.cs" />
     <Compile Include="Settings\ISettingsValueBase.cs" />
@@ -133,11 +137,11 @@
     <Compile Include="Settings\ISettingString.cs" />
     <Compile Include="Settings\Setting.cs" />
     <Compile Include="Settings\SettingString.cs" />
+    <Compile Include="Utils\BitOperations.cs" />
+    <Compile Include="Utils\Conversions.cs" />
     <Compile Include="Utils\Exceptions.cs" />
+    <Compile Include="Utils\MEF.cs" />
     <Compile Include="Validation\ValidationBatch.cs" />
-    <Compile Include="Plugins\ConfigurablePlugin.cs" />
-    <Compile Include="Plugins\IConfigurablePlugin.cs" />
-    <Compile Include="Plugins\Plugin.cs" />
     <Compile Include="Plugins\IPlugin.cs" />
     <Compile Include="Tasks\WaitingObservableTask.cs" />
     <Compile Include="Tasks\IWaitingObservableTask.cs" />
@@ -157,7 +161,6 @@
     <Compile Include="Tasks\IObservableTaskProgress.cs" />
     <Compile Include="Tasks\ObservableTask.cs" />
     <Compile Include="Tasks\ObservableTaskPool.cs" />
-    <Compile Include="Configuration\ServiceAwareCatalog.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\WeakAction.cs" />
     <Compile Include="Commands\WeakFunc.cs" />
@@ -245,6 +248,7 @@
     <Compile Include="ProjectsService.cs" />
     <Compile Include="Utils\InstalledApplications.cs" />
     <Compile Include="Link\LinkService.cs" />
+    <Compile Include="Plugins\PluginsService.cs" />
     <Compile Include="WindowService.cs" />
     <Compile Include="WindowLayout\WindowLayoutService.cs" />
     <Compile Include="Service\Service.cs" />
@@ -303,7 +307,5 @@
     <PackageReference Include="System.Windows.Interactivity.WPF" Version="2.0.20525" />
     <PackageReference Include="NuGet.Build.Tasks.Pack" Version="5.2.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="NewFolder1\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>
