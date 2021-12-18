@@ -46,15 +46,23 @@ namespace HAF {
 
     public static ConfigurationStage Stage { get; private set; } = ConfigurationStage.Startup;
 
-    static Configuration() {
-      if(ObservableObject.IsInDesignModeStatic) {
-        var catalog = new AggregateCatalog();
-        catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load("HAF.DesignTime, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")));
-        catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load("HAF, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")));
-        var serviceAwareCatalog = new ServiceAwareCatalog(catalog);
-        Configuration.Container = new CompositionContainer(serviceAwareCatalog);
-
+    private static List<ComposablePartDefinition> GetDuplicateServicePartDefinitions(ComposablePartCatalog catalog) {
+      var serviceTypeIdentities = new List<object>();
+      var result = new List<ComposablePartDefinition>();
+      foreach(var partDefinition in catalog) {
+        foreach(var exportDefinition in partDefinition.ExportDefinitions) {
+          if(exportDefinition.ContractName.EndsWith("Service")) {
+            if(exportDefinition.Metadata.TryGetValue("ExportTypeIdentity", out object typeIdentity)) {
+              if(serviceTypeIdentities.Contains(typeIdentity)) {
+                result.Add(partDefinition);
+              } else {
+                serviceTypeIdentities.Add(typeIdentity);
+              }
+            }
+          }
+        }
       }
+      return result;
     }
 
     public static void ConfigureContainer(params string[] assemblyNames) {
@@ -67,8 +75,9 @@ namespace HAF {
       catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load("HAF, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")));
       // filter out all duplicate service exports, only the first export of a service export type identity remains
       // note that design time services have highest priority, then extension services and lastly application services
-      var serviceAwareCatalog = new ServiceAwareCatalog(catalog);
-      Configuration.Container = new CompositionContainer(serviceAwareCatalog);
+      var duplicateServicePartDefinitions = Configuration.GetDuplicateServicePartDefinitions(catalog);
+      var filteredCatalog = new FilteredCatalog(catalog, definition => !duplicateServicePartDefinitions.Contains(definition));
+      Configuration.Container = new CompositionContainer(filteredCatalog);
     }
 
     public static void RegisterService(IService service, int priority = 0) {
@@ -99,6 +108,23 @@ namespace HAF {
         // create directories if needed
         if(!Directory.Exists(Configuration.ConfigurationDirectory)) {
           Directory.CreateDirectory(Configuration.ConfigurationDirectory);
+        } else {
+          // perform requested deletions
+          foreach(var deleteFilePath in Directory.GetFiles(Configuration.ConfigurationDirectory, "*.delete", SearchOption.AllDirectories)) {
+            var filePath = deleteFilePath.Substring(0, deleteFilePath.Length - 7);
+            if(File.Exists(filePath)) {
+              File.Delete(filePath);
+            }
+            File.Delete(deleteFilePath);
+          }
+          // perform requested replacements
+          foreach(var replaceFilePath in Directory.GetFiles(Configuration.ConfigurationDirectory, "*.replace", SearchOption.AllDirectories)) {
+            var filePath = replaceFilePath.Substring(0, replaceFilePath.Length - 8);
+            if(File.Exists(filePath)) {
+              File.Delete(filePath);
+            }
+            File.Move(replaceFilePath, filePath);
+          }
         }
         if(!Directory.Exists(Configuration.ExtensionsDirectory)) {
           Directory.CreateDirectory(Configuration.ExtensionsDirectory);
