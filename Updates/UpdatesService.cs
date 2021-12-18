@@ -54,7 +54,7 @@ namespace HAF {
         if (!ApplicationDeployment.IsNetworkDeployed) {
           return null;
         }
-        return $"{ApplicationDeployment.CurrentDeployment.CurrentVersion.Major}.{ApplicationDeployment.CurrentDeployment.CurrentVersion.Revision}";
+        return $"{ApplicationDeployment.CurrentDeployment.CurrentVersion.Major}.{ApplicationDeployment.CurrentDeployment.CurrentVersion.Minor}.{ApplicationDeployment.CurrentDeployment.CurrentVersion.Revision}";
       }
     }
 
@@ -100,7 +100,7 @@ namespace HAF {
             this.HasUpdate.Value = e.UpdateAvailable;
           }
           if (this.HasUpdate.Value) {
-            this.AvaliableVersion = e.AvailableVersion.Major.ToString() + "." + e.AvailableVersion.Revision.ToString();
+            this.AvaliableVersion = e.AvailableVersion.Major.ToString() + "." + e.AvailableVersion.Minor.ToString() + "." + e.AvailableVersion.Revision.ToString();
           } else {
             this.AvaliableVersion = null;
           }
@@ -120,10 +120,6 @@ namespace HAF {
         };
         this.DoFetch.Execute(null);
       }
-      this.CanUpdate.RegisterUpdate(() => {
-        this.DoInstall.RaiseCanExecuteChanged();
-        this.DoApply.RaiseCanExecuteChanged();
-      });
     }
   }
 }
