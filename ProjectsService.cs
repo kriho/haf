@@ -75,7 +75,7 @@ namespace HAF {
       }
     }
 
-    public void LoadProjects(string defaultProjectName) {
+    public async Task LoadProjects(string defaultProjectName) {
       // get potential projects
       var projects = Directory.GetFiles(Configuration.ConfigurationDirectory, "*.xml", SearchOption.TopDirectoryOnly)
                      .Where(filePath => {
@@ -102,7 +102,7 @@ namespace HAF {
           Name = "default project",
           FilePath = Path.Combine(Configuration.ConfigurationDirectory, "default project.xml"),
         };
-        this.SaveProject(project);
+        await this.SaveProject(project);
         this.projects.Add(project);
         defaultProject = project;
       } else {
@@ -112,13 +112,13 @@ namespace HAF {
         defaultProject = this.projects[0];
       }
       this.DefaultProject = defaultProject;
-      this.LoadProject(defaultProject);
+      await this.LoadProject(defaultProject);
     }
 
     public ProjectsService() {
-      this.DoLoadProject = new RelayCommand<IProject>((project) => {
+      this.DoLoadProject = new RelayCommand<IProject>(async (project) => {
         // load new project
-        this.LoadProject(project);
+        await this.LoadProject(project);
       }, (project) => {
         return this.currentProject != project && this.MayChangeProject.Value;
       });
@@ -132,11 +132,11 @@ namespace HAF {
       }, (project) => {
         return this.defaultProject != project;
       });
-      this.DoRefresh = new RelayCommand(() => {
+      this.DoRefresh = new RelayCommand(async () => {
         // save changes to current project
-        this.SaveProject(this.currentProject);
+        await this.SaveProject(this.currentProject);
         // reload projects
-        this.LoadProjects(this.defaultProject?.Name);
+        await this.LoadProjects(this.defaultProject?.Name);
       }, this.MayChangeProject);
       this.DoOpenDirectory = new RelayCommand(() => {
         System.Diagnostics.Process.Start(Configuration.ConfigurationDirectory);
@@ -189,10 +189,9 @@ namespace HAF {
       }
     }
 
-    public override Task LoadConfiguration(ServiceConfiguration configuration) {
+    public override async Task LoadConfiguration(ServiceConfiguration configuration) {
       var defaultProject = configuration.ReadValue("defaultProject", null);
-      this.LoadProjects(defaultProject);
-      return Task.CompletedTask;
+      await this .LoadProjects(defaultProject);
     }
 
     public override async Task SaveConfiguration(ServiceConfiguration configuration) {
