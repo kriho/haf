@@ -8,8 +8,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace HAF {
-  public partial class Behaviors2 {
-    public static readonly DependencyProperty ServiceProperty = DependencyProperty.RegisterAttached("Service", typeof(Type), typeof(Behaviors2), new UIPropertyMetadata(null, OnServicePropertyChanged));
+  public partial class Behavior {
+    public static readonly DependencyProperty ServiceProperty = DependencyProperty.RegisterAttached("Service", typeof(Type), typeof(Behavior), new UIPropertyMetadata(null, OnServicePropertyChanged));
 
     public static Type GetService(DependencyObject obj) {
       return (Type)obj.GetValue(ServiceProperty);

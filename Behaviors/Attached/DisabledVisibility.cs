@@ -8,9 +8,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace HAF {
-  public partial class Behaviors2 {
+  public partial class Behavior {
 
-    public static readonly DependencyProperty DisabledVisibilityProperty = DependencyProperty.RegisterAttached("DisabledVisibility", typeof(Visibility), typeof(Behaviors2), new UIPropertyMetadata(Visibility.Visible, Behaviors2.OnDisabledVisibilityPropertyChanged)); 
+    public static readonly DependencyProperty DisabledVisibilityProperty = DependencyProperty.RegisterAttached("DisabledVisibility", typeof(Visibility), typeof(Behavior), new UIPropertyMetadata(Visibility.Visible, Behavior.OnDisabledVisibilityPropertyChanged)); 
     
     public static Visibility GetDisabledVisibility(DependencyObject obj) {
       return (Visibility)obj.GetValue(DisabledVisibilityProperty);
