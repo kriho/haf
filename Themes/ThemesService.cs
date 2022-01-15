@@ -106,17 +106,29 @@ namespace HAF {
         Application.Current.Resources["ThemeAccentColor"] = theme.AccentColor;
         Application.Current.Resources["ThemeAccentBrush"] = new SolidColorBrush(theme.AccentColor);
       }
-      if(property == null || property == "InfoColor") {
-        Application.Current.Resources["ThemeInfoColor"] = theme.InfoColor;
-        Application.Current.Resources["ThemeInfoBrush"] = new SolidColorBrush(theme.InfoColor);
+      if(property == null || property == "InfoForegroundColor") {
+        Application.Current.Resources["ThemeInfoForegroundColor"] = theme.InfoForegroundColor;
+        Application.Current.Resources["ThemeInfoForegroundBrush"] = new SolidColorBrush(theme.InfoForegroundColor);
       }
-      if(property == null || property == "WarningColor") {
-        Application.Current.Resources["ThemeWarningColor"] = theme.WarningColor;
-        Application.Current.Resources["ThemeWarningBrush"] = new SolidColorBrush(theme.WarningColor);
+      if(property == null || property == "InfoBackgroundColor") {
+        Application.Current.Resources["ThemeInfoBackgroundColor"] = theme.InfoBackgroundColor;
+        Application.Current.Resources["ThemeInfoBackgroundBrush"] = new SolidColorBrush(theme.InfoBackgroundColor);
       }
-      if(property == null || property == "ErrorColor") {
-        Application.Current.Resources["ThemeErrorColor"] = theme.ErrorColor;
-        Application.Current.Resources["ThemeErrorBrush"] = new SolidColorBrush(theme.ErrorColor);
+      if(property == null || property == "WarningForegroundColor") {
+        Application.Current.Resources["ThemeWarningForegroundColor"] = theme.WarningForegroundColor;
+        Application.Current.Resources["ThemeWarningForegroundBrush"] = new SolidColorBrush(theme.WarningForegroundColor);
+      }
+      if(property == null || property == "WarningBackgroundColor") {
+        Application.Current.Resources["ThemeWarningBackgroundColor"] = theme.WarningBackgroundColor;
+        Application.Current.Resources["ThemeWarningBackgroundBrush"] = new SolidColorBrush(theme.WarningBackgroundColor);
+      }
+      if(property == null || property == "ErrorForegroundColor") {
+        Application.Current.Resources["ThemeErrorForegroundColor"] = theme.ErrorForegroundColor;
+        Application.Current.Resources["ThemeErrorForegroundBrush"] = new SolidColorBrush(theme.ErrorForegroundColor);
+      }
+      if(property == null || property == "ErrorBackgroundColor") {
+        Application.Current.Resources["ThemeErrorBackgroundColor"] = theme.ErrorBackgroundColor;
+        Application.Current.Resources["ThemeErrorBackgroundBrush"] = new SolidColorBrush(theme.ErrorBackgroundColor);
       }
     }
 
@@ -128,9 +140,12 @@ namespace HAF {
         case ThemeKey.Action: return this.activeTheme.ActionColor;
         case ThemeKey.Light: return this.activeTheme.LightColor;
         case ThemeKey.Strong: return this.activeTheme.StrongColor;
-        case ThemeKey.Warning: return this.activeTheme.WarningColor;
-        case ThemeKey.Info: return this.activeTheme.InfoColor;
-        case ThemeKey.Error: return this.activeTheme.ErrorColor;
+        case ThemeKey.WarningForeground: return this.activeTheme.WarningForegroundColor;
+        case ThemeKey.WarningBackground: return this.activeTheme.WarningBackgroundColor;
+        case ThemeKey.InfoBackground: return this.activeTheme.InfoForegroundColor;
+        case ThemeKey.InfoForeground: return this.activeTheme.InfoBackgroundColor;
+        case ThemeKey.ErrorForeground: return this.activeTheme.ErrorForegroundColor;
+        case ThemeKey.ErrorBackground: return this.activeTheme.ErrorBackgroundColor;
         default: return this.activeTheme.TextColor;
       }
     }
@@ -162,9 +177,12 @@ namespace HAF {
         TextColor = (Color)ColorConverter.ConvertFromString("#FF444444"),
         AccentColor = (Color)ColorConverter.ConvertFromString("#FF2C61AC"),
         ActionColor = (Color)ColorConverter.ConvertFromString("#FF527FC0"),
-        InfoColor = (Color)ColorConverter.ConvertFromString("#FFEDF7FF"),
-        WarningColor = (Color)ColorConverter.ConvertFromString("#FFFFFDE2"),
-        ErrorColor = (Color)ColorConverter.ConvertFromString("#FFFFE9E9"),
+        InfoForegroundColor = (Color)ColorConverter.ConvertFromString("#FFBDD9EE"),
+        InfoBackgroundColor = (Color)ColorConverter.ConvertFromString("#FFEDF7FF"),
+        WarningForegroundColor = (Color)ColorConverter.ConvertFromString("#FFE1D555"),
+        WarningBackgroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFDE2"),
+        ErrorForegroundColor = (Color)ColorConverter.ConvertFromString("#FFFF3232"),
+        ErrorBackgroundColor = (Color)ColorConverter.ConvertFromString("#FFFFE9E9"),
       };
       defaultTheme.ApplyColorChanges();
       this.DefaultLightTheme = defaultTheme;
@@ -178,9 +196,12 @@ namespace HAF {
         TextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
         AccentColor = (Color)ColorConverter.ConvertFromString("#FF8D9FC3"),
         ActionColor = (Color)ColorConverter.ConvertFromString("#FFA5B9DE"),
-        InfoColor = (Color)ColorConverter.ConvertFromString("#FF5A666F"),
-        WarningColor = (Color)ColorConverter.ConvertFromString("#FF747044"),
-        ErrorColor = (Color)ColorConverter.ConvertFromString("#FF643737"),
+        InfoForegroundColor = (Color)ColorConverter.ConvertFromString("#FF5A666F"),
+        InfoBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF5A666F"),
+        WarningForegroundColor = (Color)ColorConverter.ConvertFromString("#FF747044"),
+        WarningBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF747044"),
+        ErrorForegroundColor = (Color)ColorConverter.ConvertFromString("#FF643737"),
+        ErrorBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF643737"),
       };
       defaultTheme.ApplyColorChanges();
       this.DefaultDarkTheme = defaultTheme;
@@ -198,9 +219,12 @@ namespace HAF {
           TextColor = this.activeTheme.TextColor,
           AccentColor = this.activeTheme.AccentColor,
           ActionColor = this.activeTheme.ActionColor,
-          InfoColor = this.activeTheme.InfoColor,
-          WarningColor = this.activeTheme.WarningColor,
-          ErrorColor = this.activeTheme.ErrorColor,
+          InfoForegroundColor = this.activeTheme.InfoForegroundColor,
+          InfoBackgroundColor = this.activeTheme.InfoBackgroundColor,
+          WarningForegroundColor = this.activeTheme.WarningForegroundColor,
+          WarningBackgroundColor = this.activeTheme.WarningBackgroundColor,
+          ErrorForegroundColor = this.activeTheme.ErrorForegroundColor,
+          ErrorBackgroundColor = this.activeTheme.ErrorBackgroundColor,
         };
         theme.ApplyColorChanges();
         this.AvailableThemes.Add(theme);
@@ -234,9 +258,12 @@ namespace HAF {
             TextColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("text", "#FFFFFFFF")),
             AccentColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("accent", "#FF8D9FC3")),
             ActionColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("action", "#FFA5B9DE")),
-            InfoColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("info", "#FF49555E")),
-            WarningColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("warning", "#FF7D7840")),
-            ErrorColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("error", "#FF901818")),
+            InfoForegroundColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("infoForeground", "#FF5A666F")),
+            InfoBackgroundColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("infoBackground", "#FF49555E")),
+            WarningForegroundColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("warningForeground", "#FF747044")),
+            WarningBackgroundColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("warningBackground", "#FF7D7840")),
+            ErrorForegroundColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("errorForeground", "#FF643737")),
+            ErrorBackgroundColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("errorBackground", "#FF901818")),
           };
           theme.ApplyColorChanges();
           this.AvailableThemes.Add(theme);
@@ -268,9 +295,12 @@ namespace HAF {
           .WriteAttribute("text", theme.TextColor.ToString())
           .WriteAttribute("accent", theme.AccentColor.ToString())
           .WriteAttribute("action", theme.ActionColor.ToString())
-          .WriteAttribute("info", theme.InfoColor.ToString())
-          .WriteAttribute("warning", theme.WarningColor.ToString())
-          .WriteAttribute("error", theme.ErrorColor.ToString());
+          .WriteAttribute("infoForeground", theme.InfoForegroundColor.ToString())
+          .WriteAttribute("infoBackground", theme.InfoBackgroundColor.ToString())
+          .WriteAttribute("warningForeground", theme.WarningForegroundColor.ToString())
+          .WriteAttribute("warningBackground", theme.WarningBackgroundColor.ToString())
+          .WriteAttribute("errorForeground", theme.ErrorForegroundColor.ToString())
+          .WriteAttribute("errorBackground", theme.ErrorBackgroundColor.ToString());
       }
       return Task.CompletedTask;
     }

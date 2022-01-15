@@ -17,9 +17,12 @@ namespace HAF {
     Color TextColor { get; set; }
     Color AccentColor { get; set; }
     Color ActionColor { get; set; }
-    Color InfoColor { get; set; }
-    Color WarningColor { get; set; }
-    Color ErrorColor { get; set; }
+    Color InfoForegroundColor { get; set; }
+    Color InfoBackgroundColor { get; set; }
+    Color WarningForegroundColor { get; set; }
+    Color WarningBackgroundColor { get; set; }
+    Color ErrorForegroundColor { get; set; }
+    Color ErrorBackgroundColor { get; set; }
     Color LastBackgroundColor { get; set; }
     Color LastControlColor { get; set; }
     Color LastLightColor { get; set; }
@@ -28,9 +31,12 @@ namespace HAF {
     Color LastTextColor { get; set; }
     Color LastAccentColor { get; set; }
     Color LastActionColor { get; set; }
-    Color LastInfoColor { get; set; }
-    Color LastWarningColor { get; set; }
-    Color LastErrorColor { get; set; }
+    Color LastInfoForegroundColor { get; set; }
+    Color LastInfoBackgroundColor { get; set; }
+    Color LastWarningForegroundColor { get; set; }
+    Color LastWarningBackgroundColor { get; set; }
+    Color LastErrorForegroundColor { get; set; }
+    Color LastErrorBackgroundColor { get; set; }
     bool IsActive { get; set; }
     bool IsEditable { get; }
     IReadOnlyState IsDirty { get; }

@@ -17,15 +17,18 @@ namespace HAF {
     public ThemeKey Key {
       get {
         switch (this.ResourceKey) {
-          case "ThemeControlBrush": return ThemeKey.Control;
-          case "ThemeTextBrush": return ThemeKey.Text;
-          case "ThemeAccentBrush": return ThemeKey.Accent;
-          case "ThemeActionBrush": return ThemeKey.Action;
-          case "ThemeErrorBrush": return ThemeKey.Error;
-          case "ThemeWarningBrush": return ThemeKey.Warning;
-          case "ThemeInfoBrush": return ThemeKey.Info;
-          case "ThemeLightBrush": return ThemeKey.Light;
-          case "ThemeStrongBrush": return ThemeKey.Strong;
+          case "ThemeControlColor": return ThemeKey.Control;
+          case "ThemeTextColor": return ThemeKey.Text;
+          case "ThemeAccentColor": return ThemeKey.Accent;
+          case "ThemeActionColor": return ThemeKey.Action;
+          case "ThemeLightColor": return ThemeKey.Light;
+          case "ThemeStrongColor": return ThemeKey.Strong;
+          case "ThemeInfoForegroundColor": return ThemeKey.InfoForeground;
+          case "ThemeInfoBackgroundColor": return ThemeKey.InfoBackground;
+          case "ThemeWarningForegroundColor": return ThemeKey.WarningForeground;
+          case "ThemeWarningBackgroundColor": return ThemeKey.WarningBackground;
+          case "ThemeErrorForegroundColor": return ThemeKey.ErrorForeground;
+          case "ThemeErrorBackgroundColor": return ThemeKey.ErrorBackground;
           default: return ThemeKey.Background;
         }
       }

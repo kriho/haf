@@ -144,49 +144,97 @@ namespace HAF {
       }
     }
 
-    private Color lastInfoColor;
-    public Color LastInfoColor {
-      get => this.lastInfoColor;
-      set => this.SetValue(ref this.lastInfoColor, value);
+    private Color lastInfoForegroundColor;
+    public Color LastInfoForegroundColor {
+      get => this.lastInfoForegroundColor;
+      set => this.SetValue(ref this.lastInfoForegroundColor, value);
     }
 
-    private Color infoColor;
-    public Color InfoColor {
-      get => this.infoColor;
+    private Color infoForegroundColor;
+    public Color InfoForegroundColor {
+      get => this.infoForegroundColor;
       set {
-        if(this.SetValue(ref this.infoColor, value)) {
+        if(this.SetValue(ref this.infoForegroundColor, value)) {
           this.isDirty.Value = true;
         }
       }
     }
 
-    private Color lastWarningColor;
-    public Color LastWarningColor {
-      get => this.lastWarningColor;
-      set => this.SetValue(ref this.lastWarningColor, value);
+    private Color lastInfoBackgroundColor;
+    public Color LastInfoBackgroundColor {
+      get => this.lastInfoBackgroundColor;
+      set => this.SetValue(ref this.lastInfoBackgroundColor, value);
     }
 
-    private Color warningColor;
-    public Color WarningColor {
-      get => this.warningColor;
+    private Color infoBackgroundColor;
+    public Color InfoBackgroundColor {
+      get => this.infoBackgroundColor;
       set {
-        if(this.SetValue(ref this.warningColor, value)) {
+        if(this.SetValue(ref this.infoBackgroundColor, value)) {
           this.isDirty.Value = true;
         }
       }
     }
 
-    private Color lastErrorColor;
-    public Color LastErrorColor {
-      get => this.lastErrorColor;
-      set => this.SetValue(ref this.lastErrorColor, value);
+    private Color lastWarningForegroundColor;
+    public Color LastWarningForegroundColor {
+      get => this.lastWarningForegroundColor;
+      set => this.SetValue(ref this.lastWarningForegroundColor, value);
     }
 
-    private Color errorColor;
-    public Color ErrorColor {
-      get => this.errorColor;
+    private Color warningForegroundColor;
+    public Color WarningForegroundColor {
+      get => this.warningForegroundColor;
       set {
-        if(this.SetValue(ref this.errorColor, value)) {
+        if(this.SetValue(ref this.warningForegroundColor, value)) {
+          this.isDirty.Value = true;
+        }
+      }
+    }
+
+    private Color lastWarningBackgroundColor;
+    public Color LastWarningBackgroundColor {
+      get => this.lastWarningBackgroundColor;
+      set => this.SetValue(ref this.lastWarningBackgroundColor, value);
+    }
+
+    private Color warningBackgroundColor;
+    public Color WarningBackgroundColor {
+      get => this.warningBackgroundColor;
+      set {
+        if(this.SetValue(ref this.warningBackgroundColor, value)) {
+          this.isDirty.Value = true;
+        }
+      }
+    }
+
+    private Color lastErrorForegroundColor;
+    public Color LastErrorForegroundColor {
+      get => this.lastErrorForegroundColor;
+      set => this.SetValue(ref this.lastErrorForegroundColor, value);
+    }
+
+    private Color errorForegroundColor;
+    public Color ErrorForegroundColor {
+      get => this.errorForegroundColor;
+      set {
+        if(this.SetValue(ref this.errorForegroundColor, value)) {
+          this.isDirty.Value = true;
+        }
+      }
+    }
+
+    private Color lastErrorBackgroundColor;
+    public Color LastErrorBackgroundColor {
+      get => this.lastErrorBackgroundColor;
+      set => this.SetValue(ref this.lastErrorBackgroundColor, value);
+    }
+
+    private Color errorBackgroundColor;
+    public Color ErrorBackgroundColor {
+      get => this.errorBackgroundColor;
+      set {
+        if(this.SetValue(ref this.errorBackgroundColor, value)) {
           this.isDirty.Value = true;
         }
       }
@@ -207,9 +255,12 @@ namespace HAF {
       this.LastTextColor = this.TextColor;
       this.LastAccentColor = this.AccentColor;
       this.LastActionColor = this.ActionColor;
-      this.LastInfoColor = this.InfoColor;
-      this.LastWarningColor = this.WarningColor;
-      this.LastErrorColor = this.ErrorColor;
+      this.LastInfoForegroundColor = this.InfoForegroundColor;
+      this.LastInfoBackgroundColor = this.InfoBackgroundColor;
+      this.LastWarningForegroundColor = this.WarningForegroundColor;
+      this.LastWarningBackgroundColor = this.WarningBackgroundColor;
+      this.LastErrorForegroundColor = this.ErrorForegroundColor;
+      this.LastErrorBackgroundColor = this.ErrorBackgroundColor;
       this.isDirty.Value = false;
     }
 

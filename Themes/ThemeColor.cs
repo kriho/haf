@@ -21,11 +21,14 @@ namespace HAF {
           case "ThemeTextColor": return ThemeKey.Text;
           case "ThemeAccentColor": return ThemeKey.Accent;
           case "ThemeActionColor": return ThemeKey.Action;
-          case "ThemeErrorColor": return ThemeKey.Error;
-          case "ThemeWarningColor": return ThemeKey.Warning;
-          case "ThemeInfoColor": return ThemeKey.Info;
           case "ThemeLightColor": return ThemeKey.Light;
           case "ThemeStrongColor": return ThemeKey.Strong;
+          case "ThemeInfoForegroundColor": return ThemeKey.InfoForeground;
+          case "ThemeInfoBackgroundColor": return ThemeKey.InfoBackground;
+          case "ThemeWarningForegroundColor": return ThemeKey.WarningForeground;
+          case "ThemeWarningBackgroundColor": return ThemeKey.WarningBackground;
+          case "ThemeErrorForegroundColor": return ThemeKey.ErrorForeground;
+          case "ThemeErrorBackgroundColor": return ThemeKey.ErrorBackground;
           default: return ThemeKey.Background;
         }
       }
