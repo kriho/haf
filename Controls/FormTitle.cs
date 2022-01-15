@@ -12,8 +12,15 @@ namespace HAF.Controls {
     public static readonly DependencyProperty TitleProperty = DependencyProperty.Register("Title", typeof(string), typeof(FormTitle), new PropertyMetadata("Title"));
 
     public string Title {
-      get { return (string)GetValue(TitleProperty); }
-      set { SetValue(TitleProperty, value); }
+      get => (string)GetValue(FormTitle.TitleProperty);
+      set => this.SetValue(FormTitle.TitleProperty, value);
+    }
+
+    public static readonly DependencyProperty DescriptionProperty = DependencyProperty.Register("Description", typeof(string), typeof(FormTitle), new PropertyMetadata(null));
+
+    public string Description {
+      get => (string)this.GetValue(FormTitle.DescriptionProperty); 
+      set => this.SetValue(FormTitle.DescriptionProperty, value); 
     }
 
     static FormTitle() {
