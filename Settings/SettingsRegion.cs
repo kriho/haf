@@ -43,6 +43,7 @@ namespace HAF {
         }
       }
       this.settings.Insert(insertIndex, new SettingsRegistration() {
+        Region = this,
         Name = null,
         Setting = null,
         DisplayOrder = displayOrder,
@@ -64,6 +65,7 @@ namespace HAF {
         drawer = this.parent.GetDrawer(value);
       }
       var registration = new SettingsRegistration() {
+        Region = this,
         Name = name,
         Setting = value,
         DisplayOrder = displayOrder,

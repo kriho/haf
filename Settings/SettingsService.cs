@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Xml;
 
 namespace HAF {
@@ -18,12 +19,63 @@ namespace HAF {
 
     public IReadOnlyList<ExportFactory<ISettingsDrawer, ISettingsDrawerMeta>> Drawers { get; private set; }
 
+    public CollectionViewSource FilteredRegistrations { get; private set; }
+
+    private string filter;
+    public string Filter {
+      get { return this.filter; }
+      set {
+        if(this.SetValue(ref this.filter, value?.ToLower())) {
+          this.FilteredRegistrations.View.Refresh();
+        }
+      }
+    }
+
+    public IRelayCommand DoClearFilter { get; private set; }
+
+    private bool FilterRegion(ISettingsRegistration registration) {
+      if(string.IsNullOrWhiteSpace(this.filter)) {
+        return true;
+      }
+      if(registration.Setting == null) {
+        // filter by drawer
+        if(registration.Drawer.DisplayName != null && registration.Drawer.DisplayName.ToLower().Contains(this.filter)) {
+          return true;
+        }
+        if(registration.Drawer.Description != null && registration.Drawer.Description.ToLower().Contains(this.filter)) {
+          return true;
+        }
+      } else {
+        // filter by setting
+        if(registration.Setting.DisplayName != null && registration.Setting.DisplayName.ToLower().Contains(this.filter)) {
+          return true;
+        }
+        if(registration.Setting.Description != null && registration.Setting.Description.ToLower().Contains(this.filter)) {
+          return true;
+        }
+      }
+      return false;
+    }
+
     [ImportingConstructor]
     public SettingsService([ImportMany] IEnumerable<ExportFactory<ISettingsDrawer, ISettingsDrawerMeta>> drawers) {
       this.Drawers = drawers.ToList();
+      this.FilteredRegistrations = new CollectionViewSource() {
+        Source = this.regions.OrderBy(r => r.DisplayOrder).SelectMany(r => r.Registrations.OrderBy(e => e.DisplayOrder)),
+      };
+      this.regions.CollectionChanged += (s1, e1) => {
+        this.FilteredRegistrations.View.Refresh();
+      };
+      this.FilteredRegistrations.GroupDescriptions.Add(new PropertyGroupDescription("Region"));
+      this.FilteredRegistrations.Filter += (s2, e2) => {
+        e2.Accepted = e2.Item is ISettingsRegistration registration && this.FilterRegion(registration);
+      };
+      this.DoClearFilter = new RelayCommand(() => {
+        this.Filter = "";
+      });
     }
 
-    public ISettingsRegion RegisterRegion(string name, string displayName = null, string description = null, int? displayOrder = 0) {
+    public ISettingsRegion RegisterRegion(string name, string displayName = null, string description = null, int? displayOrder = null) {
       var region = this.regions.FirstOrDefault(r => r.Name == name);
       if(region == null) {
         region = new SettingsRegion(this) {

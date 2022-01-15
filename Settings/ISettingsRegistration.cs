@@ -2,6 +2,7 @@
 
 namespace HAF {
   public interface ISettingsRegistration {
+    ISettingsRegion Region { get; }
     string Name { get; }
     int DisplayOrder { get; }
     ISettingsDrawer Drawer { get; }
