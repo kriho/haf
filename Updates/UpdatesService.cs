@@ -8,13 +8,15 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Xml;
 
 namespace HAF {
 
   [Export(typeof(IUpdatesService)), PartCreationPolicy(CreationPolicy.Shared)]
   public class UpdatesService : Service, IUpdatesService {
-    public Dictionary<string, string[]> PatchNotes { get; private set; } = new Dictionary<string, string[]>();
+    private List<IPatchNotes> patchNotes = new List<IPatchNotes>();
+    public IReadOnlyList<IPatchNotes> PatchNotes => this.patchNotes;
 
     public ICompoundState MayUpdate { get; private set; } = new CompoundState();
 
@@ -58,9 +60,26 @@ namespace HAF {
       }
     }
 
+    public CollectionViewSource FilteredPatchNotes { get; private set; }
+
+    private string filter;
+    public string Filter {
+      get { return this.filter; }
+      set {
+        if(this.SetValue(ref this.filter, value?.ToLower())) {
+          this.FilteredPatchNotes.View.Refresh();
+        }
+      }
+    }
+
+    public IRelayCommand DoClearFilter { get; private set; }
+
     public RelayCommand DoFetch { get; private set; }
+
     public RelayCommand DoInstall { get; private set; }
+
     public RelayCommand DoApply { get; private set; }
+
     public RelayCommand DoCancel { get; private set; }
 
     public UpdatesService() {
@@ -120,6 +139,38 @@ namespace HAF {
         };
         this.DoFetch.Execute(null);
       }
+      this.FilteredPatchNotes = new CollectionViewSource() {
+        Source = this.patchNotes.SelectMany(p => p.Entries),
+      }; 
+      this.FilteredPatchNotes.Filter += (s2, e2) => {
+        e2.Accepted = e2.Item is IPatchNotesEntry entry && this.FilterPatchNoteEntry(entry);
+      };
+      this.FilteredPatchNotes.GroupDescriptions.Add(new PropertyGroupDescription("Parent"));
+      this.DoClearFilter = new RelayCommand(() => {
+        this.Filter = "";
+      });
+    }
+
+    public IPatchNotes AddPatchNotes(string version) {
+      var patchDescription = new PatchNotes(version);
+      this.patchNotes.Add(patchDescription);
+      return patchDescription;
+    }
+
+    private bool FilterPatchNoteEntry(IPatchNotesEntry entry) {
+      if(string.IsNullOrWhiteSpace(this.filter)) {
+        return true;
+      }
+      if(entry.Parent.Version.Contains(this.filter)) {
+        return true;
+      }
+      if(entry.Type.Name.Contains(this.filter)) {
+        return true;
+      }
+      if(entry.Description.ToLower().Contains(this.filter)) {
+        return true;
+      }
+      return false;
     }
   }
 }

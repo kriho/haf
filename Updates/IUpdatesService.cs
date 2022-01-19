@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Data;
 
 namespace HAF {
   public interface IUpdatesService : IService {
@@ -15,6 +16,10 @@ namespace HAF {
     ICompoundState MayUpdate { get; }
     IReadOnlyState CanUpdate { get; }
     Event OnAvailableVersionChanged { get; }
-    Dictionary<string, string[]> PatchNotes { get; }
+    IReadOnlyList<IPatchNotes> PatchNotes { get; }
+    CollectionViewSource FilteredPatchNotes { get; }
+    string Filter { get; set; }
+    IRelayCommand DoClearFilter { get; }
+    IPatchNotes AddPatchNotes(string version);
   }
 }
