@@ -78,21 +78,21 @@ namespace HAF {
     public async Task LoadProjects(string defaultProjectName) {
       // get potential projects
       var projects = Directory.GetFiles(Configuration.ConfigurationDirectory, "*.xml", SearchOption.TopDirectoryOnly)
-                     .Where(filePath => {
-                       // filter out non-project xmls
-                       try {
-                         var document = new XmlDocument();
-                         document.Load(filePath);
-                         if(document.SelectSingleNode("/project") != null) {
-                           return true;
-                         }
-                       } catch { }
-                       return false;
-                     })
-                     .Select(p => new Project() {
-                       Name = Path.GetFileNameWithoutExtension(p),
-                       FilePath = p,
-                     });
+        .Where(filePath => {
+          // filter out non-project xmls
+          try {
+            var document = new XmlDocument();
+            document.Load(filePath);
+            if(document.SelectSingleNode("/project") != null) {
+              return true;
+            }
+          } catch { }
+          return false;
+        })
+        .Select(p => new Project() {
+          Name = Path.GetFileNameWithoutExtension(p),
+          FilePath = p,
+        });
       this.projects.Clear();
       this.projects.AddRange(projects);
       IProject defaultProject = null;
@@ -102,7 +102,6 @@ namespace HAF {
           Name = "default project",
           FilePath = Path.Combine(Configuration.ConfigurationDirectory, "default project.xml"),
         };
-        await this.SaveProject(project);
         this.projects.Add(project);
         defaultProject = project;
       } else {
@@ -165,9 +164,6 @@ namespace HAF {
     }
 
     public async Task LoadProject(IProject project) {
-      if(!File.Exists(project.FilePath)) {
-        return;
-      }
       // save current project
       if(this.currentProject != null) {
         await this.SaveProject(this.currentProject);
@@ -175,7 +171,7 @@ namespace HAF {
       // clear project
       await this.ClearProject();
       // load project from configuration
-      var configuration = ServiceConfiguration.FromFile(project.FilePath);
+      var configuration = File.Exists(project.FilePath) ? ServiceConfiguration.FromFile(project.FilePath) : new ServiceConfiguration("project");
       foreach(var service in this.ConfiguredServices) {
         await service.LoadConfiguration(configuration);
       }
@@ -191,7 +187,7 @@ namespace HAF {
 
     public override async Task LoadConfiguration(ServiceConfiguration configuration) {
       var defaultProject = configuration.ReadValue("defaultProject", null);
-      await this .LoadProjects(defaultProject);
+      await this.LoadProjects(defaultProject);
     }
 
     public override async Task SaveConfiguration(ServiceConfiguration configuration) {
