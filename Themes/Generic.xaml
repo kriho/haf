@@ -214,6 +214,23 @@
     <Style TargetType="{x:Type Label}">
         <Setter Property="Foreground" Value="{DynamicResource ThemeTextBrush}"/>
     </Style>
+    
+    <Style TargetType="{x:Type controls:TextBoxBlock}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:TextBoxBlock}">
+                    <Border BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
+                        <TextBox Text="{TemplateBinding Text}" TextWrapping="{TemplateBinding TextWrapping}" IsReadOnly="True" Background="Transparent" Padding="{TemplateBinding Padding}" Cursor="Arrow" Foreground="{TemplateBinding Foreground}" BorderThickness="0"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="3,2"/>
+        <Setter Property="Foreground" Value="{DynamicResource ThemeSecondaryBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeStrongBrush}"/>
+    </Style>
 
     <!-- Validation ############################################################################################################### -->
 
