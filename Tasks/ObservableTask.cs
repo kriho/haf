@@ -21,15 +21,8 @@ namespace HAF {
 
     private CancellationTokenSource cancellationTokenSource;
 
-    private bool isRunning;
-    public bool IsRunning {
-      get { return this.isRunning; }
-      private set { 
-        if(this.SetValue(ref this.isRunning, value)) {
-          this.DoCancel.RaiseCanExecuteChanged();
-        }
-      }
-    }
+    private State isRunning = new State(false);
+    public IReadOnlyState IsRunning => this.isRunning;
 
     public bool IsCancelled {
       get { return this.cancellationTokenSource?.IsCancellationRequested == true; }
@@ -87,9 +80,7 @@ namespace HAF {
     private void Initialize(Func<Task> work, IObservableTaskPool pool) {
       // apply initial progress
       this.RevertProgress();
-      this.DoCancel = new RelayCommand(this.Cancel, () => {
-        return this.cancellationTokenSource != null && !this.cancellationTokenSource.IsCancellationRequested && this.IsRunning;
-      });
+      this.DoCancel = new RelayCommand(this.Cancel, this.isRunning);
       this.work = work;
       this.Pool = pool;
       Configuration.Container.ComposeParts(this);
@@ -100,13 +91,13 @@ namespace HAF {
         // revert progress to make tast restartable
         this.RevertProgress();
         // add and indicate as running
-        this.IsRunning = true;
+        this.isRunning.Value = true;
         // create new cancellation token source
         this.cancellationTokenSource = new CancellationTokenSource();
         await this.work.Invoke();
       } catch(TaskCanceledException) {
       } finally {
-        this.IsRunning = false;
+        this.isRunning.Value = false;
       }
     }
 

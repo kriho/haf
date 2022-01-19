@@ -15,8 +15,8 @@ namespace HAF {
 
     public State IsIdle { get; private set; } = new State(true);
 
-    private readonly ObservableCollection<WaitingObservableTask> waitingTasks = new ObservableCollection<WaitingObservableTask>();
-    public IReadOnlyObservableCollection<IWaitingObservableTask> WaitingTasks => (IReadOnlyObservableCollection<IWaitingObservableTask>)this.waitingTasks;
+    private readonly ObservableCollection<IWaitingObservableTask> waitingTasks = new ObservableCollection<IWaitingObservableTask>();
+    public IReadOnlyObservableCollection<IWaitingObservableTask> WaitingTasks => this.waitingTasks;
 
     private readonly ObservableCollection<IObservableTask> activeTasks = new ObservableCollection<IObservableTask>();
     public IReadOnlyObservableCollection<IObservableTask> ActiveTasks => this.activeTasks;
@@ -35,7 +35,10 @@ namespace HAF {
 
     private void ScheduleWaitingTasks() {
       while(this.waitingTasks.Count > 0 && (this.activeTasks.Count < this.ParallelExecutionLimit || this.ParallelExecutionLimit == 0)) {
-        this.RunWaitingTask(this.waitingTasks[0]);
+        this.RunWaitingTask(this.waitingTasks[0] as WaitingObservableTask);
+      }
+      if(this.activeTasks.Count == 0) {
+        this.IsIdle.Value = false;
       }
     }
 

@@ -55,7 +55,7 @@ namespace HAF {
         return true;
       }
 #endif
-      if(this.Task.IsRunning) {
+      if(this.Task.IsRunning.Value) {
         return false;
       }
       if(this.canExecute != null && !this.canExecute.Invoke()) {

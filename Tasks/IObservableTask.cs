@@ -12,7 +12,7 @@ namespace HAF {
     IObservableTaskPool Pool { get; }
     IObservableTaskProgress Progress { get; }
     bool IsCancelled { get; }
-    bool IsRunning { get; }
+    IReadOnlyState IsRunning { get; }
     RelayCommand DoCancel { get; }
     Task Run();
     Task Schedule();
