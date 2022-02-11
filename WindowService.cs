@@ -7,14 +7,17 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace HAF {
 
   [Export(typeof(IWindowService)), PartCreationPolicy(CreationPolicy.Shared)]
-  public class WindowService : Service, IWindowService {
-    private Dictionary<string, object> controls = new Dictionary<string,object>();
+  public class WindowService: Service, IWindowService {
+    private Dictionary<string, object> controls = new Dictionary<string, object>();
 
     public Window Window { get; set; }
+
+    private Size? lastSize = null;
 
     public bool TryGetControl<T>(string name, out T control) {
       if(this.controls.TryGetValue(name, out var entry) && entry is T typedEntry) {
@@ -42,25 +45,47 @@ namespace HAF {
     }
 
     public override Task LoadConfiguration(ServiceConfiguration configuration) {
-      HAF.Configuration.StageAction(ConfigurationStage.WindowInitialization, () => {
-        if(configuration.TryReadEntry("window", out var window)) {
+      if(configuration.TryReadEntry("window", out var window)) {
+        HAF.Configuration.StageAction(ConfigurationStage.WindowInitialization, () => {
+          /*this.Window.SizeChanged += (s, e) => {
+            if(this.Window.WindowState != System.Windows.WindowState.Maximized) {
+              this.lastSize = new Size(this.Window.ActualWidth, this.Window.ActualHeight);
+            }
+          };*/
           this.Window.Topmost = window.ReadAttribute("topmost", false);
-          if(window.TryReadAttribute("width", out int width)) {
+          if(window.TryReadAttribute<int>("top", out var top)) {
+            this.Window.Top = top;
+          }
+          if(window.TryReadAttribute<int>("left", out var left)) {
+            this.Window.Left = left;
+          }
+          if(window.TryReadAttribute("width", out int width) && window.TryReadAttribute("height", out int height)) {
             this.Window.Width = width;
-          }
-          if(window.TryReadAttribute("height", out int height)) {
             this.Window.Height = height;
+            this.lastSize = new Size(width, height);
           }
-        }
-      });
+        });
+        HAF.Configuration.StageAction(ConfigurationStage.Running, () => {
+          this.Window.WindowState = window.ReadAttribute("maximized", false) ? WindowState.Maximized : WindowState.Normal;
+        });
+      }
       return Task.CompletedTask;
     }
 
     public override Task SaveConfiguration(ServiceConfiguration configuration) {
-      configuration.WriteEntry("window", true)
+      var entry = configuration.WriteEntry("window", true)
         .WriteAttribute("topmost", this.Window.Topmost)
-        .WriteAttribute("width", (int)this.Window.Width)
-        .WriteAttribute("height", (int)this.Window.Height); 
+        .WriteAttribute("top", (int)this.Window.Top)
+        .WriteAttribute("left", (int)this.Window.Left);
+      var maximized = this.Window.WindowState == System.Windows.WindowState.Maximized;
+      entry.WriteAttribute("maximized", maximized);
+      if(!maximized) {
+        entry.WriteAttribute("width", (int)this.Window.Width)
+          .WriteAttribute("height", (int)this.Window.Height);
+      } else if(this.lastSize != null) {
+        entry.WriteAttribute("width", (int)this.lastSize.Value.Width)
+          .WriteAttribute("height", (int)this.lastSize.Value.Height);
+      }
       return Task.CompletedTask;
     }
   }
