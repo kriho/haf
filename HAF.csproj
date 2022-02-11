@@ -18,7 +18,7 @@
     <TargetFrameworkProfile />
     <PackageId>$(AssemblyName)</PackageId>
     <Title>Holistic Application Framework</Title>
-    <Version>1.0.25</Version>
+    <Version>1.0.26</Version>
     <Authors>Kristjan Hornung</Authors>
     <PackageOutputPath>.</PackageOutputPath>
     <Description>
@@ -77,6 +77,7 @@
     <Compile Include="Commands\AsyncRelayCommand.cs" />
     <Compile Include="Commands\IAsyncRelayCommand.cs" />
     <Compile Include="Commands\IRelayCommand.cs" />
+    <Compile Include="Controls\FastBindableTextBlock.cs" />
     <Compile Include="Controls\TextBoxBlock.cs" />
     <Compile Include="Controls\Form.cs" />
     <Compile Include="Controls\FormTitle.cs" />
