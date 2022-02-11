@@ -22,11 +22,11 @@ namespace HAF {
 
     public IRelayCommand DoRefreshPlugins { get; private set; }
 
-    public IRelayCommand DoInstallPlugin { get; private set; }
+    public IRelayCommand DoInstallSelectedPlugin { get; private set; }
 
-    public IRelayCommand DoUninstallPlugin { get; private set; }
+    public IRelayCommand DoUninstallSelectedPlugin { get; private set; }
 
-    public IRelayCommand DoPublishPlugin { get; private set; }
+    public IRelayCommand DoPublishSelectedPlugin { get; private set; }
 
     public IRelayCommand DoRestart { get; private set; }
 
@@ -35,9 +35,9 @@ namespace HAF {
       get => this.selectedPlugin;
       set {
         if(this.SetValue(ref this.selectedPlugin, value)) {
-          this.DoInstallPlugin.RaiseCanExecuteChanged();
-          this.DoUninstallPlugin.RaiseCanExecuteChanged();
-          this.DoPublishPlugin.RaiseCanExecuteChanged();
+          this.DoInstallSelectedPlugin.RaiseCanExecuteChanged();
+          this.DoUninstallSelectedPlugin.RaiseCanExecuteChanged();
+          this.DoPublishSelectedPlugin.RaiseCanExecuteChanged();
         }
       }
     }
@@ -48,13 +48,13 @@ namespace HAF {
       this.DoRefreshPlugins = new RelayCommand(() => {
         _ = this.RefreshPlugins(true);
       });
-      this.DoInstallPlugin = new RelayCommand(async () => {
+      this.DoInstallSelectedPlugin = new RelayCommand(async () => {
         await this.InstallPlugin(this.selectedPlugin);
       }, () => this.selectedPlugin != null && (!this.selectedPlugin.Installed || this.selectedPlugin.UpdateAvailable));
-      this.DoUninstallPlugin = new RelayCommand(() => {
+      this.DoUninstallSelectedPlugin = new RelayCommand(() => {
         this.UninstallPlugin(this.selectedPlugin);
       }, () => this.selectedPlugin != null && this.selectedPlugin.Installed);
-      this.DoPublishPlugin = new RelayCommand(async () => {
+      this.DoPublishSelectedPlugin = new RelayCommand(async () => {
         await this.PushPlugin(this.selectedPlugin, this.GetPluginPath(this.selectedPlugin));
       }, () => this.selectedPlugin != null && this.selectedPlugin.Installed && !this.selectedPlugin.UpdateAvailable);
       this.DoRestart = new RelayCommand(() => {

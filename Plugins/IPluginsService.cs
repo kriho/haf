@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace HAF {
@@ -12,6 +12,21 @@ namespace HAF {
     /// The list of all installed and available plugins in their current state.
     /// </summary>
     IReadOnlyObservableCollection<IPluginEntry> Plugins { get; }
+
+    /// <summary>
+    /// Install selected plugin.
+    /// </summary>
+    IRelayCommand DoInstallSelectedPlugin { get; }
+
+    /// <summary>
+    /// Uninstall selected plugin.
+    /// </summary>
+    IRelayCommand DoUninstallSelectedPlugin { get; }
+
+    /// <summary>
+    /// Publish selected plugin.
+    /// </summary>
+    IRelayCommand DoPublishSelectedPlugin { get; }
 
     /// <summary>
     /// Refresh list of all installed and available plugins and their current states.
