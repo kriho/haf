@@ -26,7 +26,7 @@ namespace HAF {
             this.NotifyPropertyChanged("Item[]");
             System.Threading.Thread.CurrentThread.CurrentUICulture = value;
             System.Threading.Thread.CurrentThread.CurrentCulture = value;
-            this.OnSelectedCultureChanged.Fire();
+            this.onSelectedCultureChanged.Fire();
           } else {
             throw new InvalidOperationException($"no localization provider found for culture {value.DisplayName}");
           }
@@ -37,7 +37,8 @@ namespace HAF {
     private ObservableCollection<CultureInfo> availableCultures = new ObservableCollection<CultureInfo>();
     public IReadOnlyObservableCollection<CultureInfo> AvailableCultures => this.availableCultures;
 
-    public Event OnSelectedCultureChanged { get; private set; } = new Event(nameof(OnSelectedCultureChanged));
+    private Event onSelectedCultureChanged = new Event(nameof(OnSelectedCultureChanged));
+    public IReadOnlyEvent OnSelectedCultureChanged => this.onSelectedCultureChanged;
 
     public string this[string compoundId] {
       get {

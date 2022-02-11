@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 
 namespace HAF {
   public interface ILocalizationService: IService {
@@ -52,6 +52,10 @@ namespace HAF {
     /// <param name="count">Used to determine whether the plural id must be used. The behavior is language specific.</param>
     /// <returns>The localized text.</returns>
     string GetText(string contextId, string id, string pluralId, int count);
-    Event OnSelectedCultureChanged { get; }
+
+    /// <summary>
+    /// Event that is fired when the selected culture changes.
+    /// </summary>
+    IReadOnlyEvent OnSelectedCultureChanged { get; }
   }
 }
