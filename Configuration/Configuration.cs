@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
@@ -96,6 +96,8 @@ namespace HAF {
     /// After the provided assemblies are composed, the HAF assembly is composed and the configuration stage is advanced to <c>Configuration</c>.
     /// </summary>
     public static void ConfigureContainer(params string[] assemblyNames) {
+      // enter composition stage
+      HAF.Configuration.EnterStage(HAF.ConfigurationStage.Composition);
       // aggregate all catalogs
       var catalog = new AggregateCatalog();
       foreach(var filePath in Directory.GetFiles(Configuration.ExtensionsDirectory, "*.dll", SearchOption.TopDirectoryOnly)) {
@@ -119,16 +121,28 @@ namespace HAF {
       var duplicateServicePartDefinitions = Configuration.GetDuplicateServicePartDefinitions(catalog);
       var filteredCatalog = new FilteredCatalog(catalog, definition => !duplicateServicePartDefinitions.Contains(definition));
       Configuration.Container = new CompositionContainer(filteredCatalog);
+      // enter configuration state
+      HAF.Configuration.EnterStage(HAF.ConfigurationStage.Configuration);
+    }
 
     /// <summary>
     /// Enters configuration stage <c>WindowInitialization</c> and shows the provided window.<br/>
     /// The configuration stage is advanced to <c>Running</c> when the window fires the <c>SourceInitialized</c> event.
     /// </summary>
+    public static void ShowWindow(Window window) {
+      HAF.Configuration.EnterStage(HAF.ConfigurationStage.WindowInitialization);
+      window.SourceInitialized += (s, e) => {
+        HAF.Configuration.EnterStage(HAF.ConfigurationStage.Running);
+      };
+      window.Show();
     }
 
     /// <summary>
     /// Enters configuration stage <c>Exiting</c>.
     /// </summary>
+    public static void Exit() {
+      HAF.Configuration.EnterStage(HAF.ConfigurationStage.Exiting);
+    }
 
     /// <summary>
     /// Register a service to load its configuration from the <c>settings.xml</c> file in the <c>ConfigurationDirectory</c> when the configuration stage is advanced to <c>Configuration</c> and store its configuration when the configuration stage is set to <c>Exiting</c>.<br/>
@@ -138,7 +152,7 @@ namespace HAF {
     /// <exception cref="InvalidOperationException">When the service was already registered.</exception>
     public static void RegisterService(IService service, int priority = 0) {
       if(Configuration.serviceRegistrations.Any(r => r.Service == service)) {
-        throw new Exception($"the service {service.GetType().Name} is already registered in the HAF configuration");
+        throw new InvalidOperationException($"the service {service.GetType().Name} is already registered in the HAF configuration");
       }
       Configuration.serviceRegistrations.Add(new ServiceRegistration(service, priority));
     }
@@ -155,7 +169,7 @@ namespace HAF {
       compositionActions.Add(new Tuple<ConfigurationStage, Action>(stage, action));
     }
 
-    public static void EnterStage(ConfigurationStage stage) {
+    private static void EnterStage(ConfigurationStage stage) {
       if(stage <= Configuration.Stage) {
         throw new InvalidOperationException("the new configuration stage must be further along then the current stage");
       }
