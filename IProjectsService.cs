@@ -12,6 +12,7 @@ namespace HAF {
     IRelayCommand DoOpenDirectory { get; }
     IRelayCommand DoRefresh { get; }
     IRelayCommand DoAddProject { get; }
+    IRelayCommand DoSaveProject { get; }
     string EditName { get; set; }
     IRelayCommand<IProject> DoSetDefaultProject { get; }
     IProject CurrentProject { get; }

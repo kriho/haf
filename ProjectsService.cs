@@ -30,6 +30,8 @@ namespace HAF {
 
     public IRelayCommand DoAddProject { get; private set; }
 
+    public IRelayCommand DoSaveProject { get; private set; }
+
     private readonly RangeObservableCollection<IProject> projects = new RangeObservableCollection<IProject>();
     public IReadOnlyObservableCollection<IProject> Projects => this.projects;
 
@@ -46,6 +48,7 @@ namespace HAF {
           }
           this.DoLoadProject.RaiseCanExecuteChanged();
           this.DoDeleteProject.RaiseCanExecuteChanged();
+          this.DoSaveProject.RaiseCanExecuteChanged();
           this.onProjectsChanged.Fire();
         }
       }
@@ -140,6 +143,9 @@ namespace HAF {
       this.DoOpenDirectory = new RelayCommand(() => {
         System.Diagnostics.Process.Start(Configuration.ConfigurationDirectory);
       });
+      this.DoSaveProject = new RelayCommand(() => {
+        _ = this.SaveProject(this.currentProject);
+      }, () => this.currentProject != null);
       this.MayChangeProject.RegisterUpdate(() => {
         this.DoLoadProject.RaiseCanExecuteChanged();
       });
