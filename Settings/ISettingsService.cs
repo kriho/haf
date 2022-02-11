@@ -8,15 +8,52 @@ using System.Windows.Data;
 
 namespace HAF {
   public interface ISettingsService : IService {
+    /// <summary>
+    /// Current settings filter.
+    /// </summary>
     string Filter { get; set; }
+
+    /// <summary>
+    /// Clear settings filter.
+    /// </summary>
     IRelayCommand DoClearFilter { get; }
+
+    /// <summary>
+    /// Filtered settings.
+    /// </summary>
     CollectionViewSource FilteredRegistrations { get; }
-    Task LoadConfiguration(ISettingsOwner owner, ServiceConfiguration configuration);
-    Task SaveConfiguration(ISettingsOwner owner, ServiceConfiguration configuration);
+
+    /// <summary>
+    /// Register settings region.
+    /// </summary>
+    /// <param name="name">Internal name of the region. Used to reference the region.</param>
+    /// <returns>The registered region.</returns>
     ISettingsRegion RegisterRegion(string name, string displayName = null, string description = null, int? displayOrder = null);
+
+    /// <summary>
+    /// Try to find setting.
+    /// </summary>
+    /// <typeparam name="T">Type of the setting value.</typeparam>
+    /// <param name="regionName">Internal name of the setting region.</param>
+    /// <param name="name">Internal name of the setting.</param>
+    /// <param name="value">The discovered setting.</param>
+    /// <returns>True if a setting was found.</returns>
     bool TryFindSetting<T>(string regionName, string name, out T value);
+
+    /// <summary>
+    /// The available setting regions.
+    /// </summary>
     IReadOnlyObservableCollection<ISettingsRegion> Regions { get; }
+
+    /// <summary>
+    /// Get a matching settings drawer for the provided setting value.
+    /// </summary>
+    /// <returns>The first matching settings drawer.</returns>
     ISettingsDrawer GetDrawer(ISettingsValueBase settingsValue);
+
+    /// <summary>
+    /// Available settings drawers.
+    /// </summary>
     IReadOnlyList<ExportFactory<ISettingsDrawer, ISettingsDrawerMeta>> Drawers { get; }
   }
 }

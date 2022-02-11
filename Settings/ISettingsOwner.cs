@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace HAF {
   public interface ISettingsOwner {
+    /// <summary>
+    /// Name of the setting scope.
+    /// </summary>
     string Scope { get; }
   }
 }

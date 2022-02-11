@@ -15,9 +15,9 @@ namespace HAF {
     public event PropertyChangedEventHandler PropertyChanged;
 
     /// <summary>
-    /// Verify the existance of a property.
+    /// Verify existance of a property.
     /// </summary>
-    /// <param name="propertyName">the name of the property</param>
+    /// <param name="propertyName">Name of the property.</param>
     [Conditional("DEBUG")]
     [DebuggerStepThrough]
     private void VerifyPropertyName(string propertyName) {
@@ -37,9 +37,9 @@ namespace HAF {
     }
 
     /// <summary>
-    /// Use the PropertyChanged event to notify listeners about a changed property value.
+    /// Use the <c>PropertyChanged</c> event to notify listeners about a changed property value.
     /// </summary>
-    /// <param name="propertyName">the name of the property, provided by the compiler when called from within the property</param>
+    /// <param name="propertyName">Name of the property, provided by the compiler when called from within the property.</param>
     protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "") {
       // validate property name
       this.VerifyPropertyName(propertyName);
@@ -56,9 +56,9 @@ namespace HAF {
     }
 
     /// <summary>
-    /// Use the PropertyChanged event to notify listeners about a changed property value.
+    /// Use the <c>PropertyChanged</c> event to notify listeners about a changed property value.
     /// </summary>
-    /// <param name="propertyName">an expresstion that resolves as the property, e.g. () => this.Name</param>
+    /// <param name="propertyName">An expresstion that resolves as the property.</param>
     protected void NotifyPropertyChanged<T>(Expression<Func<T>> expression) {
       this.NotifyPropertyChanged(this.GetExpressionMemberName(expression));
     }
@@ -78,12 +78,12 @@ namespace HAF {
     /// <summary>
     /// Set the property value and send a change notification when the value changed.
     /// </summary>
-    /// <typeparam name="T">the value type</typeparam>
-    /// <param name="property">reference to the property, used to update the property value</param>
-    /// <param name="value">the new value</param>
-    /// <param name="subscribe">subsicibe to changes in the new property value, can be used to redirect change notification from the value object to this object</param>
-    /// <param name="propertyName">the name of the property, provided by the compiler when called from within the property</param>
-    /// <returns>true if the value has changed</returns>
+    /// <typeparam name="T">The value type.</typeparam>
+    /// <param name="property">Reference to the property, used to update the property value.</param>
+    /// <param name="value">The new value.</param>
+    /// <param name="subscribe">Subscribe to changes in the new property value. Can be used to redirect change notification from the value object to this object.</param>
+    /// <param name="propertyName">The name of the property. Provided by the compiler when called from within the property.</param>
+    /// <returns>True if the value has changed.</returns>
     protected bool SetValue<T>(ref T property, T value, bool subscribe = false, [CallerMemberName] string propertyName = "") {
       if (Object.Equals(property, value)) {
         // no changes
@@ -103,12 +103,12 @@ namespace HAF {
     /// <summary>
     /// Set the property value and send a change notification when the value changed.
     /// </summary>
-    /// <typeparam name="T">the value type</typeparam>
-    /// <param name="property">reference to the property, used to update the property value</param>
-    /// <param name="value">the new value</param>
-    /// <param name="expression">a member expression that is used to resolve the property name</param>
-    /// <param name="subscribe">subsicibe to changes in the new property value, can be used to redirect change notification from the value object to this object</param>
-    /// <returns>true if the value has changed</returns>
+    /// <typeparam name="T">The value type.</typeparam>
+    /// <param name="property">Reference to the property. Used to update the property value.</param>
+    /// <param name="value">The new value.</param>
+    /// <param name="expression">A member expression that is used to resolve the property.</param>
+    /// <param name="subscribe">Subscribe to changes in the new property value. Can be used to redirect change notification from the value object to this object.</param>
+    /// <returns>True if the value has changed.</returns>
     protected bool SetValue<T>(ref T property, T value, Expression<Func<T>> expression, bool subscribe = false) {
       return this.SetValue(ref property, value, subscribe, this.GetExpressionMemberName(expression));
     }

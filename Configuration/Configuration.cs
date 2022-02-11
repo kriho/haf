@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
@@ -21,6 +21,9 @@ namespace HAF {
     Exiting,
   }
 
+  /// <summary>
+  /// maintains the composition container and handles application start and exit routines
+  /// </summary>
   public static class Configuration {
     private class ServiceRegistration {
       public IService Service { get; private set; }
@@ -32,21 +35,40 @@ namespace HAF {
       }
     }
 
+    /// <summary>
+    /// Absolute path to the directory that contains all configuration files of the application.
+    /// </summary>
     public static string ConfigurationDirectory { get; set; }
 
+    /// <summary>
+    /// Absolute path to the directory that contains all extension files of the application.
+    /// </summary>
     public static string ExtensionsDirectory { get; set; }
 
+    /// <summary>
+    /// Absolute path to the application installation directory.
+    /// </summary>
     public static string ApplicationDirectory => AppDomain.CurrentDomain.BaseDirectory;
 
+    /// <summary>
+    /// The composition container that contains all services and parts.
+    /// </summary>
     public static CompositionContainer Container { get; private set; }
 
     private static readonly List<ServiceRegistration> serviceRegistrations = new List<ServiceRegistration>();
 
     private static readonly List<string> containerErrors = new List<string>();
+
+    /// <summary>
+    /// List of all errors that occurred during composition of the plugins.
+    /// </summary>
     public static IReadOnlyList<string> ContainerErrors => Configuration.containerErrors;
 
     private static List<Tuple<ConfigurationStage, Action>> compositionActions = new List<Tuple<ConfigurationStage, Action>>();
 
+    /// <summary>
+    /// The current configuration stage of the application. It is advanced in <c>ConfigureContainer()</c> and <c>ShowWindow()</c> and can be used to schedule actions using <c>StageAction()</c>.
+    /// </summary>
     public static ConfigurationStage Stage { get; private set; } = ConfigurationStage.Startup;
 
     private static List<ComposablePartDefinition> GetDuplicateServicePartDefinitions(ComposablePartCatalog catalog) {
@@ -68,6 +90,11 @@ namespace HAF {
       return result;
     }
 
+    /// <summary>
+    /// Enters configuration stage <c>Composition</c> and configurates composition the container by composing parts from all provided assemblies.<br/>
+    /// Loads all available extension from the <c>ExtensionsDirectory</c> before loading any other extensions.<br/>
+    /// After the provided assemblies are composed, the HAF assembly is composed and the configuration stage is advanced to <c>Configuration</c>.
+    /// </summary>
     public static void ConfigureContainer(params string[] assemblyNames) {
       // aggregate all catalogs
       var catalog = new AggregateCatalog();
@@ -92,8 +119,23 @@ namespace HAF {
       var duplicateServicePartDefinitions = Configuration.GetDuplicateServicePartDefinitions(catalog);
       var filteredCatalog = new FilteredCatalog(catalog, definition => !duplicateServicePartDefinitions.Contains(definition));
       Configuration.Container = new CompositionContainer(filteredCatalog);
+
+    /// <summary>
+    /// Enters configuration stage <c>WindowInitialization</c> and shows the provided window.<br/>
+    /// The configuration stage is advanced to <c>Running</c> when the window fires the <c>SourceInitialized</c> event.
+    /// </summary>
     }
 
+    /// <summary>
+    /// Enters configuration stage <c>Exiting</c>.
+    /// </summary>
+
+    /// <summary>
+    /// Register a service to load its configuration from the <c>settings.xml</c> file in the <c>ConfigurationDirectory</c> when the configuration stage is advanced to <c>Configuration</c> and store its configuration when the configuration stage is set to <c>Exiting</c>.<br/>
+    /// The service must override <c>LoadConfiguration()</c> and <c>SaveConfiguration()</c> to interact with the configuration.
+    /// </summary>
+    /// <param name="priority">Order in which configuration is loaded and stored. Lower priority means the service is loaded earlier and stored later.</param>
+    /// <exception cref="InvalidOperationException">When the service was already registered.</exception>
     public static void RegisterService(IService service, int priority = 0) {
       if(Configuration.serviceRegistrations.Any(r => r.Service == service)) {
         throw new Exception($"the service {service.GetType().Name} is already registered in the HAF configuration");
@@ -101,6 +143,9 @@ namespace HAF {
       Configuration.serviceRegistrations.Add(new ServiceRegistration(service, priority));
     }
 
+    /// <summary>
+    /// Register an action to be executed when the configuration stage is advanced to the provided value. When the current configuration stage is equal or greater then the provided value, the action is executed directly.
+    /// </summary>
     public static void StageAction(ConfigurationStage stage, Action action) {
       if(stage <= Configuration.Stage) {
         // execute directly as stage is current or passed

@@ -7,7 +7,6 @@ using System.Windows.Data;
 
 namespace HAF {
   public class LocalizeExtension: Binding {
-
     public LocalizeExtension(string id) : base("[" + id + "]") {
       this.Mode = BindingMode.OneWay;
       this.Source = Localization.LocalizationService;

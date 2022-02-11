@@ -10,6 +10,9 @@ using System.Windows.Media;
 
 namespace HAF {
   public interface IState: IReadOnlyState {
+    /// <summary>
+    /// Current state.
+    /// </summary>
     new bool Value { get; set; }
   }
 }

@@ -56,6 +56,15 @@ namespace HAF {
       throw new Exception("resolving the property name from a member expression has failed");
     }
 
+    /// <summary>
+    /// Set the property value and send a change notification when the value changed.
+    /// </summary>
+    /// <typeparam name="T">The value type.</typeparam>
+    /// <param name="property">Reference to the property, used to update the property value.</param>
+    /// <param name="value">The new value.</param>
+    /// <param name="subscribe">Subscribe to changes in the new property value. Can be used to redirect change notification from the value object to this object.</param>
+    /// <param name="propertyName">The name of the property. Provided by the compiler when called from within the property.</param>
+    /// <returns>True if the value has changed.</returns>
     protected bool SetValue<T>(ref T property, T value, bool subscribe = false, [CallerMemberName] string propertyName = "") {
       if (Object.Equals(property, value)) {
         // no changes
@@ -72,10 +81,22 @@ namespace HAF {
       return true;
     }
 
+    /// <summary>
+    /// Set the property value and send a change notification when the value changed.
+    /// </summary>
+    /// <typeparam name="T">The value type.</typeparam>
+    /// <param name="property">Reference to the property. Used to update the property value.</param>
+    /// <param name="value">The new value.</param>
+    /// <param name="expression">A member expression that is used to resolve the property.</param>
+    /// <param name="subscribe">Subscribe to changes in the new property value. Can be used to redirect change notification from the value object to this object.</param>
+    /// <returns>True if the value has changed.</returns>
     protected bool SetValue<T>(ref T property, T value, Expression<Func<T>> expression, bool subscribe = false) {
       return this.SetValue(ref property, value, subscribe, this.GetExpressionMemberName(expression));
     }
 
+    /// <summary>
+    /// Check if the application running in design mode (Visual Studio or Expression Blend).
+    /// </summary>
     public bool IsInDesignMode {
       get {
         return ObservableObject.IsInDesignModeStatic;

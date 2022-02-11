@@ -7,7 +7,14 @@ using System.Windows.Controls;
 
 namespace HAF {
   public interface ISettingsDrawerMeta {
+    /// <summary>
+    /// Associated type of the drawer.
+    /// </summary>
     Type AssociatedType { get; }
+
+    /// <summary>
+    /// Features supported by the drawer.
+    /// </summary>
     string Features { get; }
   }
 }

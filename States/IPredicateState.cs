@@ -10,6 +10,9 @@ using System.Windows.Media;
 
 namespace HAF {
   public interface IPredicateState: IReadOnlyState {
+    /// <summary>
+    /// Update current value.
+    /// </summary>
     void UpdateValue();
   }
 }

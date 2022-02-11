@@ -10,6 +10,10 @@ using System.Windows.Media;
 
 namespace HAF {
   public interface ICompoundState: IState {
+    /// <summary>
+    /// Add states that are used to evaluate the current state.
+    /// </summary>
+    /// <param name="states"></param>
     void AddStates(params IReadOnlyState[] states);
   }
 }
