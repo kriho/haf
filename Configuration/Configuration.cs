@@ -42,7 +42,10 @@ namespace HAF {
 
     private static readonly List<ServiceRegistration> serviceRegistrations = new List<ServiceRegistration>();
 
-    private static List<Tuple<ConfigurationStage,Action>> compositionActions = new List<Tuple<ConfigurationStage, Action>>();
+    private static readonly List<string> containerErrors = new List<string>();
+    public static IReadOnlyList<string> ContainerErrors => Configuration.containerErrors;
+
+    private static List<Tuple<ConfigurationStage, Action>> compositionActions = new List<Tuple<ConfigurationStage, Action>>();
 
     public static ConfigurationStage Stage { get; private set; } = ConfigurationStage.Startup;
 
@@ -68,7 +71,18 @@ namespace HAF {
     public static void ConfigureContainer(params string[] assemblyNames) {
       // aggregate all catalogs
       var catalog = new AggregateCatalog();
-      catalog.Catalogs.Add(new DirectoryCatalog(Configuration.ExtensionsDirectory));
+      foreach(var filePath in Directory.GetFiles(Configuration.ExtensionsDirectory, "*.dll", SearchOption.TopDirectoryOnly)) {
+        try {
+          var pluginCatalog = new AssemblyCatalog(Assembly.LoadFile(filePath));
+          var test = pluginCatalog.FirstOrDefault();
+          catalog.Catalogs.Add(pluginCatalog);
+        } catch(ReflectionTypeLoadException ex) {
+          foreach(var loaderException in ex.LoaderExceptions) {
+            containerErrors.Add($"failed to load plugin \"{Path.GetFileNameWithoutExtension(filePath)}\": {loaderException.Message}");
+          }
+          File.Move(filePath, filePath.Replace(".dll", ".dll.broken"));
+        }
+      }
       foreach(var assemblyName in assemblyNames) {
         catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load(assemblyName)));
       }
@@ -137,6 +151,11 @@ namespace HAF {
         var configuration = File.Exists(filePath) ? ServiceConfiguration.FromFile(filePath) : new ServiceConfiguration("settings");
         foreach(var serviceRegistration in Configuration.serviceRegistrations.OrderBy(r => r.Priority)) {
           serviceRegistration.Service.LoadConfiguration(configuration);
+        }
+      } else if(Configuration.Stage == ConfigurationStage.WindowInitialization) {
+        var logService = Configuration.Container.GetExportedValue<ILogService>();
+        foreach(var containerError in Configuration.ContainerErrors) {
+          logService.Error(containerError, "application");
         }
       } else if(Configuration.Stage == ConfigurationStage.Exiting) {
         // save service configurations
