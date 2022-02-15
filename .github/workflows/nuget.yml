@@ -26,12 +26,12 @@ jobs:
         working-directory: Documentation
         run: docfx docfx.json
         continue-on-error: false
-      - name: 📂 Sync files
+      - name: publish documentation
         uses: SamKirkland/FTP-Deploy-Action@4.2.0
         with:
           server: hosting162236.af9aa.netcup.net
           username: haf-documentation
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: Documentation/Site
+          local-dir: Documentation/Site/
 
           
