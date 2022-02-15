@@ -55,5 +55,19 @@ namespace HAF {
     /// Available settings drawers.
     /// </summary>
     IReadOnlyList<ExportFactory<ISettingsDrawer, ISettingsDrawerMeta>> Drawers { get; }
+    
+    /// <summary>
+    /// Save service configuration for specific settings owner.
+    /// </summary>
+    /// <param name="owner">The settings ownser.</param>
+    /// <param name="configuration">Target configuration.</param>
+    Task SaveConfiguration(ISettingsOwner owner, ServiceConfiguration configuration);
+  
+    /// <summary>
+    /// Load service configuration for specific settings owner.
+    /// </summary>
+    /// <param name="owner">The settings ownser.</param>
+    /// <param name="configuration">Source configuration.</param>
+    Task LoadConfiguration(ISettingsOwner owner, ServiceConfiguration configuration);
   }
 }
