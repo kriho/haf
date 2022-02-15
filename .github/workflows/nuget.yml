@@ -18,4 +18,14 @@ jobs:
         run: msbuild -t:pack
       - name: publish
         run: dotnet nuget push "HAF.*.nupkg" --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      - name: buiid documentation
+        uses: nikeee/docfx-action@v1.0.0
+        with:
+          args: Documentation/docfx.json
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@4.2.0
+        with:
+          server: hosting162236.af9aa.netcup.net
+          username: haf-documentation
+          password: ${{ secrets.FTP_PASSWORD }}
           
