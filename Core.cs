@@ -140,7 +140,7 @@ namespace HAF {
     /// </summary>
     public static void LoadServiceConfiguration() {
       // enter configuration state
-      HAF.Configuration.EnterStage(HAF.ConfigurationStage.Configuration);
+      HAF.Core.EnterStage(HAF.ConfigurationStage.Configuration);
     }
 
     /// <summary>
