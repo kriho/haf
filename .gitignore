@@ -3,3 +3,6 @@ bin
 .vs
 *.nupkg
 packages
+Documentation/obj
+Documentation/Model
+Documentation/Site

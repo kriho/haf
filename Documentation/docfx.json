@@ -1,0 +1,66 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [
+            "**.csproj"
+          ],
+          "exclude": [
+            "**/bin/**",
+            "**/obj/**",
+            "Documentation"
+          ],
+          "src": "../"
+        }
+      ],
+      "dest": "Model"
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "Model/*.yml",
+          "Articles/*.md",
+          "Articles/toc.yml",
+          "*.md",
+          "toc.yml"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "Images/**"
+        ]
+      }
+    ],
+    "overwrite": [
+      {
+        "files": [
+          "Annotations/*.md"
+        ]
+      }
+    ],
+    "dest": "Site",
+    "template": "statictoc",
+    "globalMetadata": {
+      "_appTitle": "HAF",
+      "_appFooter": "haf.hornung.dev",
+      "_enableSearch": true,
+      "_enableNewTab": true,
+      "_disableNavbar": false,
+      "_disableBreadcrumb": false,
+      "_disableToc": false,
+      "_disableAffix": false,
+      "_disableContribution": false,
+      "_gitContribute": {
+        "repo": "https://github.com/kriho/haf",
+        "branch": "master",
+        "apiSpecFolder": "Annotations"
+      }
+    },
+    "markdownEngineName": "markdig"
+  }
+}
