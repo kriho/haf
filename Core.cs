@@ -22,7 +22,7 @@ namespace HAF {
   }
 
   /// <summary>
-  /// maintains the composition container and handles application start and exit routines
+  /// Maintains the composition container and handles the application start and exit routines.
   /// </summary>
   public static class Core {
     private class ServiceRegistration {
@@ -51,7 +51,7 @@ namespace HAF {
     public static string ApplicationDirectory => AppDomain.CurrentDomain.BaseDirectory;
 
     /// <summary>
-    /// The composition container that contains all services and parts.
+    /// Composition container that contains all exported services and parts.
     /// </summary>
     public static CompositionContainer Container { get; private set; }
 
@@ -67,7 +67,7 @@ namespace HAF {
     private static List<Tuple<ConfigurationStage, Action>> compositionActions = new List<Tuple<ConfigurationStage, Action>>();
 
     /// <summary>
-    /// The current configuration stage of the application. It is advanced in <c>ConfigureContainer()</c> and <c>ShowWindow()</c> and can be used to schedule actions using <c>StageAction()</c>.
+    /// Current configuration stage of the application. It is advanced in <c>ConfigureContainer()</c> and <c>ShowWindow()</c> and can be used to schedule actions using <c>StageAction()</c>.
     /// </summary>
     public static ConfigurationStage Stage { get; private set; } = ConfigurationStage.Startup;
 
