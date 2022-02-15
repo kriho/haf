@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HAF.Core.Storage
+namespace HAF.Storage
 {
     public abstract class StorageFolder<T>
     {

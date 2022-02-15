@@ -46,7 +46,7 @@ namespace HAF {
 
     public override Task LoadConfiguration(ServiceConfiguration configuration) {
       if(configuration.TryReadEntry("window", out var window)) {
-        HAF.Configuration.StageAction(ConfigurationStage.WindowInitialization, () => {
+        HAF.Core.StageAction(ConfigurationStage.WindowInitialization, () => {
           /*this.Window.SizeChanged += (s, e) => {
             if(this.Window.WindowState != System.Windows.WindowState.Maximized) {
               this.lastSize = new Size(this.Window.ActualWidth, this.Window.ActualHeight);
@@ -65,7 +65,7 @@ namespace HAF {
             this.lastSize = new Size(width, height);
           }
         });
-        HAF.Configuration.StageAction(ConfigurationStage.Running, () => {
+        HAF.Core.StageAction(ConfigurationStage.Running, () => {
           this.Window.WindowState = window.ReadAttribute("maximized", false) ? WindowState.Maximized : WindowState.Normal;
         });
       }

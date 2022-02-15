@@ -106,7 +106,7 @@ namespace HAF {
     }
 
     private void LoadWindowLayout(IWindowLayout windowLayout) {
-      HAF.Configuration.StageAction(ConfigurationStage.WindowInitialization, () => {
+      HAF.Core.StageAction(ConfigurationStage.WindowInitialization, () => {
         this.dockingWindow.SetWindowLayout(windowLayout.Layout);
         // set as current
         this.ActiveWindowLayout = windowLayout;

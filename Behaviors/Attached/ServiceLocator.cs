@@ -21,7 +21,7 @@ namespace HAF {
 
     private static void OnServicePropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e) {
       if(obj is FrameworkElement element) {
-        element.DataContext = Configuration.Container.GetExportedValue<object>(e.NewValue.ToString());
+        element.DataContext = Core.Container.GetExportedValue<object>(e.NewValue.ToString());
       }
     }
   }

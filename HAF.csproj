@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -18,7 +18,7 @@
     <TargetFrameworkProfile />
     <PackageId>$(AssemblyName)</PackageId>
     <Title>Holistic Application Framework</Title>
-    <Version>1.0.27</Version>
+    <Version>1.0.28</Version>
     <Authors>Kristjan Hornung</Authors>
     <PackageOutputPath>.</PackageOutputPath>
     <Description>
@@ -217,7 +217,7 @@
     <Compile Include="ExtensionMethods\NumberExtensions.cs" />
     <Compile Include="ExtensionMethods\StringExtensions.cs" />
     <Compile Include="FtpClient.cs" />
-    <Compile Include="Configuration\Configuration.cs" />
+    <Compile Include="Core.cs" />
     <Compile Include="Interactivity\InteractiveCommand.cs" />
     <Compile Include="Interactivity\InteractiveMethod.cs" />
     <Compile Include="Interactivity\InteractiveState.cs" />
@@ -263,7 +263,7 @@
     <Compile Include="Service\Service.cs" />
     <Compile Include="Splash\SplashManager.cs" />
     <Compile Include="Splash\SplashWindow.cs" />
-    <Compile Include="Configuration\ServiceConfiguration.cs" />
+    <Compile Include="Service\ServiceConfiguration.cs" />
     <Compile Include="Storage\BinaryLiveStorageFile.cs" />
     <Compile Include="Storage\BinaryStorageFile.cs" />
     <Compile Include="Storage\EncryptedBinaryStorageFile.cs" />

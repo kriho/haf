@@ -9,7 +9,7 @@ namespace HAF {
     internal static readonly ILogService LogService;
 
     static Log() {
-      Log.LogService = Configuration.Container.GetExportedValue<ILogService>();
+      Log.LogService = Core.Container.GetExportedValue<ILogService>();
     }
 
     public static void Info(string message, string source = null) {

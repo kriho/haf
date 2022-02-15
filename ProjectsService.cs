@@ -80,7 +80,7 @@ namespace HAF {
 
     public async Task LoadProjects(string defaultProjectName) {
       // get potential projects
-      var projects = Directory.GetFiles(Configuration.ConfigurationDirectory, "*.xml", SearchOption.TopDirectoryOnly)
+      var projects = Directory.GetFiles(Core.ConfigurationDirectory, "*.xml", SearchOption.TopDirectoryOnly)
         .Where(filePath => {
           // filter out non-project xmls
           try {
@@ -103,7 +103,7 @@ namespace HAF {
       if(this.projects.Count == 0) {
         var project = new Project() {
           Name = "default project",
-          FilePath = Path.Combine(Configuration.ConfigurationDirectory, "default project.xml"),
+          FilePath = Path.Combine(Core.ConfigurationDirectory, "default project.xml"),
         };
         this.projects.Add(project);
         defaultProject = project;
@@ -141,7 +141,7 @@ namespace HAF {
         await this.LoadProjects(this.defaultProject?.Name);
       }, this.MayChangeProject);
       this.DoOpenDirectory = new RelayCommand(() => {
-        System.Diagnostics.Process.Start(Configuration.ConfigurationDirectory);
+        System.Diagnostics.Process.Start(Core.ConfigurationDirectory);
       });
       this.DoSaveProject = new RelayCommand(() => {
         _ = this.SaveProject(this.currentProject);
@@ -207,7 +207,7 @@ namespace HAF {
       await this.ClearProject();
       var project = new Project() {
         Name = name,
-        FilePath = Path.Combine(Configuration.ConfigurationDirectory, name + ".xml"),
+        FilePath = Path.Combine(Core.ConfigurationDirectory, name + ".xml"),
       };
       this.projects.Add(project);
       this.CurrentProject = project;

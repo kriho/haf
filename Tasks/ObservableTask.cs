@@ -83,7 +83,7 @@ namespace HAF {
       this.DoCancel = new RelayCommand(this.Cancel, this.isRunning);
       this.work = work;
       this.Pool = pool;
-      Configuration.Container.ComposeParts(this);
+      Core.Container.ComposeParts(this);
     }
 
     public async Task Run() {

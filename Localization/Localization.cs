@@ -9,7 +9,7 @@ namespace HAF {
     internal static readonly ILocalizationService LocalizationService;
 
     static Localization() {
-      Localization.LocalizationService = Configuration.Container.GetExportedValue<ILocalizationService>();
+      Localization.LocalizationService = Core.Container.GetExportedValue<ILocalizationService>();
     }
 
     /// <summary>

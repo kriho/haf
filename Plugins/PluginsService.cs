@@ -84,7 +84,7 @@ namespace HAF {
         });
       }
       // search for local plugins
-      foreach(var filePath in Directory.GetFiles(Path.Combine(HAF.Configuration.ConfigurationDirectory, "extensions"), "*.dll", SearchOption.TopDirectoryOnly)) {
+      foreach(var filePath in Directory.GetFiles(Path.Combine(HAF.Core.ConfigurationDirectory, "extensions"), "*.dll", SearchOption.TopDirectoryOnly)) {
         var name = Path.GetFileNameWithoutExtension(filePath);
         if(!plugins.Any(p => p.PluginName == name)) {
           plugins.Add(new PluginEntry() {
@@ -136,7 +136,7 @@ namespace HAF {
     }
 
     private string GetPluginPath(IPluginMetadata plugin) {
-      return Path.Combine(HAF.Configuration.ConfigurationDirectory, "extensions", plugin.PluginName + ".dll");
+      return Path.Combine(HAF.Core.ConfigurationDirectory, "extensions", plugin.PluginName + ".dll");
     }
   }
 }

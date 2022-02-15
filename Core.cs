@@ -24,7 +24,7 @@ namespace HAF {
   /// <summary>
   /// maintains the composition container and handles application start and exit routines
   /// </summary>
-  public static class Configuration {
+  public static class Core {
     private class ServiceRegistration {
       public IService Service { get; private set; }
       public int Priority { get; private set; }
@@ -62,7 +62,7 @@ namespace HAF {
     /// <summary>
     /// List of all errors that occurred during composition of the plugins.
     /// </summary>
-    public static IReadOnlyList<string> ContainerErrors => Configuration.containerErrors;
+    public static IReadOnlyList<string> ContainerErrors => Core.containerErrors;
 
     private static List<Tuple<ConfigurationStage, Action>> compositionActions = new List<Tuple<ConfigurationStage, Action>>();
 
@@ -97,10 +97,10 @@ namespace HAF {
     /// </summary>
     public static void ConfigureContainer(params string[] assemblyNames) {
       // enter composition stage
-      HAF.Configuration.EnterStage(HAF.ConfigurationStage.Composition);
+      HAF.Core.EnterStage(HAF.ConfigurationStage.Composition);
       // aggregate all catalogs
       var catalog = new AggregateCatalog();
-      foreach(var filePath in Directory.GetFiles(Configuration.ExtensionsDirectory, "*.dll", SearchOption.TopDirectoryOnly)) {
+      foreach(var filePath in Directory.GetFiles(Core.ExtensionsDirectory, "*.dll", SearchOption.TopDirectoryOnly)) {
         try {
           var pluginCatalog = new AssemblyCatalog(Assembly.LoadFile(filePath));
           var test = pluginCatalog.FirstOrDefault();
@@ -118,11 +118,9 @@ namespace HAF {
       catalog.Catalogs.Add(new AssemblyCatalog(Assembly.Load("HAF, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")));
       // filter out all duplicate service exports, only the first export of a service export type identity remains
       // note that design time services have highest priority, then extension services and lastly application services
-      var duplicateServicePartDefinitions = Configuration.GetDuplicateServicePartDefinitions(catalog);
+      var duplicateServicePartDefinitions = Core.GetDuplicateServicePartDefinitions(catalog);
       var filteredCatalog = new FilteredCatalog(catalog, definition => !duplicateServicePartDefinitions.Contains(definition));
-      Configuration.Container = new CompositionContainer(filteredCatalog);
-      // enter configuration state
-      HAF.Configuration.EnterStage(HAF.ConfigurationStage.Configuration);
+      Core.Container = new CompositionContainer(filteredCatalog);
     }
 
     /// <summary>
@@ -130,18 +128,26 @@ namespace HAF {
     /// The configuration stage is advanced to <c>Running</c> when the window fires the <c>SourceInitialized</c> event.
     /// </summary>
     public static void ShowWindow(Window window) {
-      HAF.Configuration.EnterStage(HAF.ConfigurationStage.WindowInitialization);
+      HAF.Core.EnterStage(HAF.ConfigurationStage.WindowInitialization);
       window.SourceInitialized += (s, e) => {
-        HAF.Configuration.EnterStage(HAF.ConfigurationStage.Running);
+        HAF.Core.EnterStage(HAF.ConfigurationStage.Running);
       };
       window.Show();
+    }
+
+    /// <summary>
+    /// Enters configuration stage <c>Configuration</c> and loads all configuration for registered services.<br/>
+    /// </summary>
+    public static void LoadServiceConfiguration() {
+      // enter configuration state
+      HAF.Configuration.EnterStage(HAF.ConfigurationStage.Configuration);
     }
 
     /// <summary>
     /// Enters configuration stage <c>Exiting</c>.
     /// </summary>
     public static void Exit() {
-      HAF.Configuration.EnterStage(HAF.ConfigurationStage.Exiting);
+      HAF.Core.EnterStage(HAF.ConfigurationStage.Exiting);
     }
 
     /// <summary>
@@ -151,17 +157,17 @@ namespace HAF {
     /// <param name="priority">Order in which configuration is loaded and stored. Lower priority means the service is loaded earlier and stored later.</param>
     /// <exception cref="InvalidOperationException">When the service was already registered.</exception>
     public static void RegisterService(IService service, int priority = 0) {
-      if(Configuration.serviceRegistrations.Any(r => r.Service == service)) {
+      if(Core.serviceRegistrations.Any(r => r.Service == service)) {
         throw new InvalidOperationException($"the service {service.GetType().Name} is already registered in the HAF configuration");
       }
-      Configuration.serviceRegistrations.Add(new ServiceRegistration(service, priority));
+      Core.serviceRegistrations.Add(new ServiceRegistration(service, priority));
     }
 
     /// <summary>
     /// Register an action to be executed when the configuration stage is advanced to the provided value. When the current configuration stage is equal or greater then the provided value, the action is executed directly.
     /// </summary>
     public static void StageAction(ConfigurationStage stage, Action action) {
-      if(stage <= Configuration.Stage) {
+      if(stage <= Core.Stage) {
         // execute directly as stage is current or passed
         action();
       }
@@ -170,20 +176,20 @@ namespace HAF {
     }
 
     private static void EnterStage(ConfigurationStage stage) {
-      if(stage <= Configuration.Stage) {
+      if(stage <= Core.Stage) {
         throw new InvalidOperationException("the new configuration stage must be further along then the current stage");
       }
-      Configuration.Stage = stage;
-      foreach(var action in compositionActions.Where(a => a.Item1 == Configuration.Stage)) {
+      Core.Stage = stage;
+      foreach(var action in compositionActions.Where(a => a.Item1 == Core.Stage)) {
         action.Item2();
       }
-      if(Configuration.Stage == ConfigurationStage.Composition) {
+      if(Core.Stage == ConfigurationStage.Composition) {
         // create directories if needed
-        if(!Directory.Exists(Configuration.ConfigurationDirectory)) {
-          Directory.CreateDirectory(Configuration.ConfigurationDirectory);
+        if(!Directory.Exists(Core.ConfigurationDirectory)) {
+          Directory.CreateDirectory(Core.ConfigurationDirectory);
         } else {
           // perform requested deletions
-          foreach(var deleteFilePath in Directory.GetFiles(Configuration.ConfigurationDirectory, "*.delete", SearchOption.AllDirectories)) {
+          foreach(var deleteFilePath in Directory.GetFiles(Core.ConfigurationDirectory, "*.delete", SearchOption.AllDirectories)) {
             var filePath = deleteFilePath.Substring(0, deleteFilePath.Length - 7);
             if(File.Exists(filePath)) {
               File.Delete(filePath);
@@ -191,7 +197,7 @@ namespace HAF {
             File.Delete(deleteFilePath);
           }
           // perform requested replacements
-          foreach(var replaceFilePath in Directory.GetFiles(Configuration.ConfigurationDirectory, "*.replace", SearchOption.AllDirectories)) {
+          foreach(var replaceFilePath in Directory.GetFiles(Core.ConfigurationDirectory, "*.replace", SearchOption.AllDirectories)) {
             var filePath = replaceFilePath.Substring(0, replaceFilePath.Length - 8);
             if(File.Exists(filePath)) {
               File.Delete(filePath);
@@ -199,30 +205,30 @@ namespace HAF {
             File.Move(replaceFilePath, filePath);
           }
         }
-        if(!Directory.Exists(Configuration.ExtensionsDirectory)) {
-          Directory.CreateDirectory(Configuration.ExtensionsDirectory);
+        if(!Directory.Exists(Core.ExtensionsDirectory)) {
+          Directory.CreateDirectory(Core.ExtensionsDirectory);
         }
-      } else if(Configuration.Stage == ConfigurationStage.Configuration) {
+      } else if(Core.Stage == ConfigurationStage.Configuration) {
         // assign links for all linked objects
         LinkedObservableObjectManager.AssignLinks();
         // load service configurations
-        var filePath = Path.Combine(Configuration.ConfigurationDirectory, "settings.xml");
+        var filePath = Path.Combine(Core.ConfigurationDirectory, "settings.xml");
         var configuration = File.Exists(filePath) ? ServiceConfiguration.FromFile(filePath) : new ServiceConfiguration("settings");
-        foreach(var serviceRegistration in Configuration.serviceRegistrations.OrderBy(r => r.Priority)) {
+        foreach(var serviceRegistration in Core.serviceRegistrations.OrderBy(r => r.Priority)) {
           serviceRegistration.Service.LoadConfiguration(configuration);
         }
-      } else if(Configuration.Stage == ConfigurationStage.WindowInitialization) {
-        var logService = Configuration.Container.GetExportedValue<ILogService>();
-        foreach(var containerError in Configuration.ContainerErrors) {
+      } else if(Core.Stage == ConfigurationStage.WindowInitialization) {
+        var logService = Core.Container.GetExportedValue<ILogService>();
+        foreach(var containerError in Core.ContainerErrors) {
           logService.Error(containerError, "application");
         }
-      } else if(Configuration.Stage == ConfigurationStage.Exiting) {
+      } else if(Core.Stage == ConfigurationStage.Exiting) {
         // save service configurations
         var configuration = new ServiceConfiguration("settings");
-        foreach(var serviceRegistration in Configuration.serviceRegistrations.OrderByDescending(r => r.Priority)) {
+        foreach(var serviceRegistration in Core.serviceRegistrations.OrderByDescending(r => r.Priority)) {
           serviceRegistration.Service.SaveConfiguration(configuration);
         }
-        configuration.SaveToFile(Path.Combine(Configuration.ConfigurationDirectory, "settings.xml"));
+        configuration.SaveToFile(Path.Combine(Core.ConfigurationDirectory, "settings.xml"));
       }
     }
   }

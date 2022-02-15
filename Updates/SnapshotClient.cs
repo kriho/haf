@@ -1,5 +1,4 @@
-﻿using HAF.Core;
-using HAF.Ftp;
+﻿using HAF.Ftp;
 using HAF.Logging;
 using System;
 using System.Collections.Generic;
