@@ -11,13 +11,33 @@ using System.Threading.Tasks;
 using System.Windows;
 
 namespace HAF {
-
+  /// <summary>
+  /// Represents the internal state of the start and exit routine of <see cref="Core"/>.
+  /// </summary>
   public enum ConfigurationStage {
+    /// <summary>
+    /// Initial state.
+    /// </summary>
     Startup,
+    /// <summary>
+    /// Active state during composition of services and parts. Registered stage actions are executed before any parts are composed.
+    /// </summary>
     Composition,
+    /// <summary>
+    /// Active stage during service configuration. Registered stage actions are executed before any service configurations are loaded.
+    /// </summary>
     Configuration,
+    /// <summary>
+    /// Active stage after window initialization. Registered stage actions are executed after the main window is initialized.
+    /// </summary>
     WindowInitialization,
+    /// <summary>
+    /// Active stage after the main window has fired the <see cref="System.Windows.Window.SourceInitialized"/> event. Registered stage actions are executed after the event fired.
+    /// </summary>
     Running,
+    /// <summary>
+    /// Active stage when the application is exiting. Registered stage actions are executed before the application terminates.
+    /// </summary>
     Exiting,
   }
 
@@ -38,21 +58,25 @@ namespace HAF {
     /// <summary>
     /// Absolute path to the directory that contains all configuration files of the application.
     /// </summary>
+    /// <value>Absolute path</value>
     public static string ConfigurationDirectory { get; set; }
 
     /// <summary>
     /// Absolute path to the directory that contains all extension files of the application.
     /// </summary>
+    /// <value>Absolute path</value>
     public static string ExtensionsDirectory { get; set; }
 
     /// <summary>
     /// Absolute path to the application installation directory.
     /// </summary>
+    /// <value>Absolute path</value>
     public static string ApplicationDirectory => AppDomain.CurrentDomain.BaseDirectory;
 
     /// <summary>
     /// Composition container that contains all exported services and parts.
     /// </summary>
+    /// <value>Primary composition container</value>
     public static CompositionContainer Container { get; private set; }
 
     private static readonly List<ServiceRegistration> serviceRegistrations = new List<ServiceRegistration>();
@@ -67,7 +91,7 @@ namespace HAF {
     private static List<Tuple<ConfigurationStage, Action>> compositionActions = new List<Tuple<ConfigurationStage, Action>>();
 
     /// <summary>
-    /// Current configuration stage of the application. It is advanced in <c>ConfigureContainer()</c> and <c>ShowWindow()</c> and can be used to schedule actions using <c>StageAction()</c>.
+    /// Current configuration stage of the application. It is advanced in <see cref="Core.ConfigureContainer(string[])"/>, <see cref="Core.ShowWindow(Window)"/> and <see cref="Core.LoadServiceConfiguration"/> and can be used to schedule actions using <see cref="Core.StageAction(ConfigurationStage, Action)"/>.
     /// </summary>
     public static ConfigurationStage Stage { get; private set; } = ConfigurationStage.Startup;
 
@@ -91,10 +115,11 @@ namespace HAF {
     }
 
     /// <summary>
-    /// Enters configuration stage <c>Composition</c> and configurates composition the container by composing parts from all provided assemblies.<br/>
-    /// Loads all available extension from the <c>ExtensionsDirectory</c> before loading any other extensions.<br/>
-    /// After the provided assemblies are composed, the HAF assembly is composed and the configuration stage is advanced to <c>Configuration</c>.
+    /// Enters configuration stage <see cref="ConfigurationStage.Composition"/> and configurates composition the container by composing parts from all provided assemblies.<br/>
+    /// Loads all available extension from the <see cref="Core.ExtensionsDirectory"/> before loading any other extensions.<br/>
+    /// After the provided assemblies are composed, the HAF assembly is composed and the configuration stage is advanced to <see cref="ConfigurationStage.Configuration"/>.
     /// </summary>
+    /// <param name="assemblyNames">List of assembly names in format "{name}, Version={version}, Culture={culture}, PublicKeyToken={public key token}"</param>
     public static void ConfigureContainer(params string[] assemblyNames) {
       // enter composition stage
       HAF.Core.EnterStage(HAF.ConfigurationStage.Composition);
@@ -124,8 +149,8 @@ namespace HAF {
     }
 
     /// <summary>
-    /// Enters configuration stage <c>WindowInitialization</c> and shows the provided window.<br/>
-    /// The configuration stage is advanced to <c>Running</c> when the window fires the <c>SourceInitialized</c> event.
+    /// Enters configuration stage <see cref="ConfigurationStage.WindowInitialization"/> and shows the provided window.<br/>
+    /// The configuration stage is advanced to <see cref="ConfigurationStage.Running"/> when the window fires the <see cref="System.Windows.Window.SourceInitialized"/> event.
     /// </summary>
     public static void ShowWindow(Window window) {
       HAF.Core.EnterStage(HAF.ConfigurationStage.WindowInitialization);
@@ -136,7 +161,7 @@ namespace HAF {
     }
 
     /// <summary>
-    /// Enters configuration stage <c>Configuration</c> and loads all configuration for registered services.<br/>
+    /// Enters configuration stage <see cref="ConfigurationStage.Configuration"/> and loads all configuration for registered services.<br/>
     /// </summary>
     public static void LoadServiceConfiguration() {
       // enter configuration state
@@ -144,16 +169,17 @@ namespace HAF {
     }
 
     /// <summary>
-    /// Enters configuration stage <c>Exiting</c>.
+    /// Enters configuration stage <see cref="ConfigurationStage.Exiting"/>.
     /// </summary>
     public static void Exit() {
       HAF.Core.EnterStage(HAF.ConfigurationStage.Exiting);
     }
 
     /// <summary>
-    /// Register a service to load its configuration from the <c>settings.xml</c> file in the <c>ConfigurationDirectory</c> when the configuration stage is advanced to <c>Configuration</c> and store its configuration when the configuration stage is set to <c>Exiting</c>.<br/>
-    /// The service must override <c>LoadConfiguration()</c> and <c>SaveConfiguration()</c> to interact with the configuration.
+    /// Register a service to load its configuration from the <c>settings.xml</c> file in the <see cref="Core.ConfigurationDirectory"/> when the configuration stage is advanced to <see cref="ConfigurationStage.Configuration"/> and store its configuration when the configuration stage is set to <see cref="ConfigurationStage.Exiting"/>.<br/>
+    /// The service must override <see cref="IService.LoadConfiguration(ServiceConfiguration)"/> and <see cref="IService.SaveConfiguration(ServiceConfiguration)"/> to interact with the configuration.
     /// </summary>
+    /// <param name="service">Service that is registered.</param>
     /// <param name="priority">Order in which configuration is loaded and stored. Lower priority means the service is loaded earlier and stored later.</param>
     /// <exception cref="InvalidOperationException">When the service was already registered.</exception>
     public static void RegisterService(IService service, int priority = 0) {
@@ -166,6 +192,8 @@ namespace HAF {
     /// <summary>
     /// Register an action to be executed when the configuration stage is advanced to the provided value. When the current configuration stage is equal or greater then the provided value, the action is executed directly.
     /// </summary>
+    /// <param name="stage">Configuration stage at which the provided action is executed.</param>
+    /// <param name="action">Action that is executed then the configuration stage is active.</param>
     public static void StageAction(ConfigurationStage stage, Action action) {
       if(stage <= Core.Stage) {
         // execute directly as stage is current or passed
