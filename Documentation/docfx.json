@@ -50,7 +50,7 @@
     ],
     "globalMetadata": {
       "_appTitle": "HAF X.X.X",
-      "_appFooter": "HAF X.X.X - <a href='www.hornung.dev'>hornung.dev</a>",
+      "_appFooter": "HAF X.X.X - <a href='https://www.hornung.dev'>hornung.dev</a>",
       "_enableSearch": true,
       "_enableNewTab": true,
       "_disableNavbar": false,
