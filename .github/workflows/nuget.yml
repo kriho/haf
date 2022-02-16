@@ -29,13 +29,13 @@ jobs:
         uses: actions-ecosystem/action-regex-match@v2
         id: version-match
         with:
-          text: ${{ stages.project-file.outputs.content }}
+          text: ${{ steps.project-file.outputs.content }}
           regex: '<Version>(.*)</Version>'
       - name: update version in documentation
         uses: jacobtomlinson/gha-find-replace@v2
         with:
           find: "X.X.X"
-          replace: ${{ stages.version-match.outputs.group1 }}
+          replace: ${{ steps.version-match.outputs.group1 }}
           regex: false
           include: Documentation/*.*
       - name: publish
