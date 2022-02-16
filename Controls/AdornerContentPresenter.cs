@@ -8,7 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 
-namespace HAF {
+namespace HAF.Controls {
   public class AdornerContentPresenter: Adorner {
     public enum AdornerPlacement {
       Unspecified = 0,
