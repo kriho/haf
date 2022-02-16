@@ -14,9 +14,10 @@ using System.Windows;
 
 namespace HAF {
   public abstract class ValidatableObject: ObservableObject, INotifyDataErrorInfo {
-
     private ValidationBatch validationBatch = new ValidationBatch();
+
     private readonly object validationLock = new object();
+
     private readonly ConcurrentDictionary<string, List<string>> validationErrors = new ConcurrentDictionary<string, List<string>>();
 
     /// <summary>

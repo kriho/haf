@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace HAF.Models {
+namespace HAF {
   public interface IProject: INotifyPropertyChanged {
     /// <summary>
     /// File path of the project.

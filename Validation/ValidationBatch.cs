@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HAF {
-
   public class ValidationBatch {
     internal List<string> Errors = new List<string>();
     internal string PropertyName;

@@ -1,5 +1,4 @@
-﻿using HAF.Models;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Media;
 
 namespace HAF {
