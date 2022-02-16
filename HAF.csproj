@@ -64,7 +64,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdornerContentPresenter.cs" />
+    <Compile Include="Controls\AdornerContentPresenter.cs" />
     <Compile Include="Behaviors\Attached\BringIntoViewWhenSelected.cs" />
     <Compile Include="Behaviors\Attached\DisabledVisibility.cs" />
     <Compile Include="Behaviors\Attached\HighlightBrush.cs" />
@@ -274,20 +274,6 @@
     <Compile Include="Tasks\ObservableTaskProgress.cs" />
     <Compile Include="Themes\ThemeBrush.cs" />
     <Compile Include="Themes\ThemeColor.cs" />
-    <Compile Include="Updates\Snapshot.cs" />
-    <Compile Include="Updates\SnapshotClient.cs" />
-    <Compile Include="Updates\SnapshotFile.cs" />
-    <Compile Include="Updates\SnapshotTask.cs" />
-    <Compile Include="Validation\Old\BasePatternValidationRule.cs" />
-    <Compile Include="Validation\Old\IsEmailAddressValidationRule.cs" />
-    <Compile Include="Validation\Old\IsNotEmptyValidationRule.cs" />
-    <Compile Include="Validation\Old\IsNumberValidationRule.cs" />
-    <Compile Include="Validation\Old\IsPhoneNumberValidationRule.cs" />
-    <Compile Include="Validation\Old\IsWebsiteAddressValidationRule.cs" />
-    <Compile Include="Validation\Old\NumberCompareValidationRule.cs" />
-    <Compile Include="Validation\Old\NumberRangeValidationRule.cs" />
-    <Compile Include="Validation\Old\StringPatternValidationRule.cs" />
-    <Compile Include="Validation\Old\StringRangeValidationRule.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
