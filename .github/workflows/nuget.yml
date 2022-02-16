@@ -32,12 +32,10 @@ jobs:
           text: ${{ steps.project-file.outputs.content }}
           regex: '<Version>(.*)</Version>'
       - name: update version in documentation
-        uses: jacobtomlinson/gha-find-replace@v2
+        uses: datamonsters/replace-action@v2
         with:
-          find: "X.X.X"
-          replace: ${{ steps.version-match.outputs.group1 }}
-          regex: false
-          include: Documentation/*.*
+          files: ./Documentation/docfx.json,./Documentation/index.md
+          replacements: X.X.X=${{ steps.version-match.outputs.group1 }}
       - name: publish
         run: dotnet nuget push "HAF.*.nupkg" --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json --skip-duplicate
       - name: build documentation
