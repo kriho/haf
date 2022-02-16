@@ -1,6 +1,6 @@
-- name: Home
+- name: Overview
   href: index.md
 - name: Concepts
-  href: Articles/
-- name: Docs
-  href: Model/
+  href: articles/
+- name: API
+  href: api/

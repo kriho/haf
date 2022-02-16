@@ -14,16 +14,16 @@
           "src": "../"
         }
       ],
-      "dest": "Model"
+      "dest": "api"
     }
   ],
   "build": {
     "content": [
       {
         "files": [
-          "Model/*.yml",
-          "Articles/*.md",
-          "Articles/toc.yml",
+          "api/*.yml",
+          "articles/*.md",
+          "articles/toc.yml",
           "*.md",
           "toc.yml"
         ]
@@ -32,19 +32,22 @@
     "resource": [
       {
         "files": [
-          "Images/**"
+          "images/**"
         ]
       }
     ],
     "overwrite": [
       {
         "files": [
-          "Annotations/*.md"
+          "annotations/*.md"
         ]
       }
     ],
-    "dest": "Site",
-    "template": "statictoc",
+    "dest": "site",
+    "template": [
+      "statictoc",
+      "templates/customstatictoc"
+    ],
     "globalMetadata": {
       "_appTitle": "HAF",
       "_appFooter": "haf.hornung.dev",
@@ -58,7 +61,7 @@
       "_gitContribute": {
         "repo": "https://github.com/kriho/haf",
         "branch": "master",
-        "apiSpecFolder": "Annotations"
+        "apiSpecFolder": "annotations"
       }
     },
     "markdownEngineName": "markdig"

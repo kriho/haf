@@ -4,5 +4,5 @@ bin
 *.nupkg
 packages
 Documentation/obj
-Documentation/Model
-Documentation/Site
+Documentation/api
+Documentation/site
