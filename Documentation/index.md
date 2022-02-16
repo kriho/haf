@@ -1,7 +1,9 @@
 [![Nuget](https://img.shields.io/nuget/v/haf)](https://www.nuget.org/packages/HAF/)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/kriho/haf/publish%20to%20nuget)](https://github.com/kriho/haf/actions)
 
-Official documentation for the ~~**h**ornung~~ **h**olistic **a**pplication **f**ramework (HAF) for WPF based MVVM applications.
+# HAF X.X.X
+
+Official documentation for the ~~**h**ornung~~ **h**olistic **a**pplication **f**ramework for WPF based MVVM applications.
 
 This framework aims to make the most of the MVVM pattern by
 - providing a service based approach to implement the application logic
