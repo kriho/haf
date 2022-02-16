@@ -22,15 +22,36 @@ namespace HAF {
     [DllImport("User32.dll")]
     private static extern bool UnregisterHotKey([In] IntPtr hWnd, [In] int id);
 
+    /// <summary>
+    /// Supported hotkey modifiers.
+    /// </summary>
     [Flags]
     public enum Modifiers {
+      /// <summary>
+      /// No modifiers are required for the hotkey to trigger.
+      /// </summary>
       NoMod = 0x0000,
+      /// <summary>
+      /// The <c>Alt</c> key must be pressed alongside the hotkey to trigger.
+      /// </summary>
       Alt = 0x0001,
+      /// <summary>
+      /// The <c>Ctrl</c> key must be pressed alongside the hotkey to trigger.
+      /// </summary>
       Ctrl = 0x0002,
+      /// <summary>
+      /// The <c>Shift</c> key must be pressed alongside the hotkey to trigger.
+      /// </summary>
       Shift = 0x0004,
+      /// <summary>
+      /// The <c>Windows</c> key must be pressed alongside the hotkey to trigger.
+      /// </summary>
       Win = 0x0008
     }
 
+    /// <summary>
+    /// Supported hotkeys.
+    /// </summary>
     [Flags]
     public enum Keys {
       Modifiers = -65536,
