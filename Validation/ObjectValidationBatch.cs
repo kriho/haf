@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HAF {
+  /// <summary>
+  /// Facilitates object validation error reporting.
+  /// </summary>
   public class ObjectValidationBatch: PropertyValidationBatch {
     internal Dictionary<string, PropertyValidationBatch> Properties = new Dictionary<string, PropertyValidationBatch>();
 
