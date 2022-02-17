@@ -1,6 +1,8 @@
-- name: Application Settings
-  href: application-settings.md
-- name: Extensions
-  href: extensions.md
-- name: Services
-  href: services.md
+- name: Service Infrastructure
+  href: service-infrastructure.md
+- name: Localization
+  href: localization.md
+- name: Themes
+  href: themes.md
+- name: Naming Conventions
+  href: naming-conventions.md
