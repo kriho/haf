@@ -17,6 +17,6 @@ namespace HAF {
     /// <summary>
     /// A validation action that is used to validate the current value. No validation is performed when NULL.
     /// </summary>
-    Action<ValidationBatch> Validation { get; }
+    Action<PropertyValidationBatch> Validation { get; }
   }
 }

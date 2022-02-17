@@ -18,7 +18,7 @@
     <TargetFrameworkProfile />
     <PackageId>$(AssemblyName)</PackageId>
     <Title>Holistic Application Framework</Title>
-    <Version>1.0.31</Version>
+    <Version>1.0.32</Version>
     <Authors>Kristjan Hornung</Authors>
     <PackageOutputPath>.</PackageOutputPath>
     <Description>
@@ -152,7 +152,8 @@
     <Compile Include="Utils\GetKnownFolder.cs" />
     <Compile Include="Utils\Exceptions.cs" />
     <Compile Include="Utils\MEF.cs" />
-    <Compile Include="Validation\ValidationBatch.cs" />
+    <Compile Include="Validation\ObjectValidationBatch.cs" />
+    <Compile Include="Validation\PropertyValidationBatch.cs" />
     <Compile Include="Plugins\IPlugin.cs" />
     <Compile Include="Tasks\WaitingObservableTask.cs" />
     <Compile Include="Tasks\IWaitingObservableTask.cs" />

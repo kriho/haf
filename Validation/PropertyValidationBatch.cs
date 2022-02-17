@@ -5,16 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HAF {
-  public class ValidationBatch {
+  public class PropertyValidationBatch {
     internal List<string> Errors = new List<string>();
-    internal string PropertyName;
 
-    public void Assert(bool assertion, string error) {
-      if(!assertion) {
-        this.Errors.Add(error);
-      }
-    }
-
+    /// <summary>
+    /// Throw a validation error.
+    /// </summary>
+    /// <param name="error">Validation error description.</param>
     public void Throw(string error) {
       this.Errors.Add(error);
     }

@@ -11,7 +11,7 @@ namespace HAF {
 
     public string Description { get; set; }
 
-    public Action<ValidationBatch> Validation { get; set; }
+    public Action<PropertyValidationBatch> Validation { get; set; }
 
     public FrameworkElement Drawer { get; set; }
 
