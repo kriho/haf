@@ -7,36 +7,8 @@
    viewBox="0 0 22.174782 12.999999"
    version="1.1"
    id="svg5"
-   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
-   sodipodi:docname="logo.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview7"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:document-units="mm"
-     showgrid="false"
-     inkscape:zoom="8"
-     inkscape:cx="51.3125"
-     inkscape:cy="42.3125"
-     inkscape:window-width="2560"
-     inkscape:window-height="1377"
-     inkscape:window-x="3832"
-     inkscape:window-y="1072"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="g24477"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0"
-     height="11mm" />
   <defs
      id="defs2">
     <clipPath
@@ -64,50 +36,39 @@
     </clipPath>
   </defs>
   <g
-     inkscape:label="Ebene 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-71.702437,-52.495438)">
     <g
        id="g24477">
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;line-height:1.25;font-family:Monoton;-inkscape-font-specification:'Monoton, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.264583"
-         x="71.221848"
-         y="61.062466"
+      <g
+         aria-label="H"
+         transform="matrix(0.79799134,0,0,0.76457955,16.748125,15.76501)"
          id="text759"
          clip-path="url(#clipPath24318)"
-         transform="matrix(0.79799134,0,0,0.76457955,16.748125,15.76501)"><tspan
-           sodipodi:role="line"
-           id="tspan757"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:Monoton;-inkscape-font-specification:'Monoton, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;stroke-width:0.264583"
-           x="71.221848"
-           y="61.062466">H</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;line-height:1.25;font-family:Monoton;-inkscape-font-specification:'Monoton, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.264583"
-         x="78.964699"
-         y="61.064991"
+         style="font-size:10.5833px;line-height:1.25;font-family:Monoton;-inkscape-font-specification:'Monoton, Normal';fill:#ffffff;stroke-width:0.264583">
+        <path
+           d="m 79.887958,52.504876 h 0.372069 v 8.55759 h -0.372069 z m -8.185521,0 h 0.372069 v 8.55759 h -0.372069 z m 7.441382,0 h 0.37207 v 8.55759 h -0.37207 z m -0.744138,0 h 0.372069 v 8.55759 h -0.372069 z m -0.744138,0 h 0.372069 v 8.55759 h -0.372069 v -3.35379 h -3.348622 v 3.35379 h -0.372069 v -8.55759 h 0.372069 v 3.343454 h 3.348622 z m -4.46483,0 h 0.372069 v 8.55759 h -0.372069 z m -0.744138,0 h 0.372069 v 8.55759 h -0.372069 z m 5.208968,4.831731 v -0.372069 h -3.348622 v 0.372069 z m 0,-0.744138 v -0.37207 h -3.348622 v 0.37207 z"
+           id="path19" />
+      </g>
+      <g
+         aria-label="A"
+         transform="matrix(0.79799134,0,0,0.76457955,16.766787,15.76501)"
          id="text759-8"
          clip-path="url(#clipPath24426)"
-         transform="matrix(0.79799134,0,0,0.76457955,16.766787,15.76501)"><tspan
-           sodipodi:role="line"
-           id="tspan757-8"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:Monoton;-inkscape-font-specification:'Monoton, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;stroke-width:0.264583"
-           x="78.964699"
-           y="61.064991">A</tspan></text>
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.26669px;line-height:1.25;font-family:Monoton;-inkscape-font-specification:'Monoton, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.206668"
-         x="84.385674"
-         y="63.794727"
+         style="font-size:10.5833px;line-height:1.25;font-family:Monoton;-inkscape-font-specification:'Monoton, Normal';fill:#ffffff;stroke-width:0.264583">
+        <path
+           d="m 83.140141,58.553524 0.149861,-0.372069 h 1.271237 l 0.149861,0.372069 z m -0.289387,0.744139 0.144694,-0.372069 h 1.855178 l 0.160196,0.372069 z m -0.289387,0.744138 0.144694,-0.372069 h 2.439119 l 0.155029,0.372069 z m -3.023062,1.02319 H 79.13523 l 3.384796,-8.55759 h 0.403075 l 3.379628,8.55759 h -0.397907 l -3.183259,-8.05633 z m 3.229767,-7.172666 0.211873,0.475422 -2.645825,6.697244 h -0.397907 z m 0.41341,0.981849 0.19637,0.511595 -2.237582,5.679222 h -0.403075 z m 0.39274,1.02319 0.19637,0.521931 -1.834508,4.645696 h -0.397907 z m 5.131453,5.167627 H 88.3026 l -3.379628,-8.55759 h 0.397908 z m -4.185777,-8.55759 3.384795,8.55759 h -0.397907 l -3.384796,-8.55759 z m -0.800983,0 3.384796,8.55759 h -0.403075 l -3.379628,-8.55759 z"
+           id="path40" />
+      </g>
+      <g
+         aria-label="F"
+         transform="scale(1.0216162,0.97884118)"
          id="text759-8-4"
-         transform="scale(1.0216162,0.97884118)"><tspan
-           sodipodi:role="line"
-           id="tspan757-8-9"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.26669px;font-family:Monoton;-inkscape-font-specification:'Monoton, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;stroke-width:0.206668"
-           x="84.385674"
-           y="63.794727">F</tspan></text>
+         style="font-size:8.26669px;line-height:1.25;font-family:Monoton;-inkscape-font-specification:'Monoton, Normal';fill:#ffffff;stroke-width:0.206668">
+        <path
+           d="M 86.795446,63.794727 H 86.50482 v -6.684394 h 3.217067 v 0.290626 h -2.926441 v 0.290626 h 2.926441 v 0.290626 h -2.926441 v 0.290626 h 2.926441 v 0.290625 h -2.926441 v 1.45313 h 2.789201 v 0.290625 h -2.789201 v 0.290626 h 2.789201 v 0.290626 h -2.789201 v 0.290626 h 2.789201 v 0.290626 h -2.789201 z m -0.581252,0 h -0.290625 v -6.684394 h 0.290625 z m -0.581251,0 h -0.290626 v -6.684394 h 0.290626 z m -0.581252,0 h -0.290626 v -6.684394 h 0.290626 z"
+           id="path61" />
+      </g>
     </g>
     <text
        xml:space="preserve"
@@ -115,7 +76,6 @@
        x="77.142578"
        y="67.088409"
        id="text15320"><tspan
-         sodipodi:role="line"
          id="tspan15318"
          style="stroke-width:0.264583"
          x="77.142578"

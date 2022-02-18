@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HAF {
+  /// <summary>
+  /// Facilitates property validation error reporting.
+  /// </summary>
   public class PropertyValidationBatch {
     internal List<string> Errors = new List<string>();
 
