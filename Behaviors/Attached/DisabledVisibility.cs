@@ -28,6 +28,7 @@ namespace HAF {
         element.IsEnabledChanged += (s, e2) => {
           element.Visibility = (bool)e2.NewValue ? Visibility.Visible : visibility;
         };
+        element.Visibility = element.IsEnabled ? Visibility.Visible : visibility;
       }
     }
   }
