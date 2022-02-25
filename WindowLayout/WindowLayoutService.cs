@@ -161,6 +161,10 @@ namespace HAF {
       }
       this.windowLayouts.AddRange(windowLayouts);
       var defaultWindowLayout = this.windowLayouts.FirstOrDefault(w => w.Name == defaultWindowLayoutName);
+      if(defaultWindowLayout == null) {
+        // the window layout defaultInternal is loaded when no default is specified
+        defaultWindowLayout = this.windowLayouts.FirstOrDefault(w => w.Name == "defaultInternal");
+      }
       if (defaultWindowLayout != null) {
         this.DefaultWindowLayout = defaultWindowLayout;
         this.LoadWindowLayout(defaultWindowLayout);
