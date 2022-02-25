@@ -17,6 +17,8 @@ namespace HAF {
     
     public int PluginVersion { get; set; }
 
+    public bool PluginInitializationRequred { get; set; }
+
     public bool Installed { get; set; } = false;
     
     public bool UpdateAvailable { get; set; } = false;

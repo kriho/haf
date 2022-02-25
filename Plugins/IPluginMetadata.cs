@@ -34,5 +34,11 @@ namespace HAF {
     /// </summary>
     [DefaultValue(1)]
     int PluginVersion { get; }
+
+    /// <summary>
+    /// Dedicated plugin initialization is required.
+    /// </summary>
+    [DefaultValue(false)]
+    bool PluginInitializationRequred { get; }
   }
 }

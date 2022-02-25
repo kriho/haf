@@ -62,8 +62,17 @@ namespace HAF {
         System.Windows.Application.Current.Shutdown();
       }, this.isDirty);
       _ = this.RefreshPlugins(false);
+      _ = this.InitializePlugins(plugins);
     }
 
+    private async Task InitializePlugins(IEnumerable<Lazy<IPlugin, IPluginMetadata>> plugins) {
+      foreach(var plugin in plugins) {
+        if(plugin.Metadata.PluginInitializationRequred) {
+          await plugin.Value.Initialize();
+        }
+      }
+    }
+    
     protected abstract Task<IEnumerable<IPluginMetadata>> FetchAvailablePlugins();
 
     protected abstract Task PullPlugin(IPluginMetadata plugin, string filePath);

@@ -6,5 +6,6 @@ using System.Threading.Tasks;
 
 namespace HAF {
   public interface IPlugin {
+    Task Initialize();
   }
 }
