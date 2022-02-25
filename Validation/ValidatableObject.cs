@@ -96,11 +96,14 @@ namespace HAF {
 
     /// <summary>
     /// Request validation of the object and all validatable properties.
+    /// <paramref name="targetPropertyName">Name of the property to validate. Use <c>""</c> to validate the object and <c>null</c> to validate everything.</paramref>
     /// </summary>
-    public void RequestValidation() {
+    public void RequestValidation(string targetPropertyName = null) {
       lock(this.validationLock) {
+        // clear all validation errors to allow ignoring properties during object validation
+        this.validationErrors.Clear();
         // prepare batch
-        var validationBatch = new ObjectValidationBatch("");
+        var validationBatch = new ObjectValidationBatch(targetPropertyName);
         // execute validation
         this.Validate(validationBatch);
         // apply batch

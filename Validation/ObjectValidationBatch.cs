@@ -13,7 +13,7 @@ namespace HAF {
 
     private string targetPropertyName;
 
-    public ObjectValidationBatch(string targetPropertyName = "") {
+    public ObjectValidationBatch(string targetPropertyName = null) {
       this.targetPropertyName = targetPropertyName;
     }
 
@@ -23,7 +23,7 @@ namespace HAF {
     /// <param name="propertyName">Name of the property that is validated.</param>
     /// <param name="propertyValidation">Action that performs the validation and throws errors using the <see cref="PropertyValidationBatch"/>.</param>
     public void ValidateProperty(string propertyName, Action<PropertyValidationBatch> propertyValidation) {
-      if(this.targetPropertyName != "" && this.targetPropertyName != propertyName) {
+      if(this.targetPropertyName != null && this.targetPropertyName != propertyName) {
         // object validation is targeting a specific property
         return;
       }
