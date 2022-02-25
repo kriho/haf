@@ -70,7 +70,18 @@
                             <Border BorderThickness="1,1,0,1" BorderBrush="{TemplateBinding BorderBrush}" Padding="{TemplateBinding Padding}">
                                 <ContentPresenter Content="{TemplateBinding Header}" VerticalAlignment="Center"/>
                             </Border>
-                            <ContentPresenter x:Name="PART_HorizontalContent" Content="{TemplateBinding Content}" Grid.Column="1" VerticalAlignment="Center"/>
+                            <StackPanel Grid.Column="1">
+                                <ContentPresenter x:Name="PART_HorizontalContent" Content="{TemplateBinding Content}" VerticalAlignment="Center"/>
+                                <Border BorderThickness="1,0,1,1" BorderBrush="{TemplateBinding BorderBrush}" Padding="3" Visibility="{Binding ElementName=PART_HorizontalContent, Path=Content.(Validation.HasError), Converter={converters:BooleanToVisibilityConverter}}">
+                                    <ItemsControl ItemsSource="{Binding ElementName=PART_HorizontalContent, Path=Content.(Validation.Errors)}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding ErrorContent}" Foreground="Red" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </Border>
+                            </StackPanel>
                         </Grid>
                         <Grid x:Name="PART_Vertical">
                             <StackPanel>
@@ -78,6 +89,15 @@
                                     <ContentPresenter Content="{TemplateBinding Header}" Margin="0,0,0,2"/>
                                 </Border>
                                 <ContentPresenter x:Name="PART_VerticalContent" Content="{TemplateBinding Content}"/>
+                                <Border BorderThickness="1,0,1,1" BorderBrush="{TemplateBinding BorderBrush}" Padding="3" Visibility="{Binding ElementName=PART_VerticalContent, Path=Content.(Validation.HasError), Converter={converters:BooleanToVisibilityConverter}}">
+                                    <ItemsControl ItemsSource="{Binding ElementName=PART_VerticalContent, Path=Content.(Validation.Errors)}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding ErrorContent}" Foreground="Red" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </Border>
                             </StackPanel>
                         </Grid>
                     </Grid>
