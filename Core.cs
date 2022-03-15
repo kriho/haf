@@ -130,11 +130,19 @@ namespace HAF {
           var pluginCatalog = new AssemblyCatalog(Assembly.LoadFile(filePath));
           var test = pluginCatalog.FirstOrDefault();
           catalog.Catalogs.Add(pluginCatalog);
-        } catch(ReflectionTypeLoadException ex) {
-          foreach(var loaderException in ex.LoaderExceptions) {
-            containerErrors.Add($"failed to load plugin \"{Path.GetFileNameWithoutExtension(filePath)}\": {loaderException.Message}");
+         } catch(Exception ex) {
+          if(ex is ReflectionTypeLoadException reflectionTypeLoadException) {
+            foreach(var loaderException in reflectionTypeLoadException.LoaderExceptions) {
+              containerErrors.Add($"failed to load plugin \"{Path.GetFileNameWithoutExtension(filePath)}\": {loaderException.Message}");
+            }
+          } else {
+            containerErrors.Add($"failed to load plugin \"{Path.GetFileNameWithoutExtension(filePath)}\": {ex.Message}");
           }
-          File.Move(filePath, filePath.Replace(".dll", ".dll.broken"));
+          var brokenFilePath = filePath.Replace(".dll", ".dll.broken");
+          if(File.Exists(brokenFilePath)) {
+            File.Delete(brokenFilePath);
+          }
+          File.Move(filePath, brokenFilePath);
         }
       }
       foreach(var assemblyName in assemblyNames) {
