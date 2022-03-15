@@ -77,5 +77,9 @@ namespace HAF {
     public int CompareTo(object other) {
       return Id.CompareTo(((Enumeration)other).Id);
     }
+    
+    public static explicit operator int(Enumeration e) => e.Id;
+
+    public static explicit operator string(Enumeration e) => e.Name;
   }
 }
