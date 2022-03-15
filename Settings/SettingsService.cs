@@ -57,8 +57,8 @@ namespace HAF {
     }
 
     [ImportingConstructor]
-    public SettingsService([ImportMany] IEnumerable<ExportFactory<ISettingsDrawer, ISettingsDrawerMeta>> drawers) {
-      this.Drawers = drawers.ToList();
+    public SettingsService() {
+      this.Drawers = Core.Container.GetExportedValues<ExportFactory<ISettingsDrawer, ISettingsDrawerMeta>>().ToList();
       this.FilteredRegistrations = new CollectionViewSource() {
         Source = this.regions.OrderBy(r => r.DisplayOrder).SelectMany(r => r.Registrations.OrderBy(e => e.DisplayOrder)),
       };
