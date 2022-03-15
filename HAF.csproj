@@ -18,7 +18,7 @@
     <TargetFrameworkProfile />
     <PackageId>$(AssemblyName)</PackageId>
     <Title>Holistic Application Framework</Title>
-    <Version>1.0.32</Version>
+    <Version>1.0.33</Version>
     <Authors>Kristjan Hornung</Authors>
     <PackageOutputPath>.</PackageOutputPath>
     <Description>
@@ -87,6 +87,7 @@
     <Compile Include="Controls\GeometryIcon.cs" />
     <Compile Include="Converters\BooleanToSolidColorBrushConverter.cs" />
     <Compile Include="Converters\DoubleToFormattedUnitConverter.cs" />
+    <Compile Include="Converters\RadioButtonToIntegerConverter.cs" />
     <Compile Include="Converters\StringToSubstringConverter.cs" />
     <Compile Include="Converters\StringToBooleanConverter.cs" />
     <Compile Include="Converters\IsEqualToBooleanConverter.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="Link\LinkHandshake.cs" />
     <Compile Include="Link\ILinkService.cs" />
     <Compile Include="IProject.cs" />
+    <Compile Include="Plugins\IInitializedPlugin.cs" />
     <Compile Include="Plugins\IPluginMetadata.cs" />
     <Compile Include="Plugins\IPluginsService.cs" />
     <Compile Include="Plugins\PluginEntry.cs" />
