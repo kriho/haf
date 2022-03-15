@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HAF {
-  public interface IPluginMetadata: IPlugin {
+  public interface IPluginMetadata {
     /// <summary>
     /// The plugin name. Must be the name of the assembly.
     /// </summary>
@@ -34,11 +34,5 @@ namespace HAF {
     /// </summary>
     [DefaultValue(1)]
     int PluginVersion { get; }
-
-    /// <summary>
-    /// Dedicated plugin initialization is required.
-    /// </summary>
-    [DefaultValue(false)]
-    bool PluginInitializationRequred { get; }
   }
 }

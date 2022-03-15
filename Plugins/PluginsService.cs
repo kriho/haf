@@ -42,9 +42,10 @@ namespace HAF {
       }
     }
 
+    
     [ImportingConstructor]
-    public PluginsService([ImportMany] IEnumerable<Lazy<IPlugin, IPluginMetadata>> plugins) {
-      this.InstalledPlugins = plugins.Select(p => p.Metadata).ToList();
+    public PluginsService([ImportMany] IEnumerable<Lazy<IPlugin, IPluginMetadata>> plugins, [ImportMany] IEnumerable<Lazy<IInitializedPlugin, IPluginMetadata>> initializedPlugins) {
+      this.InstalledPlugins = plugins.Select(p => p.Metadata).Concat(initializedPlugins.Select(p => p.Metadata)).ToList();
       this.DoRefreshPlugins = new RelayCommand(() => {
         _ = this.RefreshPlugins(true);
       });
@@ -62,14 +63,12 @@ namespace HAF {
         System.Windows.Application.Current.Shutdown();
       }, this.isDirty);
       _ = this.RefreshPlugins(false);
-      _ = this.InitializePlugins(plugins);
+      _ = this.InitializePlugins(initializedPlugins);
     }
 
-    private async Task InitializePlugins(IEnumerable<Lazy<IPlugin, IPluginMetadata>> plugins) {
+    private async Task InitializePlugins(IEnumerable<Lazy<IInitializedPlugin, IPluginMetadata>> plugins) {
       foreach(var plugin in plugins) {
-        if(plugin.Metadata.PluginInitializationRequred) {
-          await plugin.Value.Initialize();
-        }
+        await plugin.Value.Initialize();
       }
     }
     
@@ -142,6 +141,11 @@ namespace HAF {
       File.Create(filePath + ".delete");
       plugin.PendingUninstall = true;
       this.isDirty.Value = true;
+      // delete broken plugin
+      var brokenFilePath = filePath.Replace(".dll", ".dll.broken");
+      if(File.Exists(brokenFilePath)) {
+        File.Delete(brokenFilePath);
+      }
     }
 
     private string GetPluginPath(IPluginMetadata plugin) {

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HAF {
-  public interface IPlugin {
+  public interface IInitializedPlugin {
+    Task Initialize();
   }
 }
