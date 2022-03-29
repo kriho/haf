@@ -57,18 +57,21 @@ namespace HAF {
     }
 
     [ImportingConstructor]
-    public SettingsService() {
-      this.Drawers = Core.Container.GetExportedValues<ExportFactory<ISettingsDrawer, ISettingsDrawerMeta>>().ToList();
-      this.FilteredRegistrations = new CollectionViewSource() {
-        Source = this.regions.OrderBy(r => r.DisplayOrder).SelectMany(r => r.Registrations.OrderBy(e => e.DisplayOrder)),
-      };
-      this.regions.CollectionChanged += (s1, e1) => {
-        this.FilteredRegistrations.View.Refresh();
-      };
+    public SettingsService([ImportMany] IEnumerable<ExportFactory<ISettingsDrawer, ISettingsDrawerMeta>> drawers) {
+      this.Drawers = drawers.ToList();
+      this.FilteredRegistrations = new CollectionViewSource();
       this.FilteredRegistrations.GroupDescriptions.Add(new PropertyGroupDescription("Region"));
       this.FilteredRegistrations.Filter += (s2, e2) => {
         e2.Accepted = e2.Item is ISettingsRegistration registration && this.FilterRegion(registration);
       };
+      Core.StageAction(ConfigurationStage.Running, () => {
+        this.FilteredRegistrations.Source = this.regions.OrderBy(r => r.DisplayOrder).SelectMany(r => r.Registrations.OrderBy(e => e.DisplayOrder));
+        this.FilteredRegistrations.View.Refresh();
+        this.regions.CollectionChanged += (s1, e1) => {
+          this.FilteredRegistrations.View.Refresh();
+          this.FilteredRegistrations.Source = this.regions.OrderBy(r => r.DisplayOrder).SelectMany(r => r.Registrations.OrderBy(e => e.DisplayOrder));
+        };
+      });
       this.DoClearFilter = new RelayCommand(() => {
         this.Filter = "";
       });
