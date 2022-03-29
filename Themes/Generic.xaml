@@ -76,7 +76,7 @@
                                     <ItemsControl ItemsSource="{Binding ElementName=PART_HorizontalContent, Path=Content.(Validation.Errors)}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding ErrorContent}" Foreground="Red" />
+                                                <TextBlock Text="{Binding ErrorContent}" Foreground="{DynamicResource ThemeErrorForegroundBrush}" />
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
@@ -155,9 +155,11 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:Form}">
-                    <AdornerDecorator>
-                        <ItemsPresenter Margin="3,3,3,-2"/>
-                    </AdornerDecorator>
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                        <AdornerDecorator>
+                            <ItemsPresenter Margin="3,3,3,0"/>
+                        </AdornerDecorator>
+                    </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -168,6 +170,8 @@
                 </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeStrongBrush}"/>
+        <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
         <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
         <Setter Property="KeyboardNavigation.TabNavigation" Value="Cycle"/>
