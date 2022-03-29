@@ -59,7 +59,7 @@ namespace HAF.Converters {
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-      if (targetType != typeof(Tout)) {
+      if (targetType != typeof(Tin)) {
         throw new NotImplementedException("This converter can not be used for the given type.");
       }
       this.culture = culture;
