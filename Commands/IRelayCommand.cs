@@ -8,6 +8,11 @@ using System.Windows.Input;
 namespace HAF {
   public interface IRelayCommand: ICommand {
     /// <summary>
+    /// The state that contols availability of the command, if any.
+    /// </summary>
+    IReadOnlyState DependentState { get; }
+
+    /// <summary>
     /// Execute the command.
     /// </summary>
     void Execute();

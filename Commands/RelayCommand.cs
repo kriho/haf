@@ -12,27 +12,27 @@ namespace HAF {
   public class RelayCommand: IRelayCommand {
     private readonly Action execute;
     private readonly Func<bool> canExecute;
-    private IReadOnlyState dependentState;
+    public IReadOnlyState DependentState { get; private set; }
 
     public event EventHandler CanExecuteChanged;
 
     public RelayCommand(Action execute) {
       this.execute = execute ?? throw new ArgumentNullException("execute");
       this.canExecute = null;
-      this.dependentState = null;
+      this.DependentState = null;
     }
 
     public RelayCommand(Action execute, Func<bool> canExecute) {
       this.execute = execute ?? throw new ArgumentNullException("execute");
       this.canExecute = canExecute ?? throw new ArgumentNullException("canExecute");
-      this.dependentState = null;
+      this.DependentState = null;
     }
 
     public RelayCommand(Action execute, IReadOnlyState dependentState) {
       this.execute = execute ?? throw new ArgumentNullException("execute");
       this.canExecute = null;
-      this.dependentState = dependentState ?? throw new ArgumentNullException("dependency");
-      this.dependentState.RegisterUpdate(this.RaiseCanExecuteChanged);
+      this.DependentState = dependentState ?? throw new ArgumentNullException("dependency");
+      this.DependentState.RegisterUpdate(this.RaiseCanExecuteChanged);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -50,7 +50,7 @@ namespace HAF {
       if(this.canExecute != null && !this.canExecute.Invoke()) {
         return false;
       }
-      if(this.dependentState != null && !this.dependentState.Value) {
+      if(this.DependentState != null && !this.DependentState.Value) {
         return false;
       }
       return true;
@@ -75,34 +75,34 @@ namespace HAF {
   public class RelayCommand<T>: IRelayCommand<T> {
     private readonly Action<T> execute;
     private readonly Func<T, bool> canExecute;
-    private IReadOnlyState dependentState;
+    public IReadOnlyState DependentState { get; private set; }
 
     public event EventHandler CanExecuteChanged;
 
     public RelayCommand(Action<T> execute) {
       this.execute = execute ?? throw new ArgumentNullException("execute");
       this.canExecute = null;
-      this.dependentState = null;
+      this.DependentState = null;
     }
 
     public RelayCommand(Action<T> execute, Func<T, bool> canExecute) {
       this.execute = execute ?? throw new ArgumentNullException("execute");
       this.canExecute = canExecute ?? throw new ArgumentNullException("canExecute");
-      this.dependentState = null;
+      this.DependentState = null;
     }
 
     public RelayCommand(Action<T> execute, IReadOnlyState dependentState) {
       this.execute = execute ?? throw new ArgumentNullException("execute");
       this.canExecute = null;
-      this.dependentState = dependentState ?? throw new ArgumentNullException("dependency");
-      this.dependentState.RegisterUpdate(this.RaiseCanExecuteChanged);
+      this.DependentState = dependentState ?? throw new ArgumentNullException("dependency");
+      this.DependentState.RegisterUpdate(this.RaiseCanExecuteChanged);
     }
 
     public RelayCommand(Action<T> execute, IReadOnlyState dependentState, Func<T, bool> canExecute) {
       this.execute = execute ?? throw new ArgumentNullException("execute");
       this.canExecute = canExecute ?? throw new ArgumentNullException("canExecute");
-      this.dependentState = dependentState ?? throw new ArgumentNullException("dependency");
-      this.dependentState.RegisterUpdate(this.RaiseCanExecuteChanged);
+      this.DependentState = dependentState ?? throw new ArgumentNullException("dependency");
+      this.DependentState.RegisterUpdate(this.RaiseCanExecuteChanged);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -120,7 +120,7 @@ namespace HAF {
       if (this.canExecute != null && !this.canExecute.Invoke((T)parameter)) {
         return false;
       }
-      if (this.dependentState != null && !this.dependentState.Value) {
+      if (this.DependentState != null && !this.DependentState.Value) {
         return false;
       }
       return true;
