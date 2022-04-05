@@ -64,7 +64,7 @@ namespace HAF {
 
     public void AddStates(params IReadOnlyState[] states) {
       foreach(var state in states) {
-        if(!this.states.Contains(state)) {
+        if(state!= null && !this.states.Contains(state)) {
           this.states.Add(state);
           state.RegisterUpdate(this.UpdateValue);
         }
