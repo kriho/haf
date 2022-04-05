@@ -64,7 +64,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Behaviors\Attached\AllowedCharacters.cs" />
     <Compile Include="Controls\AdornerContentPresenter.cs" />
     <Compile Include="Behaviors\Attached\BringIntoViewWhenSelected.cs" />
     <Compile Include="Behaviors\Attached\DisabledVisibility.cs" />
