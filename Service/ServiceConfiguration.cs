@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -304,6 +305,23 @@ namespace HAF {
     /// <param name="filePath">Path to the file.</param>
     public void SaveToFile(string filePath) {
       this.document.Save(filePath);
+    }
+
+    /// <summary>
+    /// Create a configuration from a stream that represents an XML document.
+    /// </summary>
+    /// <param name="stream">The source stream.</param>
+    /// <returns>The configuration.</returns>
+    public static ServiceConfiguration FromStream(Stream stream) {
+      return new ServiceConfiguration(XDocument.Load(stream));
+    }
+
+    /// <summary>
+    /// Save the configuration to a stream.
+    /// </summary>
+    /// <param name="filePath">The target stream.</param>
+    public void SaveToStream(Stream stream) {
+      this.document.Save(stream);
     }
   }
 }
