@@ -22,7 +22,7 @@ namespace HAF {
 
     public static void OnDisabledVisibilityPropertyChanged(object sender, DependencyPropertyChangedEventArgs e) {
       if (!(sender is UIElement element)) {
-        throw new ArgumentException("The dependency property can only be attached to a UI elements", "sender");
+        throw new ArgumentException("The dependency property can only be attached to a UI element.", "sender");
       }
       if(e.NewValue is Visibility visibility) {
         element.IsEnabledChanged += (s, e2) => {
