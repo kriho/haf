@@ -18,7 +18,7 @@
     <TargetFrameworkProfile />
     <PackageId>$(AssemblyName)</PackageId>
     <Title>Holistic Application Framework</Title>
-    <Version>1.0.34</Version>
+    <Version>1.0.35</Version>
     <Authors>Kristjan Hornung</Authors>
     <PackageOutputPath>.</PackageOutputPath>
     <Description>
@@ -64,6 +64,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviors\Attached\AllowedCharacters.cs" />
     <Compile Include="Controls\AdornerContentPresenter.cs" />
     <Compile Include="Behaviors\Attached\BringIntoViewWhenSelected.cs" />
     <Compile Include="Behaviors\Attached\DisabledVisibility.cs" />
@@ -78,17 +79,21 @@
     <Compile Include="Commands\IAsyncRelayCommand.cs" />
     <Compile Include="Commands\IRelayCommand.cs" />
     <Compile Include="Controls\FastBindableTextBlock.cs" />
+    <Compile Include="Controls\FormGroup.cs" />
+    <Compile Include="Controls\ScrollingForm.cs" />
     <Compile Include="Controls\TextBoxBlock.cs" />
     <Compile Include="Controls\Form.cs" />
     <Compile Include="Controls\FormTitle.cs" />
-    <Compile Include="Controls\FormGroup.cs" />
+    <Compile Include="Controls\FormEntry.cs" />
     <Compile Include="Controls\GeometryButton.cs" />
-    <Compile Include="Controls\HeaderedFormGroup.cs" />
+    <Compile Include="Controls\FormRow.cs" />
     <Compile Include="Controls\GeometryIcon.cs" />
     <Compile Include="Converters\BooleanToSolidColorBrushConverter.cs" />
     <Compile Include="Converters\DoubleToFormattedUnitConverter.cs" />
     <Compile Include="Converters\RadioButtonConverter.cs" />
     <Compile Include="Converters\RadioButtonToIntegerConverter.cs" />
+    <Compile Include="Converters\IntegerToStringConverter.cs" />
+    <Compile Include="Converters\StringToIntegerConverter.cs" />
     <Compile Include="Converters\StringToSubstringConverter.cs" />
     <Compile Include="Converters\StringToBooleanConverter.cs" />
     <Compile Include="Converters\IsEqualToBooleanConverter.cs" />
