@@ -7,9 +7,9 @@ using System.Windows;
 using System.Windows.Controls;
 
 namespace HAF.Controls {
-  public class FormGroup: FormRow {
-    static FormGroup() {
-      DefaultStyleKeyProperty.OverrideMetadata(typeof(FormGroup), new FrameworkPropertyMetadata(typeof(FormGroup)));
+  public class FormEntry: ContentControl {
+    static FormEntry() {
+      DefaultStyleKeyProperty.OverrideMetadata(typeof(FormEntry), new FrameworkPropertyMetadata(typeof(FormEntry)));
     }
   }
 }
