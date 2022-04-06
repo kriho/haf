@@ -14,5 +14,26 @@ namespace HAF {
     public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T> enumerable) {
       return enumerable ?? Enumerable.Empty<T>();
     }
+
+    public static double TryAverage<T>(this IEnumerable<T> enumerable, Func<T, double> selector, double fallbackValue) {
+      if(enumerable.Count() == 0) {
+        return fallbackValue;
+      }
+      return enumerable.Select(selector).Average();
+    }
+
+    public static double TryAverage(this IEnumerable<int> enumerable, double fallbackValue) {
+      if(enumerable.Count() == 0) {
+        return fallbackValue;
+      }
+      return enumerable.Average();
+    }
+
+    public static double TryAverage(this IEnumerable<double> enumerable, double fallbackValue) {
+      if(enumerable.Count() == 0) {
+        return fallbackValue;
+      }
+      return enumerable.Average();
+    }
   }
 }

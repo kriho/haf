@@ -46,5 +46,22 @@ namespace HAF {
       }
       throw new InvalidOperationException($"the value \"{value}\" can not be parsed as integer");
     }
+
+    public static bool TryParseInt(string value, out int result) {
+      if(value.StartsWith("-")) {
+        return int.TryParse(value, out result);
+      } else {
+        var success = TryParseUnsignedInt(value, out var unsignedResult);
+        result = (int)unsignedResult;
+        return success;
+      }
+    }
+
+    public static int ParseInt(string value) {
+      if(TryParseInt(value, out var result)) {
+        return result;
+      }
+      throw new InvalidOperationException($"the value \"{value}\" can not be parsed as integer");
+    }
   }
 }
