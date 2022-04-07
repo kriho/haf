@@ -16,10 +16,22 @@ namespace HAF.Controls {
       set { this.SetValue(GeometryIcon.ForegroundProperty, value); }
     }
 
+    public static readonly DependencyProperty SecondaryForegroundProperty = Behavior.SecondaryForegroundProperty.AddOwner(typeof(GeometryIcon), new FrameworkPropertyMetadata(new SolidColorBrush(Colors.Green), FrameworkPropertyMetadataOptions.Inherits));
+    public Brush SecondaryForeground {
+      get { return (Brush)this.GetValue(GeometryIcon.SecondaryForegroundProperty); }
+      set { this.SetValue(GeometryIcon.SecondaryForegroundProperty, value); }
+    }
+
     public static readonly DependencyProperty GeometryProperty = DependencyProperty.Register("Geometry", typeof(Geometry), typeof(GeometryIcon), new PropertyMetadata(null));
     public Geometry Geometry {
       get { return (Geometry)this.GetValue(GeometryIcon.GeometryProperty); }
       set { this.SetValue(GeometryIcon.GeometryProperty, value); }
+    }
+
+    public static readonly DependencyProperty UseSecondaryForegroundProperty = DependencyProperty.Register("UseSecondaryForeground", typeof(bool), typeof(GeometryIcon), new PropertyMetadata(false));
+    public bool UseSecondaryForeground {
+      get { return (bool)this.GetValue(GeometryIcon.UseSecondaryForegroundProperty); }
+      set { this.SetValue(GeometryIcon.UseSecondaryForegroundProperty, value); }
     }
   }
 }
