@@ -15,7 +15,7 @@ namespace HAF {
 
   [Export(typeof(IThemesService)), PartCreationPolicy(CreationPolicy.Shared)]
   public class ThemesService: Service, IThemesService {
-    public ICompoundState CanChangeTheme { get; private set; } = new CompoundState();
+    public ICompoundState MayChangeActiveTheme { get; private set; } = new CompoundState();
 
     public IEvent OnActiveThemeChanged { get; private set; } = new Event(nameof(OnActiveThemeChanged));
 
@@ -23,13 +23,25 @@ namespace HAF {
 
     public IRelayCommand DoDuplicateTheme { get; private set; }
 
+    public IRelayCommand<ITheme> DoSetActiveTheme { get; private set; }
+
     public IRelayCommand<ITheme> DoDeleteTheme { get; private set; }
+
+    private string editName = null;
+    public string EditName {
+      get { return this.editName; }
+      set {
+        if(this.SetValue(ref this.editName, value)) {
+          this.DoDuplicateTheme.RaiseCanExecuteChanged();
+        }
+      }
+    }
 
     private ITheme activeTheme;
     public ITheme ActiveTheme {
       get { return this.activeTheme; }
       set {
-        if(!this.CanChangeTheme.Value) {
+        if(!this.MayChangeActiveTheme.Value) {
           // theme changing is not allowed
           return;
         }
@@ -46,111 +58,87 @@ namespace HAF {
           }
           // update active state
           foreach(var theme in this.AvailableThemes) {
-            theme.IsActive = theme == value;
+            theme.IsActive.Value = theme == value;
           }
-          this.OnActiveThemeChanged.Fire();
           this.DoDeleteTheme.RaiseCanExecuteChanged();
+          this.DoSetActiveTheme.RaiseCanExecuteChanged();
+          this.OnActiveThemeChanged.Fire();
         }
       }
     }
 
     private void ActiveTheme_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-      if(e.PropertyName.EndsWith("Color") && !e.PropertyName.StartsWith("Last")) {
+      if(!e.PropertyName.StartsWith("Last")) {
         this.ApplyTheme(this.activeTheme, e.PropertyName);
-      }
-    }
-
-    private string editName = null;
-    public string EditName {
-      get { return this.editName; }
-      set {
-        if(this.SetValue(ref this.editName, value)) {
-          this.DoDuplicateTheme.RaiseCanExecuteChanged();
-        }
       }
     }
 
     protected virtual void ApplyTheme(ITheme theme, string property = null) {
       // update resources
-      if(property == null || property == "BackgroundColor") {
-        Application.Current.Resources["ThemeBackgroundColor"] = theme.BackgroundColor;
-        Application.Current.Resources["ThemeBackgroundBrush"] = new SolidColorBrush(theme.BackgroundColor);
+      if(property == null || property == "Background") {
+        Application.Current.Resources["ThemeBackgroundColor"] = theme.Background;
+        Application.Current.Resources["ThemeBackgroundBrush"] = new SolidColorBrush(theme.Background);
       }
-      if(property == null || property == "ControlColor") {
-        Application.Current.Resources["ThemeControlColor"] = theme.ControlColor;
-        Application.Current.Resources["ThemeControlBrush"] = new SolidColorBrush(theme.ControlColor);
+      if(property == null || property == "BackgroundInfo") {
+        Application.Current.Resources["ThemeBackgroundInfoColor"] = theme.BackgroundInfo;
+        Application.Current.Resources["ThemeBackgroundInfoBrush"] = new SolidColorBrush(theme.BackgroundInfo);
       }
-
-      if(property == null || property == "LightColor") {
-        Application.Current.Resources["ThemeLightColor"] = theme.LightColor;
-        Application.Current.Resources["ThemeLightBrush"] = new SolidColorBrush(theme.LightColor);
+      if(property == null || property == "BackgroundWarning") {
+        Application.Current.Resources["ThemeBackgroundWarningColor"] = theme.BackgroundWarning;
+        Application.Current.Resources["ThemeBackgroundWarningBrush"] = new SolidColorBrush(theme.BackgroundWarning);
       }
-      if(property == null || property == "StrongColor") {
-        Application.Current.Resources["ThemeStrongColor"] = theme.StrongColor;
-        Application.Current.Resources["ThemeStrongBrush"] = new SolidColorBrush(theme.StrongColor);
+      if(property == null || property == "BackgroundError") {
+        Application.Current.Resources["ThemeBackgroundErrorColor"] = theme.BackgroundError;
+        Application.Current.Resources["ThemeBackgroundErrorBrush"] = new SolidColorBrush(theme.BackgroundError);
       }
-      if(property == null || property == "SecondaryColor") {
-        Application.Current.Resources["ThemeSecondaryColor"] = theme.SecondaryColor;
-        Application.Current.Resources["ThemeSecondaryBrush"] = new SolidColorBrush(theme.SecondaryColor);
+      if(property == null || property == "Control") {
+        Application.Current.Resources["ThemeControlColor"] = theme.Control;
+        Application.Current.Resources["ThemeControlBrush"] = new SolidColorBrush(theme.Control);
       }
-      if(property == null || property == "TextColor") {
-        Application.Current.Resources["ThemeTextColor"] = theme.TextColor;
-        Application.Current.Resources["ThemeTextBrush"] = new SolidColorBrush(theme.TextColor);
+      if(property == null || property == "Light") {
+        Application.Current.Resources["ThemeLightColor"] = theme.Light;
+        Application.Current.Resources["ThemeLightBrush"] = new SolidColorBrush(theme.Light);
       }
-      if(property == null || property == "ActionColor") {
-        Application.Current.Resources["ThemeActionColor"] = theme.ActionColor;
-        Application.Current.Resources["ThemeActionBrush"] = new SolidColorBrush(theme.ActionColor);
+      if(property == null || property == "Strong") {
+        Application.Current.Resources["ThemeStrongColor"] = theme.Strong;
+        Application.Current.Resources["ThemeStrongBrush"] = new SolidColorBrush(theme.Strong);
       }
-      if(property == null || property == "AccentColor") {
-        Application.Current.Resources["ThemeAccentColor"] = theme.AccentColor;
-        Application.Current.Resources["ThemeAccentBrush"] = new SolidColorBrush(theme.AccentColor);
+      if(property == null || property == "Secondary") {
+        Application.Current.Resources["ThemeSecondaryColor"] = theme.Secondary;
+        Application.Current.Resources["ThemeSecondaryBrush"] = new SolidColorBrush(theme.Secondary);
       }
-      if(property == null || property == "InfoForegroundColor") {
-        Application.Current.Resources["ThemeInfoForegroundColor"] = theme.InfoForegroundColor;
-        Application.Current.Resources["ThemeInfoForegroundBrush"] = new SolidColorBrush(theme.InfoForegroundColor);
+      if(property == null || property == "InvertedSecondary") {
+        Application.Current.Resources["ThemeInvertedSecondaryColor"] = theme.InvertedSecondary;
+        Application.Current.Resources["ThemeInvertedSecondaryBrush"] = new SolidColorBrush(theme.InvertedSecondary);
       }
-      if(property == null || property == "InfoBackgroundColor") {
-        Application.Current.Resources["ThemeInfoBackgroundColor"] = theme.InfoBackgroundColor;
-        Application.Current.Resources["ThemeInfoBackgroundBrush"] = new SolidColorBrush(theme.InfoBackgroundColor);
+      if(property == null || property == "Text") {
+        Application.Current.Resources["ThemeTextColor"] = theme.Text;
+        Application.Current.Resources["ThemeTextBrush"] = new SolidColorBrush(theme.Text);
       }
-      if(property == null || property == "WarningForegroundColor") {
-        Application.Current.Resources["ThemeWarningForegroundColor"] = theme.WarningForegroundColor;
-        Application.Current.Resources["ThemeWarningForegroundBrush"] = new SolidColorBrush(theme.WarningForegroundColor);
+      if(property == null || property == "InvertedText") {
+        Application.Current.Resources["ThemeInvertedTextColor"] = theme.InvertedText;
+        Application.Current.Resources["ThemeInvertedTextBrush"] = new SolidColorBrush(theme.InvertedText);
       }
-      if(property == null || property == "WarningBackgroundColor") {
-        Application.Current.Resources["ThemeWarningBackgroundColor"] = theme.WarningBackgroundColor;
-        Application.Current.Resources["ThemeWarningBackgroundBrush"] = new SolidColorBrush(theme.WarningBackgroundColor);
+      if(property == null || property == "TextInfo") {
+        Application.Current.Resources["ThemeTextInfoColor"] = theme.TextInfo;
+        Application.Current.Resources["ThemeTextInfoBrush"] = new SolidColorBrush(theme.TextInfo);
       }
-      if(property == null || property == "ErrorForegroundColor") {
-        Application.Current.Resources["ThemeErrorForegroundColor"] = theme.ErrorForegroundColor;
-        Application.Current.Resources["ThemeErrorForegroundBrush"] = new SolidColorBrush(theme.ErrorForegroundColor);
+      if(property == null || property == "TextWarning") {
+        Application.Current.Resources["ThemeTextWarningColor"] = theme.TextWarning;
+        Application.Current.Resources["ThemeTextWarningBrush"] = new SolidColorBrush(theme.TextWarning);
       }
-      if(property == null || property == "ErrorBackgroundColor") {
-        Application.Current.Resources["ThemeErrorBackgroundColor"] = theme.ErrorBackgroundColor;
-        Application.Current.Resources["ThemeErrorBackgroundBrush"] = new SolidColorBrush(theme.ErrorBackgroundColor);
+      if(property == null || property == "TextError") {
+        Application.Current.Resources["ThemeTextErrorColor"] = theme.TextError;
+        Application.Current.Resources["ThemeTextErrorBrush"] = new SolidColorBrush(theme.TextError);
       }
-    }
-
-    public Color GetColor(ThemeKey key) {
-      switch(key) {
-        case ThemeKey.Control: return this.activeTheme.ControlColor;
-        case ThemeKey.Accent: return this.activeTheme.AccentColor;
-        case ThemeKey.Background: return this.activeTheme.BackgroundColor;
-        case ThemeKey.Action: return this.activeTheme.ActionColor;
-        case ThemeKey.Light: return this.activeTheme.LightColor;
-        case ThemeKey.Strong: return this.activeTheme.StrongColor;
-        case ThemeKey.WarningForeground: return this.activeTheme.WarningForegroundColor;
-        case ThemeKey.WarningBackground: return this.activeTheme.WarningBackgroundColor;
-        case ThemeKey.InfoBackground: return this.activeTheme.InfoForegroundColor;
-        case ThemeKey.InfoForeground: return this.activeTheme.InfoBackgroundColor;
-        case ThemeKey.ErrorForeground: return this.activeTheme.ErrorForegroundColor;
-        case ThemeKey.ErrorBackground: return this.activeTheme.ErrorBackgroundColor;
-        default: return this.activeTheme.TextColor;
+      if(property == null || property == "Accent") {
+        Application.Current.Resources["ThemeAccentColor"] = theme.Accent;
+        Application.Current.Resources["ThemeAccentBrush"] = new SolidColorBrush(theme.Accent);
       }
-    }
-
-    public Brush GetBrush(ThemeKey key) {
-      return new SolidColorBrush(this.GetColor(key));
+      if(property == null || property == "Action") {
+        Application.Current.Resources["ThemeActionColor"] = theme.Action;
+        Application.Current.Resources["ThemeActionBrush"] = new SolidColorBrush(theme.Action);
+      }
     }
 
     public void UpdateTheme(ITheme theme) {
@@ -166,74 +154,83 @@ namespace HAF {
     public ITheme DefaultDarkTheme { get; private set; }
 
     public ThemesService() {
-      var defaultTheme = new Theme(this, false) {
-        Name = new LocalizedText("Light"),
-        BackgroundColor = (Color)ColorConverter.ConvertFromString("#FFF1F1F1"),
-        ControlColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
-        LightColor = (Color)ColorConverter.ConvertFromString("#FFE6E6E6"),
-        StrongColor = (Color)ColorConverter.ConvertFromString("#FFABABAB"),
-        SecondaryColor = (Color)ColorConverter.ConvertFromString("#FF444444"),
-        TextColor = (Color)ColorConverter.ConvertFromString("#FF444444"),
-        AccentColor = (Color)ColorConverter.ConvertFromString("#FF2C61AC"),
-        ActionColor = (Color)ColorConverter.ConvertFromString("#FF527FC0"),
-        InfoForegroundColor = (Color)ColorConverter.ConvertFromString("#FFBDD9EE"),
-        InfoBackgroundColor = (Color)ColorConverter.ConvertFromString("#FFEDF7FF"),
-        WarningForegroundColor = (Color)ColorConverter.ConvertFromString("#FFE1D555"),
-        WarningBackgroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFDE2"),
-        ErrorForegroundColor = (Color)ColorConverter.ConvertFromString("#FFFF3232"),
-        ErrorBackgroundColor = (Color)ColorConverter.ConvertFromString("#FFFFE9E9"),
+      var defaultTheme = new Theme(new LocalizedText("Light"), false) {
+        Background = (Color)ColorConverter.ConvertFromString("#FFF1F1F1"),
+        BackgroundInfo = (Color)ColorConverter.ConvertFromString("#FFEDF7FF"),
+        BackgroundWarning = (Color)ColorConverter.ConvertFromString("#FFFFFDE2"),
+        BackgroundError = (Color)ColorConverter.ConvertFromString("#FFFFE9E9"),
+        Control = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
+        Light = (Color)ColorConverter.ConvertFromString("#FFE6E6E6"),
+        Strong = (Color)ColorConverter.ConvertFromString("#FFABABAB"),
+        Secondary = (Color)ColorConverter.ConvertFromString("#FF444444"),
+        InvertedSecondary = (Color)ColorConverter.ConvertFromString("#FFE6E6E6"),
+        Text = (Color)ColorConverter.ConvertFromString("#FF444444"),
+        InvertedText = (Color)ColorConverter.ConvertFromString("#FFF1F1F1"),
+        TextInfo = (Color)ColorConverter.ConvertFromString("#FFBDD9EE"),
+        TextWarning = (Color)ColorConverter.ConvertFromString("#FFE1D555"),
+        TextError = (Color)ColorConverter.ConvertFromString("#FFFF3232"),
+        Accent = (Color)ColorConverter.ConvertFromString("#FF2C61AC"),
+        Action = (Color)ColorConverter.ConvertFromString("#FF527FC0"),
       };
-      defaultTheme.ApplyColorChanges();
+      defaultTheme.ApplyChanges();
       this.DefaultLightTheme = defaultTheme;
-      defaultTheme = new Theme(this, false) {
-        Name = new LocalizedText("Dark"),
-        BackgroundColor = (Color)ColorConverter.ConvertFromString("#FF232323"),
-        ControlColor = (Color)ColorConverter.ConvertFromString("#FF303030"),
-        LightColor = (Color)ColorConverter.ConvertFromString("#FF414141"),
-        StrongColor = (Color)ColorConverter.ConvertFromString("#FF5B5B5B"),
-        SecondaryColor = (Color)ColorConverter.ConvertFromString("#FF989898"),
-        TextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
-        AccentColor = (Color)ColorConverter.ConvertFromString("#FF8D9FC3"),
-        ActionColor = (Color)ColorConverter.ConvertFromString("#FFA5B9DE"),
-        InfoForegroundColor = (Color)ColorConverter.ConvertFromString("#FF5A666F"),
-        InfoBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF5A666F"),
-        WarningForegroundColor = (Color)ColorConverter.ConvertFromString("#FF747044"),
-        WarningBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF747044"),
-        ErrorForegroundColor = (Color)ColorConverter.ConvertFromString("#FF643737"),
-        ErrorBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF643737"),
+      defaultTheme = new Theme(new LocalizedText("Dark"), false) {
+        Background = (Color)ColorConverter.ConvertFromString("#FF232323"),
+        BackgroundInfo = (Color)ColorConverter.ConvertFromString("#FF5A666F"),
+        BackgroundWarning = (Color)ColorConverter.ConvertFromString("#FF747044"),
+        BackgroundError = (Color)ColorConverter.ConvertFromString("#FF643737"),
+        Control = (Color)ColorConverter.ConvertFromString("#FF303030"),
+        Light = (Color)ColorConverter.ConvertFromString("#FF414141"),
+        Strong = (Color)ColorConverter.ConvertFromString("#FF5B5B5B"),
+        Secondary = (Color)ColorConverter.ConvertFromString("#FF989898"),
+        InvertedSecondary = (Color)ColorConverter.ConvertFromString("#FF414141"),
+        Text = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
+        InvertedText = (Color)ColorConverter.ConvertFromString("#FF000000"),
+        TextInfo = (Color)ColorConverter.ConvertFromString("#FF5A666F"),
+        TextWarning = (Color)ColorConverter.ConvertFromString("#FF747044"),
+        TextError = (Color)ColorConverter.ConvertFromString("#FF643737"),
+        Accent = (Color)ColorConverter.ConvertFromString("#FF8D9FC3"),
+        Action = (Color)ColorConverter.ConvertFromString("#FFA5B9DE"),
       };
-      defaultTheme.ApplyColorChanges();
+      defaultTheme.ApplyChanges();
       this.DefaultDarkTheme = defaultTheme;
       this.DoSetTheme = new RelayCommand<ITheme>(theme => {
         this.ActiveTheme = theme;
-      }, this.CanChangeTheme);
+      }, this.MayChangeActiveTheme);
       this.DoDuplicateTheme = new RelayCommand(() => {
-        var theme = new Theme(this, true) {
-          Name = new LocalizedText(this.editName),
-          BackgroundColor = this.activeTheme.BackgroundColor,
-          ControlColor = this.activeTheme.ControlColor,
-          LightColor = this.activeTheme.LightColor,
-          StrongColor = this.activeTheme.StrongColor,
-          SecondaryColor = this.activeTheme.SecondaryColor,
-          TextColor = this.activeTheme.TextColor,
-          AccentColor = this.activeTheme.AccentColor,
-          ActionColor = this.activeTheme.ActionColor,
-          InfoForegroundColor = this.activeTheme.InfoForegroundColor,
-          InfoBackgroundColor = this.activeTheme.InfoBackgroundColor,
-          WarningForegroundColor = this.activeTheme.WarningForegroundColor,
-          WarningBackgroundColor = this.activeTheme.WarningBackgroundColor,
-          ErrorForegroundColor = this.activeTheme.ErrorForegroundColor,
-          ErrorBackgroundColor = this.activeTheme.ErrorBackgroundColor,
+        var theme = new Theme(new LocalizedText(this.editName), true) {
+          Background = this.activeTheme.Background,
+          BackgroundInfo = this.activeTheme.BackgroundInfo,
+          BackgroundWarning = this.activeTheme.BackgroundWarning,
+          BackgroundError = this.activeTheme.BackgroundError,
+          Control = this.activeTheme.Control,
+          Light = this.activeTheme.Light,
+          Strong = this.activeTheme.Strong,
+          Secondary = this.activeTheme.Secondary,
+          InvertedSecondary = this.activeTheme.InvertedSecondary,
+          Text = this.activeTheme.Text,
+          InvertedText = this.activeTheme.InvertedText,
+          TextInfo = this.activeTheme.TextInfo,
+          TextWarning = this.activeTheme.TextWarning,
+          TextError = this.activeTheme.TextError,
+          Accent = this.activeTheme.Accent,
+          Action = this.activeTheme.Action,
         };
-        theme.ApplyColorChanges();
+        theme.ApplyChanges();
         this.AvailableThemes.Add(theme);
-        this.ActiveTheme = theme;
+        if(this.MayChangeActiveTheme.Value) {
+          this.ActiveTheme = theme;
+        }
       }, () => !string.IsNullOrWhiteSpace(this.editName) && !this.AvailableThemes.Any(t => t.Name.Id == this.editName));
+      this.DoSetActiveTheme = new RelayCommand<ITheme>(theme => {
+        this.ActiveTheme = theme;
+      }, theme => this.MayChangeActiveTheme.Value && theme != this.activeTheme);
+      this.MayChangeActiveTheme.RegisterUpdate(this.DoSetActiveTheme.RaiseCanExecuteChanged);
       this.DoDeleteTheme = new RelayCommand<ITheme>(theme => {
         if(this.AvailableThemes.Contains(theme)) {
           this.AvailableThemes.Remove(theme);
         }
-      }, theme => theme != null && theme.IsEditable && theme != this.activeTheme);
+      }, theme => theme != null && theme.IsEditable.Value && theme != this.activeTheme);
 #if DEBUG
       if(this.IsInDesignMode) {
         this.AvailableThemes.Add(this.DefaultLightTheme);
@@ -247,24 +244,25 @@ namespace HAF {
       ITheme activeTheme = null;
       if(configuration.TryReadEntry("themes", out var entry)) {
         foreach(var themeEntry in entry.ReadEntries("theme")) {
-          var theme = new Theme(this, true) {
-            Name = new LocalizedText(themeEntry.ReadAttribute("name", "unnamed theme")),
-            BackgroundColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("background", "#FF232323")),
-            ControlColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("control", "#FF303030")),
-            LightColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("light", "#FF414141")),
-            StrongColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("strong", "#FF5B5B5B")),
-            SecondaryColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("secondary", "#FFFFFFFF")),
-            TextColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("text", "#FFFFFFFF")),
-            AccentColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("accent", "#FF8D9FC3")),
-            ActionColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("action", "#FFA5B9DE")),
-            InfoForegroundColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("infoForeground", "#FF5A666F")),
-            InfoBackgroundColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("infoBackground", "#FF49555E")),
-            WarningForegroundColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("warningForeground", "#FF747044")),
-            WarningBackgroundColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("warningBackground", "#FF7D7840")),
-            ErrorForegroundColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("errorForeground", "#FF643737")),
-            ErrorBackgroundColor = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("errorBackground", "#FF901818")),
+          var theme = new Theme(new LocalizedText(themeEntry.ReadAttribute("name", "unnamed theme")), true) {
+            Background = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("background", "#FF232323")),
+            BackgroundInfo = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("backgroundInfo", "#FF49555E")),
+            BackgroundWarning = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("backgroundWarning", "#FF7D7840")),
+            BackgroundError = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("backgroundError", "#FF901818")),
+            Control = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("control", "#FF303030")),
+            Light = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("light", "#FF414141")),
+            Strong = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("strong", "#FF5B5B5B")),
+            Secondary = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("secondary", "#FFFFFFFF")),
+            InvertedSecondary = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("invertedSecondary", "#FF414141")),
+            Text = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("text", "#FFFFFFFF")),
+            InvertedText = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("invertedText", "#FF414141")),
+            TextInfo = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("textInfo", "#FF5A666F")),
+            TextWarning = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("textWarning", "#FF747044")),
+            TextError = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("textError", "#FF643737")),
+            Accent = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("accent", "#FF8D9FC3")),
+            Action = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("action", "#FFA5B9DE")),
           };
-          theme.ApplyColorChanges();
+          theme.ApplyChanges();
           this.AvailableThemes.Add(theme);
         }
         if(entry.TryReadAttribute("default", out string themeName)) {
@@ -283,23 +281,25 @@ namespace HAF {
     public override Task SaveConfiguration(ServiceConfiguration configuration) {
       var entry = configuration.WriteEntry("themes", true)
         .WriteAttribute("default", this.activeTheme.Name.Id);
-      foreach(var theme in this.AvailableThemes.Where(t => t.IsEditable)) {
+      foreach(var theme in this.AvailableThemes.Where(t => t.IsEditable.Value)) {
         entry.WriteEntry("theme", false)
           .WriteAttribute("name", theme.Name.Id)
-          .WriteAttribute("background", theme.BackgroundColor.ToString())
-          .WriteAttribute("control", theme.ControlColor.ToString())
-          .WriteAttribute("light", theme.LightColor.ToString())
-          .WriteAttribute("strong", theme.StrongColor.ToString())
-          .WriteAttribute("secondary", theme.SecondaryColor.ToString())
-          .WriteAttribute("text", theme.TextColor.ToString())
-          .WriteAttribute("accent", theme.AccentColor.ToString())
-          .WriteAttribute("action", theme.ActionColor.ToString())
-          .WriteAttribute("infoForeground", theme.InfoForegroundColor.ToString())
-          .WriteAttribute("infoBackground", theme.InfoBackgroundColor.ToString())
-          .WriteAttribute("warningForeground", theme.WarningForegroundColor.ToString())
-          .WriteAttribute("warningBackground", theme.WarningBackgroundColor.ToString())
-          .WriteAttribute("errorForeground", theme.ErrorForegroundColor.ToString())
-          .WriteAttribute("errorBackground", theme.ErrorBackgroundColor.ToString());
+          .WriteAttribute("background", theme.Background.ToString())
+          .WriteAttribute("backgroundInfo", theme.BackgroundInfo.ToString())
+          .WriteAttribute("backgroundWarning", theme.BackgroundWarning.ToString())
+          .WriteAttribute("backgroundError", theme.BackgroundError.ToString())
+          .WriteAttribute("control", theme.Control.ToString())
+          .WriteAttribute("light", theme.Light.ToString())
+          .WriteAttribute("strong", theme.Strong.ToString())
+          .WriteAttribute("secondary", theme.Secondary.ToString())
+          .WriteAttribute("invertedSecondary", theme.InvertedSecondary.ToString())
+          .WriteAttribute("text", theme.Text.ToString())
+          .WriteAttribute("invertedText", theme.InvertedText.ToString())
+          .WriteAttribute("TextInfo", theme.TextInfo.ToString())
+          .WriteAttribute("TextWarning", theme.TextWarning.ToString())
+          .WriteAttribute("TextError", theme.TextError.ToString())
+          .WriteAttribute("accent", theme.Accent.ToString())
+          .WriteAttribute("action", theme.Action.ToString());
       }
       return Task.CompletedTask;
     }

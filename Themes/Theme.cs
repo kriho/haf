@@ -7,267 +7,298 @@ using System.Windows.Media;
 
 namespace HAF {
   public class Theme: ObservableObject, ITheme {
-    public LocalizedText Name { get; set; }
+    public LocalizedText Name { get; private set; }
 
-    public bool IsEditable { get; private set; }
+    public IReadOnlyState IsEditable { get; private set; }
 
     private State isDirty = new State(false);
     public IReadOnlyState IsDirty => this.isDirty;
 
+    public IState IsActive { get; private set; } = new State(false);
+
     public IRelayCommand DoApplyChanges { get; private set; }
 
-    private Color lastBackgroundColor;
-    public Color LastBackgroundColor {
-      get => this.lastBackgroundColor;
-      set => this.SetValue(ref this.lastBackgroundColor, value);
+    private Color lastBackground;
+    public Color LastBackground {
+      get => this.lastBackground;
+      set => this.SetValue(ref this.lastBackground, value);
     }
 
-    private Color backgroundColor;
-    public Color BackgroundColor {
-      get => this.backgroundColor;
+    private Color background;
+    public Color Background {
+      get => this.background;
       set {
-        if(this.SetValue(ref this.backgroundColor, value)) {
+        if(this.SetValue(ref this.background, value)) {
           this.isDirty.Value = true;
         }
       }
     }
 
-    private Color lastControlColor;
-    public Color LastControlColor {
-      get => this.lastControlColor;
-      set => this.SetValue(ref this.lastControlColor, value);
+    private Color lastBackgroundInfo;
+    public Color LastBackgroundInfo {
+      get => this.lastBackground;
+      set => this.SetValue(ref this.lastBackgroundInfo, value);
     }
 
-    private Color controlColor;
-    public Color ControlColor {
-      get => this.controlColor;
+    private Color backgroundInfo;
+    public Color BackgroundInfo {
+      get => this.backgroundInfo;
       set {
-        if(this.SetValue(ref this.controlColor, value)) {
+        if(this.SetValue(ref this.backgroundInfo, value)) {
           this.isDirty.Value = true;
         }
       }
     }
 
-    private Color lastLightColor;
-    public Color LastLightColor {
-      get => this.lastLightColor;
-      set => this.SetValue(ref this.lastLightColor, value);
+    private Color lastBackgroundWarning;
+    public Color LastBackgroundWarning {
+      get => this.lastBackgroundWarning;
+      set => this.SetValue(ref this.lastBackgroundWarning, value);
     }
 
-    private Color lightColor;
-    public Color LightColor {
-      get => this.lightColor;
+    private Color backgroundWarning;
+    public Color BackgroundWarning {
+      get => this.backgroundWarning;
       set {
-        if(this.SetValue(ref this.lightColor, value)) {
+        if(this.SetValue(ref this.backgroundWarning, value)) {
           this.isDirty.Value = true;
         }
       }
     }
 
-    private Color lastStrongColor;
-    public Color LastStrongColor {
-      get => this.lastStrongColor;
-      set => this.SetValue(ref this.lastStrongColor, value);
+    private Color lastBackgroundError;
+    public Color LastBackgroundError {
+      get => this.lastBackgroundError;
+      set => this.SetValue(ref this.lastBackgroundError, value);
     }
 
-    private Color strongColor;
-    public Color StrongColor {
-      get => this.strongColor;
+    private Color backgroundError;
+    public Color BackgroundError {
+      get => this.backgroundError;
       set {
-        if(this.SetValue(ref this.strongColor, value)) {
+        if(this.SetValue(ref this.backgroundError, value)) {
           this.isDirty.Value = true;
         }
       }
     }
 
-    private Color lastSecondaryColor;
-    public Color LastSecondaryColor {
-      get => this.lastSecondaryColor;
-      set => this.SetValue(ref this.lastSecondaryColor, value);
+    private Color lastControl;
+    public Color LastControl {
+      get => this.lastControl;
+      set => this.SetValue(ref this.lastControl, value);
     }
 
-    private Color secondaryColor;
-    public Color SecondaryColor {
-      get => this.secondaryColor;
+    private Color control;
+    public Color Control {
+      get => this.control;
       set {
-        if(this.SetValue(ref this.secondaryColor, value)) {
+        if(this.SetValue(ref this.control, value)) {
           this.isDirty.Value = true;
         }
       }
     }
 
-    private Color lastTextColor;
-    public Color LastTextColor {
-      get => this.lastTextColor;
-      set => this.SetValue(ref this.lastTextColor, value);
+    private Color lastLight;
+    public Color LastLight {
+      get => this.lastLight;
+      set => this.SetValue(ref this.lastLight, value);
     }
 
-    private Color textColor;
-    public Color TextColor {
-      get => this.textColor;
+    private Color light;
+    public Color Light {
+      get => this.light;
       set {
-        if(this.SetValue(ref this.textColor, value)) {
+        if(this.SetValue(ref this.light, value)) {
           this.isDirty.Value = true;
         }
       }
     }
 
-    private Color lastAccentColor;
-    public Color LastAccentColor {
-      get => this.lastAccentColor;
-      set => this.SetValue(ref this.lastAccentColor, value);
+    private Color lastStrong;
+    public Color LastStrong {
+      get => this.lastStrong;
+      set => this.SetValue(ref this.lastStrong, value);
     }
 
-    private Color accentColor;
-    public Color AccentColor {
-      get => this.accentColor;
+    private Color strong;
+    public Color Strong {
+      get => this.strong;
       set {
-        if(this.SetValue(ref this.accentColor, value)) {
+        if(this.SetValue(ref this.strong, value)) {
           this.isDirty.Value = true;
         }
       }
     }
 
-    private Color lastActionColor;
-    public Color LastActionColor {
-      get => this.lastActionColor;
-      set => this.SetValue(ref this.lastActionColor, value);
+    private Color lastSecondary;
+    public Color LastSecondary {
+      get => this.lastSecondary;
+      set => this.SetValue(ref this.lastSecondary, value);
     }
 
-    private Color actionColor;
-    public Color ActionColor {
-      get => this.actionColor;
+    private Color secondary;
+    public Color Secondary {
+      get => this.secondary;
       set {
-        if(this.SetValue(ref this.actionColor, value)) {
+        if(this.SetValue(ref this.secondary, value)) {
           this.isDirty.Value = true;
         }
       }
     }
 
-    private Color lastInfoForegroundColor;
-    public Color LastInfoForegroundColor {
-      get => this.lastInfoForegroundColor;
-      set => this.SetValue(ref this.lastInfoForegroundColor, value);
+    private Color lastInvertedSecondary;
+    public Color LastInvertedSecondary {
+      get => this.lastInvertedSecondary;
+      set => this.SetValue(ref this.lastInvertedSecondary, value);
     }
 
-    private Color infoForegroundColor;
-    public Color InfoForegroundColor {
-      get => this.infoForegroundColor;
+    private Color invertedSecondary;
+    public Color InvertedSecondary {
+      get => this.invertedSecondary;
       set {
-        if(this.SetValue(ref this.infoForegroundColor, value)) {
+        if(this.SetValue(ref this.invertedSecondary, value)) {
           this.isDirty.Value = true;
         }
       }
     }
 
-    private Color lastInfoBackgroundColor;
-    public Color LastInfoBackgroundColor {
-      get => this.lastInfoBackgroundColor;
-      set => this.SetValue(ref this.lastInfoBackgroundColor, value);
+    private Color lastText;
+    public Color LastText {
+      get => this.lastText;
+      set => this.SetValue(ref this.lastText, value);
     }
 
-    private Color infoBackgroundColor;
-    public Color InfoBackgroundColor {
-      get => this.infoBackgroundColor;
+    private Color text;
+    public Color Text {
+      get => this.text;
       set {
-        if(this.SetValue(ref this.infoBackgroundColor, value)) {
+        if(this.SetValue(ref this.text, value)) {
           this.isDirty.Value = true;
         }
       }
     }
 
-    private Color lastWarningForegroundColor;
-    public Color LastWarningForegroundColor {
-      get => this.lastWarningForegroundColor;
-      set => this.SetValue(ref this.lastWarningForegroundColor, value);
+    private Color lastInvertedText;
+    public Color LastInvertedText {
+      get => this.lastInvertedText;
+      set => this.SetValue(ref this.lastInvertedText, value);
     }
 
-    private Color warningForegroundColor;
-    public Color WarningForegroundColor {
-      get => this.warningForegroundColor;
+    private Color invertedText;
+    public Color InvertedText {
+      get => this.invertedText;
       set {
-        if(this.SetValue(ref this.warningForegroundColor, value)) {
+        if(this.SetValue(ref this.invertedText, value)) {
           this.isDirty.Value = true;
         }
       }
     }
 
-    private Color lastWarningBackgroundColor;
-    public Color LastWarningBackgroundColor {
-      get => this.lastWarningBackgroundColor;
-      set => this.SetValue(ref this.lastWarningBackgroundColor, value);
+    private Color lastTextInfo;
+    public Color LastTextInfo {
+      get => this.lastTextInfo;
+      set => this.SetValue(ref this.lastTextInfo, value);
     }
 
-    private Color warningBackgroundColor;
-    public Color WarningBackgroundColor {
-      get => this.warningBackgroundColor;
+    private Color textInfo;
+    public Color TextInfo {
+      get => this.textInfo;
       set {
-        if(this.SetValue(ref this.warningBackgroundColor, value)) {
+        if(this.SetValue(ref this.textInfo, value)) {
           this.isDirty.Value = true;
         }
       }
     }
 
-    private Color lastErrorForegroundColor;
-    public Color LastErrorForegroundColor {
-      get => this.lastErrorForegroundColor;
-      set => this.SetValue(ref this.lastErrorForegroundColor, value);
+    private Color lastTextWarning;
+    public Color LastTextWarning {
+      get => this.lastTextWarning;
+      set => this.SetValue(ref this.lastTextWarning, value);
     }
 
-    private Color errorForegroundColor;
-    public Color ErrorForegroundColor {
-      get => this.errorForegroundColor;
+    private Color textWarning;
+    public Color TextWarning {
+      get => this.textWarning;
       set {
-        if(this.SetValue(ref this.errorForegroundColor, value)) {
+        if(this.SetValue(ref this.textWarning, value)) {
           this.isDirty.Value = true;
         }
       }
     }
 
-    private Color lastErrorBackgroundColor;
-    public Color LastErrorBackgroundColor {
-      get => this.lastErrorBackgroundColor;
-      set => this.SetValue(ref this.lastErrorBackgroundColor, value);
+    private Color lastTextError;
+    public Color LastTextError {
+      get => this.lastTextError;
+      set => this.SetValue(ref this.lastTextError, value);
     }
 
-    private Color errorBackgroundColor;
-    public Color ErrorBackgroundColor {
-      get => this.errorBackgroundColor;
+    private Color textError;
+    public Color TextError {
+      get => this.textError;
       set {
-        if(this.SetValue(ref this.errorBackgroundColor, value)) {
+        if(this.SetValue(ref this.textError, value)) {
           this.isDirty.Value = true;
         }
       }
     }
 
-    private bool isActive;
-    public bool IsActive {
-      get => this.isActive;
-      set => this.SetValue(ref this.isActive, value);
+    private Color lastAccent;
+    public Color LastAccent {
+      get => this.lastAccent;
+      set => this.SetValue(ref this.lastAccent, value);
     }
 
-    public void ApplyColorChanges() {
-      this.LastBackgroundColor = this.BackgroundColor;
-      this.LastControlColor = this.ControlColor;
-      this.LastLightColor = this.LightColor;
-      this.LastStrongColor = this.StrongColor;
-      this.LastSecondaryColor = this.SecondaryColor;
-      this.LastTextColor = this.TextColor;
-      this.LastAccentColor = this.AccentColor;
-      this.LastActionColor = this.ActionColor;
-      this.LastInfoForegroundColor = this.InfoForegroundColor;
-      this.LastInfoBackgroundColor = this.InfoBackgroundColor;
-      this.LastWarningForegroundColor = this.WarningForegroundColor;
-      this.LastWarningBackgroundColor = this.WarningBackgroundColor;
-      this.LastErrorForegroundColor = this.ErrorForegroundColor;
-      this.LastErrorBackgroundColor = this.ErrorBackgroundColor;
+    private Color accent;
+    public Color Accent {
+      get => this.accent;
+      set {
+        if(this.SetValue(ref this.accent, value)) {
+          this.isDirty.Value = true;
+        }
+      }
+    }
+
+    private Color lastAction;
+    public Color LastAction {
+      get => this.lastAction;
+      set => this.SetValue(ref this.lastAction, value);
+    }
+
+    private Color action;
+    public Color Action {
+      get => this.action;
+      set {
+        if(this.SetValue(ref this.action, value)) {
+          this.isDirty.Value = true;
+        }
+      }
+    }
+
+    public void ApplyChanges() {
+      this.LastBackground = this.Background;
+      this.LastBackgroundInfo = this.BackgroundInfo;
+      this.LastBackgroundWarning = this.BackgroundWarning;
+      this.LastBackgroundError = this.BackgroundError;
+      this.LastControl = this.Control;
+      this.LastLight = this.Light;
+      this.LastStrong = this.Strong;
+      this.LastSecondary = this.Secondary;
+      this.LastInvertedSecondary = this.InvertedSecondary;
+      this.LastText = this.Text;
+      this.LastInvertedText = this.InvertedText;
+      this.LastTextInfo = this.TextInfo;
+      this.LastTextWarning = this.TextWarning;
+      this.LastTextError = this.TextError;
+      this.LastAccent = this.Accent;
+      this.LastAction = this.Action;
       this.isDirty.Value = false;
     }
 
-    public Theme(IThemesService themesService, bool isEditable) {
-      this.IsEditable = isEditable;
+    public Theme(LocalizedText name, bool isEditable) {
+      this.Name = name;
+      this.IsEditable = new FixedState(isEditable);
       this.DoApplyChanges = new RelayCommand(() => {
-        this.ApplyColorChanges();
+        this.ApplyChanges();
       }, this.isDirty);
     }
   }

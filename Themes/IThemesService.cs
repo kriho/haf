@@ -2,35 +2,17 @@
 using System.Windows.Media;
 
 namespace HAF {
-
-  public enum ThemeKey {
-    Control, // Office2016: main; Windows8: unused
-    Background, // Office2016: alternative, mouse over, marker inverted; Windows8: main
-    Text, // Office2016: marker; Windows8: marker
-    Accent, // Office2016: accent, accent pressed, complementary; Windows8: accent
-    Action, // Office2016: accent focused, accent mouse over; Windows8: unused
-    Light, // Office2016: primary, selected; Windows8: basic
-    Strong, // Office2016: icon, basic, pressed; Windows8: strong
-    InfoForeground,
-    InfoBackground,
-    WarningForeground,
-    WarningBackground,
-    ErrorForeground,
-    ErrorBackground // validation
-  }
-
   public interface IThemesService: IService {
     IRelayCommand<ITheme> DoSetTheme { get; }
     IRelayCommand DoDuplicateTheme { get; }
     IRelayCommand<ITheme> DoDeleteTheme { get; }
+    IRelayCommand<ITheme> DoSetActiveTheme { get; }
     ITheme ActiveTheme { get; set; }
     IObservableCollection<ITheme> AvailableThemes { get; }
-    ICompoundState CanChangeTheme { get; }
+    ICompoundState MayChangeActiveTheme { get; }
     IEvent OnActiveThemeChanged { get; }
     ITheme DefaultLightTheme { get; }
     ITheme DefaultDarkTheme { get; }
-    Color GetColor(ThemeKey key);
-    Brush GetBrush(ThemeKey key);
     void UpdateTheme(ITheme theme);
   }
 }

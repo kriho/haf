@@ -3,32 +3,36 @@
                     xmlns:haf="clr-namespace:HAF">
     <!-- colors -->
     <Color x:Key="ThemeBackgroundColor" A="0xFF" R="0xFF" G="0xFF" B="0xFF"/>
+    <Color x:Key="ThemeBackgroundInfoColor" A="0xFF" R="0xD3" G="0xEB" B="0xFC"/>
+    <Color x:Key="ThemeBackgroundWarningColor" A="0xFF" R="0xFF" G="0xFA" B="0xC3"/>
+    <Color x:Key="ThemeBackgroundErrorColor" A="0xFF" R="0xFF" G="0xD2" B="0xD2"/>
     <Color x:Key="ThemeControlColor" A="0xFF" R="0xFF" G="0xFF" B="0xFF"/>
     <Color x:Key="ThemeLightColor" A="0xFF" R="0xDF" G="0xDF" B="0xDF"/>
     <Color x:Key="ThemeStrongColor" A="0xFF" R="0x7E" G="0x7E" B="0x7E"/>
     <Color x:Key="ThemeSecondaryColor" A="0xFF" R="0x7E" G="0x7E" B="0x7E"/>
+    <Color x:Key="ThemeInvertedSecondaryColor" A="0xFF" R="0xDF" G="0xDF" B="0xDF"/>
     <Color x:Key="ThemeTextColor" A="0xFF" R="0x00" G="0x00" B="0x00"/>
+    <Color x:Key="ThemeInvertedTextColor" A="0xFF" R="0xFF" G="0xFF" B="0xFF"/>
+    <Color x:Key="ThemeTextInfoColor" A="0xFF" R="0xD3" G="0xEB" B="0xFC"/>
+    <Color x:Key="ThemeTextWarningColor" A="0xFF" R="0xFF" G="0xFA" B="0xC3"/>
+    <Color x:Key="ThemeTextErrorColor" A="0xFF" R="0xFF" G="0xD2" B="0xD2"/>
     <Color x:Key="ThemeActionColor" A="0xFF" R="0xFF" G="0xFF" B="0xFF"/>
     <Color x:Key="ThemeAccentColor" A="0xFF" R="0x0B" G="0x70" B="0xBB"/>
-    <Color x:Key="ThemeInfoForegroundColor" A="0xFF" R="0xD3" G="0xEB" B="0xFC"/>
-    <Color x:Key="ThemeInfoBackgroundColor" A="0xFF" R="0xD3" G="0xEB" B="0xFC"/>
-    <Color x:Key="ThemeWarningForegroundColor" A="0xFF" R="0xFF" G="0xFA" B="0xC3"/>
-    <Color x:Key="ThemeWarningBackgroundColor" A="0xFF" R="0xFF" G="0xFA" B="0xC3"/>
-    <Color x:Key="ThemeErrorForegroundColor" A="0xFF" R="0xFF" G="0xD2" B="0xD2"/>
-    <Color x:Key="ThemeErrorBackgroundColor" A="0xFF" R="0xFF" G="0xD2" B="0xD2"/>
     <!-- brushes -->
     <SolidColorBrush x:Key="ThemeBackgroundBrush" Color="{StaticResource ThemeBackgroundColor}"/>
+    <SolidColorBrush x:Key="ThemeBackgroundInfoBrush" Color="{StaticResource ThemeBackgroundInfoColor}"/>
+    <SolidColorBrush x:Key="ThemeBackgroundWarningBrush" Color="{StaticResource ThemeBackgroundWarningColor}"/>
+    <SolidColorBrush x:Key="ThemeBackgroundErrorBrush" Color="{StaticResource ThemeBackgroundErrorColor}"/>
     <SolidColorBrush x:Key="ThemeControlBrush" Color="{StaticResource ThemeControlColor}"/>
     <SolidColorBrush x:Key="ThemeLightBrush" Color="{StaticResource ThemeLightColor}"/>
     <SolidColorBrush x:Key="ThemeStrongBrush" Color="{StaticResource ThemeStrongColor}"/>
     <SolidColorBrush x:Key="ThemeSecondaryBrush" Color="{StaticResource ThemeSecondaryColor}"/>
+    <SolidColorBrush x:Key="ThemeInvertedSecondaryBrush" Color="{StaticResource ThemeInvertedSecondaryColor}"/>
     <SolidColorBrush x:Key="ThemeTextBrush" Color="{StaticResource ThemeTextColor}"/>
+    <SolidColorBrush x:Key="ThemeInvertedTextBrush" Color="{StaticResource ThemeInvertedTextColor}"/>
+    <SolidColorBrush x:Key="ThemeTextInfoBrush" Color="{StaticResource ThemeTextInfoColor}"/>
+    <SolidColorBrush x:Key="ThemeTextWarningBrush" Color="{StaticResource ThemeTextWarningColor}"/>
+    <SolidColorBrush x:Key="ThemeTextErrorBrush" Color="{StaticResource ThemeTextErrorColor}"/>
     <SolidColorBrush x:Key="ThemeActionBrush" Color="{StaticResource ThemeActionColor}"/>
     <SolidColorBrush x:Key="ThemeAccentBrush" Color="{StaticResource ThemeAccentColor}"/>
-    <SolidColorBrush x:Key="ThemeInfoForegroundBrush" Color="{StaticResource ThemeInfoForegroundColor}"/>
-    <SolidColorBrush x:Key="ThemeInfoBackgroundBrush" Color="{StaticResource ThemeInfoBackgroundColor}"/>
-    <SolidColorBrush x:Key="ThemeWarningForegroundBrush" Color="{StaticResource ThemeWarningForegroundColor}"/>
-    <SolidColorBrush x:Key="ThemeWarningBackgroundBrush" Color="{StaticResource ThemeWarningBackgroundColor}"/>
-    <SolidColorBrush x:Key="ThemeErrorForegroundBrush" Color="{StaticResource ThemeErrorForegroundColor}"/>
-    <SolidColorBrush x:Key="ThemeErrorBackgroundBrush" Color="{StaticResource ThemeErrorBackgroundColor}"/>
 </ResourceDictionary>
