@@ -182,7 +182,7 @@
                 <ControlTemplate TargetType="{x:Type controls:FormTitle}">
                     <StackPanel Margin="{TemplateBinding Margin}">
                         <TextBlock Text="{TemplateBinding Title}" FontWeight="SemiBold"/>
-                        <TextBlock Text="{TemplateBinding Description}" Foreground="{DynamicResource ThemeSecondaryBrush}" TextWrapping="Wrap" Visibility="{TemplateBinding Description, Converter={converters:IsNullToVisibilityConverter Inverted=True}}"/>
+                        <TextBlock Text="{TemplateBinding Description}" Foreground="{DynamicResource ThemeSecondaryBrush}" FontSize="13" TextWrapping="Wrap" Visibility="{TemplateBinding Description, Converter={converters:IsNullToVisibilityConverter Inverted=True}}"/>
                     </StackPanel>
                 </ControlTemplate>
             </Setter.Value>
