@@ -33,5 +33,17 @@ namespace HAF.Controls {
       get { return (bool)this.GetValue(GeometryIcon.UseSecondaryForegroundProperty); }
       set { this.SetValue(GeometryIcon.UseSecondaryForegroundProperty, value); }
     }
+
+    public static readonly DependencyProperty GeometryWidthProperty = DependencyProperty.Register("GeometryWidth", typeof(double), typeof(GeometryIcon), new PropertyMetadata(24.0));
+    public double GeometryWidth {
+      get { return (double)this.GetValue(GeometryIcon.GeometryWidthProperty); }
+      set { this.SetValue(GeometryIcon.GeometryWidthProperty, value); }
+    }
+
+    public static readonly DependencyProperty GeometryHeightProperty = DependencyProperty.Register("GeometryHeight", typeof(double), typeof(GeometryIcon), new PropertyMetadata(24.0));
+    public double GeometryHeight {
+      get { return (double)this.GetValue(GeometryIcon.GeometryHeightProperty); }
+      set { this.SetValue(GeometryIcon.GeometryHeightProperty, value); }
+    }
   }
 }
