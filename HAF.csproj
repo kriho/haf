@@ -18,7 +18,7 @@
     <TargetFrameworkProfile />
     <PackageId>$(AssemblyName)</PackageId>
     <Title>Holistic Application Framework</Title>
-    <Version>1.0.36</Version>
+    <Version>1.0.37</Version>
     <Authors>Kristjan Hornung</Authors>
     <PackageOutputPath>.</PackageOutputPath>
     <Description>
@@ -68,6 +68,7 @@
     <Compile Include="Behaviors\Attached\DisabledVisibility.cs" />
     <Compile Include="Behaviors\Attached\HighlightBrush.cs" />
     <Compile Include="Behaviors\Attached\HighlightText.cs" />
+    <Compile Include="Behaviors\Attached\SecondaryForeground.cs" />
     <Compile Include="Behaviors\Attached\ServiceLocator.cs" />
     <Compile Include="Behaviors\Attached\SupportUrl.cs" />
     <Compile Include="Behaviors\Attached\Watermark.cs" />
@@ -152,6 +153,7 @@
     <Compile Include="Settings\ISettingString.cs" />
     <Compile Include="Settings\Setting.cs" />
     <Compile Include="Settings\SettingString.cs" />
+    <Compile Include="States\FixedState.cs" />
     <Compile Include="Updates\IPatchNotesEntry.cs" />
     <Compile Include="Updates\PatchNotesEntryType.cs" />
     <Compile Include="Updates\IPatchNotes.cs" />
@@ -283,8 +285,6 @@
     <Compile Include="Storage\XmlLiveStorageFile.cs" />
     <Compile Include="Storage\XmlStorageFile.cs" />
     <Compile Include="Tasks\ObservableTaskProgress.cs" />
-    <Compile Include="Themes\ThemeBrush.cs" />
-    <Compile Include="Themes\ThemeColor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
