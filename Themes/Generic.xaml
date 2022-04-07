@@ -1,4 +1,4 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:converters="clr-namespace:HAF.Converters"
                     xmlns:controls="clr-namespace:HAF.Controls">
@@ -80,7 +80,7 @@
                                 <ItemsControl ItemsSource="{Binding ElementName=PART_Presenter, Path=Content.(Validation.Errors)}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding ErrorContent}" Foreground="{DynamicResource ThemeErrorForegroundBrush}" />
+                                            <TextBlock Text="{Binding ErrorContent}" Foreground="{DynamicResource ThemeTextErrorBrush}" />
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
@@ -123,7 +123,7 @@
                             <ItemsControl ItemsSource="{Binding ElementName=PART_Presenter, Path=Content.(Validation.Errors)}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding ErrorContent}" Foreground="Red" />
+                                        <TextBlock Text="{Binding ErrorContent}" Foreground="{DynamicResource ThemeTextErrorBrush}" />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
@@ -159,7 +159,7 @@
                             <ItemsControl ItemsSource="{Binding ElementName=PART_Presenter, Path=Content.(Validation.Errors)}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding ErrorContent}" Foreground="{DynamicResource ThemeErrorForegroundBrush}" />
+                                        <TextBlock Text="{Binding ErrorContent}" Foreground="{DynamicResource ThemeTextErrorBrush}" />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
