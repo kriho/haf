@@ -30,15 +30,5 @@ namespace HAF {
       this.taskPools.Add(pool);
       return pool;
     }
-
-    public TasksService() {
-    #if DEBUG
-      if(this.IsInDesignMode) {
-        this.AddTaskPool("Quick todos", 16);
-        this.AddTaskPool("The one and only background task", 1);
-        this.AddTaskPool("A very specific task pool with an appropriatly long name", 0);
-      }
-    #endif
-    }
   }
 }
