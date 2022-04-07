@@ -17,6 +17,12 @@ namespace HAF {
     public IState IsActive { get; private set; } = new State(false);
 
     public IRelayCommand DoApplyChanges { get; private set; }
+    
+    private double disabledOpacity;
+    public double DisabledOpacity {
+      get => this.disabledOpacity;
+      set => this.SetValue(ref this.disabledOpacity, value);
+    }
 
     private Color lastBackground;
     public Color LastBackground {

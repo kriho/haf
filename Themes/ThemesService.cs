@@ -75,6 +75,9 @@ namespace HAF {
 
     protected virtual void ApplyTheme(ITheme theme, string property = null) {
       // update resources
+      if(property == null || property == "DisabledOpacity") {
+        Application.Current.Resources["ThemeDisabledOpacity"] = theme.DisabledOpacity;
+      }
       if(property == null || property == "Background") {
         Application.Current.Resources["ThemeBackgroundColor"] = theme.Background;
         Application.Current.Resources["ThemeBackgroundBrush"] = new SolidColorBrush(theme.Background);
@@ -155,6 +158,7 @@ namespace HAF {
 
     public ThemesService() {
       var defaultTheme = new Theme(new LocalizedText("Light"), false) {
+        DisabledOpacity = 0.5,
         Background = (Color)ColorConverter.ConvertFromString("#FFF1F1F1"),
         BackgroundInfo = (Color)ColorConverter.ConvertFromString("#FFEDF7FF"),
         BackgroundWarning = (Color)ColorConverter.ConvertFromString("#FFFFFDE2"),
@@ -175,6 +179,7 @@ namespace HAF {
       defaultTheme.ApplyChanges();
       this.DefaultLightTheme = defaultTheme;
       defaultTheme = new Theme(new LocalizedText("Dark"), false) {
+        DisabledOpacity = 0.5,
         Background = (Color)ColorConverter.ConvertFromString("#FF232323"),
         BackgroundInfo = (Color)ColorConverter.ConvertFromString("#FF5A666F"),
         BackgroundWarning = (Color)ColorConverter.ConvertFromString("#FF747044"),
@@ -199,6 +204,7 @@ namespace HAF {
       }, this.MayChangeActiveTheme);
       this.DoDuplicateTheme = new RelayCommand(() => {
         var theme = new Theme(new LocalizedText(this.editName), true) {
+          DisabledOpacity = this.activeTheme.DisabledOpacity,
           Background = this.activeTheme.Background,
           BackgroundInfo = this.activeTheme.BackgroundInfo,
           BackgroundWarning = this.activeTheme.BackgroundWarning,
@@ -221,6 +227,7 @@ namespace HAF {
         if(this.MayChangeActiveTheme.Value) {
           this.ActiveTheme = theme;
         }
+        this.EditName = "";
       }, () => !string.IsNullOrWhiteSpace(this.editName) && !this.AvailableThemes.Any(t => t.Name.Id == this.editName));
       this.DoSetActiveTheme = new RelayCommand<ITheme>(theme => {
         this.ActiveTheme = theme;
@@ -245,6 +252,7 @@ namespace HAF {
       if(configuration.TryReadEntry("themes", out var entry)) {
         foreach(var themeEntry in entry.ReadEntries("theme")) {
           var theme = new Theme(new LocalizedText(themeEntry.ReadAttribute("name", "unnamed theme")), true) {
+            DisabledOpacity = themeEntry.ReadAttribute("disabledOpacity", 0.5),
             Background = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("background", "#FF232323")),
             BackgroundInfo = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("backgroundInfo", "#FF49555E")),
             BackgroundWarning = (Color)ColorConverter.ConvertFromString(themeEntry.ReadAttribute("backgroundWarning", "#FF7D7840")),
@@ -284,6 +292,7 @@ namespace HAF {
       foreach(var theme in this.AvailableThemes.Where(t => t.IsEditable.Value)) {
         entry.WriteEntry("theme", false)
           .WriteAttribute("name", theme.Name.Id)
+          .WriteAttribute("disabledOpacity", theme.DisabledOpacity)
           .WriteAttribute("background", theme.Background.ToString())
           .WriteAttribute("backgroundInfo", theme.BackgroundInfo.ToString())
           .WriteAttribute("backgroundWarning", theme.BackgroundWarning.ToString())

@@ -1,6 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:s="clr-namespace:System;assembly=mscorlib"
                     xmlns:haf="clr-namespace:HAF">
+    <s:Double x:Key="ThemeDisabledOpacity">0.5</s:Double>
     <!-- colors -->
     <Color x:Key="ThemeBackgroundColor" A="0xFF" R="0xFF" G="0xFF" B="0xFF"/>
     <Color x:Key="ThemeBackgroundInfoColor" A="0xFF" R="0xD3" G="0xEB" B="0xFC"/>

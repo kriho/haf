@@ -9,6 +9,7 @@ using System.Windows.Media;
 namespace HAF {
   public interface ITheme: INotifyPropertyChanged {
     LocalizedText Name { get; }
+    double DisabledOpacity { get; set; }
     Color Background {get; set; }
     Color LastBackground { get; set; }
     Color BackgroundInfo { get; set; }
