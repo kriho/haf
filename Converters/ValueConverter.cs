@@ -45,7 +45,7 @@ namespace HAF.Converters {
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
       if (!targetType.IsAssignableFrom(typeof(Tout))) {
-        throw new NotImplementedException("This converter can not be used for the given type.");
+        throw new InvalidOperationException("This converter can not be used for the given type.");
       }
       this.culture = culture;
       var input = default(Tin);
@@ -59,8 +59,8 @@ namespace HAF.Converters {
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-      if (targetType != typeof(Tin)) {
-        throw new NotImplementedException("This converter can not be used for the given type.");
+      if (!targetType.IsAssignableFrom(typeof(Tin))) {
+        throw new InvalidOperationException("This converter can not be used for the given type.");
       }
       this.culture = culture;
       var input = default(Tout);
