@@ -43,6 +43,13 @@ namespace HAF {
     /// <param name="owner">The setting owner. When no owner is provided, the <c>SettingsService</c> owns the setting.</param>
     /// <returns>The registered setting.</returns>
     ISetting<T> RegisterValue<T>(string name, ISetting<T> value, ISettingsDrawer drawer = null, int displayOrder = 0, ISettingsOwner owner = null);
-    void RegisterDrawer(ISettingsDrawer drawer, int displayOrder = 0);
+    
+    /// <summary>
+    /// Register drawer for a manualy maintained setting.
+    /// </summary>
+    /// <param name="name">Internal name of the setting. Used to reference the setting.</param>
+    /// <param name="drawer">Drawer for visualizing the setting.</param>
+    /// <param name="displayOrder">The display order within the region.</param>
+    void RegisterDrawer(string name, ISettingsDrawer drawer, int displayOrder = 0);
   }
 }

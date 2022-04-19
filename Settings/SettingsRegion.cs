@@ -35,7 +35,7 @@ namespace HAF {
       }
     }
 
-    public void RegisterDrawer(ISettingsDrawer drawer, int displayOrder = 0) {
+    public void RegisterDrawer(string name, ISettingsDrawer drawer, int displayOrder = 0) {
       int insertIndex;
       for(insertIndex = 0; insertIndex < this.settings.Count; insertIndex++) {
         if(this.settings[insertIndex].DisplayOrder > displayOrder) {
@@ -44,7 +44,7 @@ namespace HAF {
       }
       this.settings.Insert(insertIndex, new SettingsRegistration() {
         Region = this,
-        Name = null,
+        Name = name,
         Setting = null,
         DisplayOrder = displayOrder,
         Drawer = drawer,

@@ -18,6 +18,8 @@ namespace HAF {
 
     public IReadOnlyList<ExportFactory<ISettingsDrawer, ISettingsDrawerMeta>> Drawers { get; private set; }
 
+    public IRelayCommand<string> DoRevealSetting { get; private set; }
+
     public CollectionViewSource FilteredRegistrations { get; private set; }
 
     private string filter;
@@ -29,6 +31,8 @@ namespace HAF {
         }
       }
     }
+
+    public Action<ISettingsRegistration> RevealSetting { get; set; }
 
     public IRelayCommand DoClearFilter { get; private set; }
 
@@ -74,6 +78,17 @@ namespace HAF {
       });
       this.DoClearFilter = new RelayCommand(() => {
         this.Filter = "";
+      });
+      this.DoRevealSetting = new RelayCommand<string>(name => {
+        if(name == null || this.RevealSetting == null) {
+          return;
+        }
+        var setting = this.regions.SelectMany(r => r.Registrations).FirstOrDefault(r => r.Name == name);
+        if(setting != null) {
+          this.RevealSetting.Invoke(setting);
+        } else {
+          Log.Warning($"failed to find setting \"{name}\"");
+        }
       });
     }
 

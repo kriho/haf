@@ -23,6 +23,16 @@ namespace HAF {
     CollectionViewSource FilteredRegistrations { get; }
 
     /// <summary>
+    /// Reveal a setting by its name. Requires <see cref="ISettingsService.RevealSetting"/> to be set.
+    /// </summary>
+    IRelayCommand<string> DoRevealSetting { get; }
+
+    /// <summary>
+    /// Must be set to enable use of <see cref="ISettingsService.DoRevealSetting"/>. The implementation must use the provided datacontext to locate an reveal the associated drawer.
+    /// </summary>
+    Action<ISettingsRegistration> RevealSetting { get; set; }
+
+    /// <summary>
     /// Register settings region.
     /// </summary>
     /// <param name="name">Internal name of the region. Used to reference the region.</param>
