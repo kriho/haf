@@ -18,16 +18,15 @@ namespace HAF {
 
     public IRelayCommand DoClearSelectedItem { get; private set; }
 
-    private Event<object> onSelectedItemChanged = new Event<object>(nameof(OnSelectedItemChanged));
-    public IReadOnlyEvent<object> OnSelectedItemChanged => this.onSelectedItemChanged;
+    private Event<object> onSelectedItemAssigned = new Event<object>(nameof(OnSelectedItemAssigned));
+    public IReadOnlyEvent<object> OnSelectedItemAssigned => this.onSelectedItemAssigned;
 
     private object selectedItem;
     public object SelectedItem {
       get => this.selectedItem;
       set {
-        if(this.SetValue(ref this.selectedItem, value)) {
-          this.onSelectedItemChanged.Fire(value);
-        }
+        this.SetValue(ref this.selectedItem, value);
+        this.onSelectedItemAssigned.Fire(value);
       }
     }
 

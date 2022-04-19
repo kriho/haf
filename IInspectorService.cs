@@ -21,8 +21,8 @@
     object SelectedSection { get; set; }
 
     /// <summary>
-    /// Event that fires when the selected item changes.
+    /// Event that fires when the selected item is assigned.
     /// </summary>
-    IReadOnlyEvent<object> OnSelectedItemChanged { get; }
+    IReadOnlyEvent<object> OnSelectedItemAssigned { get; }
   }
 }
