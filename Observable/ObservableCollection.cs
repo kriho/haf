@@ -10,6 +10,7 @@ using System.Text;
 namespace HAF {
 
   public interface IReadOnlyObservableCollection<T>: IReadOnlyList<T>, IReadOnlyCollection<T>, INotifyCollectionChanged, INotifyPropertyChanged {
+    int IndexOf(T item);
   }
 
   public interface IObservableCollection<T>: IList<T>, ICollection<T>, IEnumerable<T>, IList, ICollection, IEnumerable, INotifyCollectionChanged, INotifyPropertyChanged {
