@@ -57,7 +57,7 @@ namespace HAF {
     }
 
     public void Execute(object parameter) {
-      if (this.CanExecute(parameter)) {
+      if(this.CanExecute(parameter)) {
         this.execute.Invoke();
       }
     }
@@ -68,7 +68,13 @@ namespace HAF {
     }
 
     public void RaiseCanExecuteChanged() {
-      this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+      if(this.CanExecuteChanged != null) {
+        if(System.Windows.Application.Current.Dispatcher.CheckAccess()) {
+          this.CanExecuteChanged.Invoke(this, EventArgs.Empty);
+        } else {
+          System.Windows.Application.Current.Dispatcher.Invoke(this.CanExecuteChanged, this, EventArgs.Empty);
+        }
+      }
     }
   }
 
@@ -113,14 +119,14 @@ namespace HAF {
     public bool CanExecute(object parameter) {
 #if DEBUG
       // disable all commands in designe time
-      if (ObservableObject.IsInDesignModeStatic) {
+      if(ObservableObject.IsInDesignModeStatic) {
         return true;
       }
 #endif
-      if (this.canExecute != null && !this.canExecute.Invoke((T)parameter)) {
+      if(this.canExecute != null && !this.canExecute.Invoke((T)parameter)) {
         return false;
       }
-      if (this.DependentState != null && !this.DependentState.Value) {
+      if(this.DependentState != null && !this.DependentState.Value) {
         return false;
       }
       return true;
@@ -132,7 +138,7 @@ namespace HAF {
     }
 
     public void Execute(object parameter) {
-      if (this.CanExecute(parameter)) {
+      if(this.CanExecute(parameter)) {
         this.execute.Invoke((T)parameter);
       }
     }
