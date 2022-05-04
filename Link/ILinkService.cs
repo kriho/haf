@@ -3,7 +3,7 @@ using System.ServiceModel;
 using System.Threading.Tasks;
 
 namespace HAF {
-  public interface ILinkService {
+  public interface ILinkService: IService{
     /// <summary>
     /// Is the application connected to the target service.
     /// </summary>
@@ -28,7 +28,6 @@ namespace HAF {
     /// Connect to the target service.
     /// </summary>
     void ConnectToService();
-
 
     /// <summary>
     /// Install the local service host.
