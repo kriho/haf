@@ -3,7 +3,7 @@
 namespace HAF {
   public interface IPatchNotes {
     string Version { get; }
-    List<PatchNotesEntry> Entries { get; }
+    List<IPatchNotesEntry> Entries { get; }
     IPatchNotes Fix(string description);
     IPatchNotes CriticalFix(string description);
     IPatchNotes Feature(string description);

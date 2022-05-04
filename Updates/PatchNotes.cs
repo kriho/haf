@@ -8,7 +8,7 @@ namespace HAF {
   public class PatchNotes: IPatchNotes {
     public string Version { get; }
 
-    public List<PatchNotesEntry> Entries { get; set; } = new List<PatchNotesEntry>();
+    public List<IPatchNotesEntry> Entries { get; set; } = new List<IPatchNotesEntry>();
 
     public PatchNotes(string version) {
       this.Version = version;
