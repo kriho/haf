@@ -49,7 +49,7 @@ namespace HAF {
       } else {
         if (this.PropertyChanged != null) {
           Application.Current.Dispatcher.Invoke(() => {
-            this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); // might be null when dispatcher schedules the action
           });
         }
       }
