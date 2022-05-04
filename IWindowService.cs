@@ -27,5 +27,15 @@
     /// <param name="name">Name of the control.</param>
     /// <returns>Registered control or NULL if no matching control was found.</returns>
     T GetControl<T>(string name);
+
+    /// <summary>
+    /// Progress description of an operation that is blocking the entire window.
+    /// </summary>
+    IObservableTaskProgress BusyProgress { get; }
+
+    /// <summary>
+    /// Is the window blocked by an ongoing operation. Set to true when <see cref="BusyProgress.Description"/> is not null and not empty.
+    /// </summary>
+    IReadOnlyState IsBusy { get; }
   }
 }

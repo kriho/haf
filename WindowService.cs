@@ -19,6 +19,19 @@ namespace HAF {
 
     private Size? lastSize = null;
 
+    private State isBusy = new State(false);
+    public IReadOnlyState IsBusy => this.isBusy;
+
+    public IObservableTaskProgress BusyProgress { get; private set; } = new ObservableTaskProgress();
+
+    public WindowService() {
+      this.BusyProgress.PropertyChanged += (s, e) => {
+        if(e.PropertyName == "Description") {
+          this.isBusy.Value = !string.IsNullOrWhiteSpace(this.BusyProgress.Description);
+        }
+      };
+    }
+
     public bool TryGetControl<T>(string name, out T control) {
       if(this.controls.TryGetValue(name, out var entry) && entry is T typedEntry) {
         control = typedEntry;
@@ -27,7 +40,6 @@ namespace HAF {
       control = default(T);
       return false;
     }
-
 
     public T GetControl<T>(string name) {
       if(this.TryGetControl<T>(name, out var control)) {
