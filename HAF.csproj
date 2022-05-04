@@ -18,7 +18,7 @@
     <TargetFrameworkProfile />
     <PackageId>$(AssemblyName)</PackageId>
     <Title>Holistic Application Framework</Title>
-    <Version>1.0.39</Version>
+    <Version>1.0.40</Version>
     <Authors>Kristjan Hornung</Authors>
     <PackageOutputPath>.</PackageOutputPath>
     <Description>
@@ -254,6 +254,7 @@
     <Compile Include="WindowLayout\WindowLayout.cs" />
     <Compile Include="WindowLayout\PaneMeta.cs" />
     <Compile Include="Utils\ObjectCloner.cs" />
+    <Compile Include="Observable\ConcurrentObservableCollection.cs" />
     <Compile Include="Observable\View.cs" />
     <Compile Include="Observable\Window.cs" />
     <Compile Include="Converters\ValueConverter.cs" />
