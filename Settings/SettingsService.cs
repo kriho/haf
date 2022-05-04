@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
@@ -20,14 +21,14 @@ namespace HAF {
 
     public IRelayCommand<string> DoRevealSetting { get; private set; }
 
-    public CollectionViewSource FilteredRegistrations { get; private set; }
+    public ICollectionView FilteredRegistrations { get; private set; }
 
     private string filter;
     public string Filter {
       get { return this.filter; }
       set {
         if(this.SetValue(ref this.filter, value?.ToLower())) {
-          this.FilteredRegistrations.View.Refresh();
+          this.FilteredRegistrations.Refresh();
         }
       }
     }
@@ -63,17 +64,17 @@ namespace HAF {
     [ImportingConstructor]
     public SettingsService([ImportMany] IEnumerable<ExportFactory<ISettingsDrawer, ISettingsDrawerMeta>> drawers) {
       this.Drawers = drawers.ToList();
-      this.FilteredRegistrations = new CollectionViewSource();
+      var collectionViewSource = new CollectionViewSource();
+      collectionViewSource.Source = this.regions.OrderBy(r => r.DisplayOrder).SelectMany(r => r.Registrations.OrderBy(e => e.DisplayOrder));
+      this.FilteredRegistrations = collectionViewSource.View;
       this.FilteredRegistrations.GroupDescriptions.Add(new PropertyGroupDescription("Region"));
-      this.FilteredRegistrations.Filter += (s2, e2) => {
-        e2.Accepted = e2.Item is ISettingsRegistration registration && this.FilterRegion(registration);
+      this.FilteredRegistrations.Filter += item => {
+        return item is ISettingsRegistration registration && this.FilterRegion(registration);
       };
       Core.StageAction(ConfigurationStage.Running, () => {
-        this.FilteredRegistrations.Source = this.regions.OrderBy(r => r.DisplayOrder).SelectMany(r => r.Registrations.OrderBy(e => e.DisplayOrder));
-        this.FilteredRegistrations.View.Refresh();
+        this.FilteredRegistrations.Refresh();
         this.regions.CollectionChanged += (s1, e1) => {
-          this.FilteredRegistrations.View.Refresh();
-          this.FilteredRegistrations.Source = this.regions.OrderBy(r => r.DisplayOrder).SelectMany(r => r.Registrations.OrderBy(e => e.DisplayOrder));
+          this.FilteredRegistrations.Refresh();
         };
       });
       this.DoClearFilter = new RelayCommand(() => {

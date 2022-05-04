@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 using System.Windows.Data;
@@ -20,7 +21,7 @@ namespace HAF {
     /// <summary>
     /// Filtered settings.
     /// </summary>
-    CollectionViewSource FilteredRegistrations { get; }
+    ICollectionView FilteredRegistrations { get; }
 
     /// <summary>
     /// Reveal a setting by its name. Requires <see cref="ISettingsService.RevealSetting"/> to be set.
