@@ -35,5 +35,13 @@ namespace HAF {
       }
       return enumerable.Average();
     }
+
+    public static double StandardDeviation(this IEnumerable<double> enumerable) {
+      if(enumerable.Count() == 0) {
+        return 0;
+      }
+      var average = enumerable.Average();
+      return Math.Sqrt(enumerable.Average(v => Math.Pow(v - average, 2)));
+    }
   }
 }
