@@ -43,15 +43,16 @@ namespace HAF {
     protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "") {
       // validate property name
       this.VerifyPropertyName(propertyName);
+      if(this.PropertyChanged == null) {
+        return;
+      }
       // update value using dispatcher if needed
       if (Application.Current.Dispatcher.CheckAccess()) {
-        this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
       } else {
-        if (this.PropertyChanged != null) {
-          Application.Current.Dispatcher.Invoke(() => {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); // might be null when dispatcher schedules the action
-          });
-        }
+        Application.Current.Dispatcher.Invoke(() => {
+          this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); // might be null when dispatcher schedules the action
+        });
       }
     }
 
