@@ -249,7 +249,7 @@ namespace HAF {
         LinkedObservableObjectManager.AssignLinks();
         // load service configurations
         var filePath = Path.Combine(Core.ConfigurationDirectory, "settings.xml");
-        var configuration = File.Exists(filePath) ? ServiceConfiguration.FromFile(filePath) : new ServiceConfiguration("settings");
+        var configuration = ServiceConfiguration.FromFile(filePath, "settings");
         foreach(var serviceRegistration in Core.serviceRegistrations.OrderBy(r => r.Priority)) {
           serviceRegistration.Service.LoadConfiguration(configuration);
         }

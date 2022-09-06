@@ -176,7 +176,7 @@ namespace HAF {
       // clear project
       await this.ClearProject();
       // load project from configuration
-      var configuration = File.Exists(project.FilePath) ? ServiceConfiguration.FromFile(project.FilePath) : new ServiceConfiguration("project");
+      var configuration = ServiceConfiguration.FromFile(project.FilePath, "project");
       foreach(var service in this.ConfiguredServices) {
         await service.LoadConfiguration(configuration);
       }

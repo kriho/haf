@@ -294,9 +294,17 @@ namespace HAF {
     /// Create a configuration from a file that represents an XML document.
     /// </summary>
     /// <param name="filePath">Path to the file.</param>
+    /// <param name="rootName">Document root element name in case the file fails to load.</param>
     /// <returns>The configuration.</returns>
-    public static ServiceConfiguration FromFile(string filePath) {
-      return new ServiceConfiguration(XDocument.Load(filePath));
+    public static ServiceConfiguration FromFile(string filePath, string rootName = "settings") {
+      if(!File.Exists(filePath)) {
+        return new ServiceConfiguration(rootName);
+      }
+      try {
+        return new ServiceConfiguration(XDocument.Load(filePath));
+      } catch {
+        return new ServiceConfiguration(rootName);
+      }
     }
 
     /// <summary>
