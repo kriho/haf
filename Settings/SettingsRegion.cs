@@ -77,6 +77,21 @@ namespace HAF {
       return value;
     }
 
+    public ISetting<T> RegisterHiddenValue<T>(string name, ISetting<T> value, ISettingsOwner owner = null) {
+      if(this.settings.Any(r => r.Name == name)) {
+        throw new InvalidOperationException($"the setting \"{name}\" was already registered in region \"{this.Name}\"");
+      }
+      var registration = new SettingsRegistration() {
+        Region = this,
+        Name = name,
+        Setting = value,
+        Drawer = null,
+        Owner = owner,
+      };
+      this.settings.Add(registration);
+      return value;
+    }
+
     public override string ToString() {
       return $"{this.Name}:{this.DisplayOrder ?? '-'} ({this.Registrations.Count})";
     }

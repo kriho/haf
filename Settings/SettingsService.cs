@@ -15,7 +15,7 @@ namespace HAF {
   [Export(typeof(ISettingsService)), PartCreationPolicy(CreationPolicy.Shared)]
   public class SettingsService: Service, ISettingsService {
     private ObservableCollection<ISettingsRegion> regions = new ObservableCollection<ISettingsRegion>();
-    public IReadOnlyObservableCollection<ISettingsRegion> Regions => (IReadOnlyObservableCollection<ISettingsRegion>)this.regions;
+    public IReadOnlyObservableCollection<ISettingsRegion> Regions => this.regions;
 
     public IReadOnlyList<ExportFactory<ISettingsDrawer, ISettingsDrawerMeta>> Drawers { get; private set; }
 
@@ -37,7 +37,7 @@ namespace HAF {
 
     public IRelayCommand DoClearFilter { get; private set; }
 
-    private bool FilterRegion(ISettingsRegistration registration) {
+    private bool FilterRegistrations(ISettingsRegistration registration) {
       if(string.IsNullOrWhiteSpace(this.filter)) {
         return true;
       }
@@ -69,7 +69,7 @@ namespace HAF {
       this.FilteredRegistrations = collectionViewSource.View;
       this.FilteredRegistrations.GroupDescriptions.Add(new PropertyGroupDescription("Region"));
       this.FilteredRegistrations.Filter += item => {
-        return item is ISettingsRegistration registration && this.FilterRegion(registration);
+        return item is ISettingsRegistration registration && this.FilterRegistrations(registration);
       };
       Core.StageAction(ConfigurationStage.Running, () => {
         this.FilteredRegistrations.Refresh();
