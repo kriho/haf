@@ -190,30 +190,34 @@ namespace HAF {
       this.observable = new ObservableProxy<T>(this, collection);
     }
 
+    /// <summary>
+    /// run on UI thread to notify changes
+    /// </summary>
     private void NotifyChanges() {
-      lock(this.Lock) {
-        // check if a reset is needed
-        var reset = false;
-        var changeCount = 0;
-        foreach(var change in this.changes) {
-          if(change.Action == NotifyCollectionChangedAction.Reset) {
-            // reset means clear in this context
-            reset = true;
-            break;
-          } else {
-            changeCount += change.NewItems.Count;
-            if(changeCount > this.ChunkSize) {
-              reset = true;
-              break;
-            }
-          }
-        }
-        // synchronize proxy
-        this.observable.ApplyCollectionChanges(this.changes, reset);
-        // all changes were handled
+      var handledChanges = new List<SynchronizedCollectionChange<T>>();
+      lock (this.Lock) {
+        handledChanges.AddRange(this.changes);
         this.changes.Clear();
         this.isInvoked = false;
       }
+      // check if a reset is needed
+      var reset = false;
+      var changeCount = 0;
+      foreach(var change in handledChanges) {
+        if(change.Action == NotifyCollectionChangedAction.Reset) {
+          // reset means clear in this context
+          reset = true;
+          break;
+        } else {
+          changeCount += change.NewItems.Count;
+          if(changeCount > this.ChunkSize) {
+            reset = true;
+            break;
+          }
+        }
+      }
+      // synchronize proxy
+      this.observable.ApplyCollectionChanges(handledChanges, reset);
     }
 
     private void QueueChange(NotifyCollectionChangedAction action, T newItem, int newIndex, T oldItem, int oldIndex) {
