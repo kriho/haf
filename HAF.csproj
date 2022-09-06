@@ -18,7 +18,7 @@
     <TargetFrameworkProfile />
     <PackageId>$(AssemblyName)</PackageId>
     <Title>Holistic Application Framework</Title>
-    <Version>1.0.41</Version>
+    <Version>1.0.42</Version>
     <Authors>Kristjan Hornung</Authors>
     <PackageOutputPath>.</PackageOutputPath>
     <Description>
@@ -142,6 +142,7 @@
     <Compile Include="Logging\ILogEntry.cs" />
     <Compile Include="Logging\LogService.cs" />
     <Compile Include="Logging\ILogService.cs" />
+    <Compile Include="Observable\ManualNotifyCollection.cs" />
     <Compile Include="Observable\ObservableCollection.cs" />
     <Compile Include="Settings\SettingsRegistration.cs" />
     <Compile Include="Settings\SettingsRegion.cs" />
