@@ -60,6 +60,11 @@ namespace HAF {
     IRelayCommand<IPaneMeta> DoShowPane { get; }
 
     /// <summary>
+    /// Move the provided pane to the active pane group.
+    /// </summary>
+    IRelayCommand<IPaneMeta> DoMovePane { get; }
+
+    /// <summary>
     /// Add new window layout with name provided by <c>EditName</c>.
     /// </summary>
     IRelayCommand DoAddWindowLayout { get; }

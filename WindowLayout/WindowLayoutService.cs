@@ -26,6 +26,8 @@ namespace HAF {
 
     public IRelayCommand<IPaneMeta> DoShowPane { get; private set; }
 
+    public IRelayCommand<IPaneMeta> DoMovePane { get; private set; }
+
     public IRelayCommand DoAddWindowLayout { get; private set; }
 
     private readonly RangeObservableCollection<IWindowLayout> windowLayouts = new RangeObservableCollection<IWindowLayout>();
@@ -91,6 +93,9 @@ namespace HAF {
       });
       this.DoShowPane = new RelayCommand<IPaneMeta>((meta) => {
         this.dockingWindow.ShowPane(meta.Name, meta.Type, meta.CanUserClose);
+      });
+      this.DoMovePane = new RelayCommand<IPaneMeta>((meta) => {
+        this.dockingWindow.MovePane(meta.Name);
       });
       this.DoSetDefaultWindowLayout = new RelayCommand<IWindowLayout>((windowLayout) => {
         this.DefaultWindowLayout = windowLayout;
