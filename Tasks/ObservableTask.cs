@@ -28,6 +28,8 @@ namespace HAF {
       get { return this.cancellationTokenSource?.IsCancellationRequested == true; }
     }
 
+    public object Argument { get; set; }
+
     private void RevertProgress() {
       this.progress.IsIndeterminate = this.initialProgress.IsIndeterminate;
       this.progress.Value = this.initialProgress.Value;
@@ -98,6 +100,7 @@ namespace HAF {
       } catch(TaskCanceledException) {
       } finally {
         this.isRunning.Value = false;
+        this.Argument = null;
       }
     }
 

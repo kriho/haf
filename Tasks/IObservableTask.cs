@@ -17,5 +17,6 @@ namespace HAF {
     Task Run();
     Task Schedule();
     void Cancel();
+    object Argument { get; set; }
   }
 }
