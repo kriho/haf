@@ -431,6 +431,8 @@ namespace HAF {
       if(count == 1) {
         this.RemoveAt(index);
         return;
+      } else if(count == 0) {
+        return;
       }
       lock(this.Lock) {
         var removedItems = this.items.GetRange(index, count);
