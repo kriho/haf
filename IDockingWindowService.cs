@@ -25,6 +25,12 @@ namespace HAF {
     void ShowPane(string name);
 
     /// <summary>
+    /// Move pane to the active pane group if it exists.
+    /// </summary>
+    /// <param name="name"></param>
+    void MovePane(string name);
+
+    /// <summary>
     /// Show pane and create it if it does not exist.
     /// </summary>
     /// <param name="viewType">Type of the view hosted by the pane.</param>
