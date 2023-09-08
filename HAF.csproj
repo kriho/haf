@@ -91,8 +91,11 @@
     <Compile Include="Controls\GeometryButton.cs" />
     <Compile Include="Controls\FormRow.cs" />
     <Compile Include="Controls\GeometryIcon.cs" />
+    <Compile Include="Converters\BooleanToIntegerConverter.cs" />
     <Compile Include="Converters\BooleanToSolidColorBrushConverter.cs" />
+    <Compile Include="Converters\DoubleExpressionToBooleanConverter.cs" />
     <Compile Include="Converters\DoubleToFormattedUnitConverter.cs" />
+    <Compile Include="Converters\UnsignedIntegerExpressionToVisibilityConverter.cs" />
     <Compile Include="Converters\RadioButtonConverter.cs" />
     <Compile Include="Converters\RadioButtonToIntegerConverter.cs" />
     <Compile Include="Converters\IntegerToStringConverter.cs" />

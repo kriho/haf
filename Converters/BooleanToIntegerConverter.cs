@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -10,19 +10,19 @@ using System.Windows.Markup;
 using System.Windows.Media;
 
 namespace HAF.Converters {
-  public class BooleanToDoubleConverter: ValueConverter<bool, double> {
+  public class BooleanToIntegerConverter: ValueConverter<bool, int> {
     public bool Inverted { get; set; } = false;
-    public double TrueValue { get; set; } = 1.0;
-    public double FalseValue { get; set; } = 0.0;
+    public int TrueValue { get; set; } = 1;
+    public int FalseValue { get; set; } = 0;
 
-    protected override double convert(bool value) {
+    protected override int convert(bool value) {
       if (this.Inverted) {
         value = !value;
       }
       return value ? this.TrueValue : this.FalseValue;
     }
 
-    protected override bool convertBack(double value) {
+    protected override bool convertBack(int value) {
       var result = value == TrueValue;
       return this.Inverted ? !result : result;
     }
