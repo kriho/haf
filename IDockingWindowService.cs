@@ -17,7 +17,8 @@ namespace HAF {
     /// Load window layout.
     /// </summary>
     /// <param name="layout">Serialized window layout.</param>
-    void SetWindowLayout(string layout);
+    /// <param name="clearDocumentHost">Clear all panes in the document host.</param>
+    void SetWindowLayout(string layout, bool clearDocumentHost);
 
     /// <summary>
     /// Show pane if it exists.
