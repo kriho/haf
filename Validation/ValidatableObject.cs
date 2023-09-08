@@ -29,22 +29,46 @@ namespace HAF {
     /// </summary>
     /// <param name="propertyName">Name of the property.</param>
     /// <param name="errors">Updated list of errors for the property.</param>
-    private void UpdateValidationErrors(string propertyName, List<string> errors) {
+    /// <param name="forceChanges">Force reporting of error changes. This can be useful if the errors have been changed outside the normal validation workflow.</param>
+    private bool UpdateValidationErrors(string propertyName, List<string> errors, bool forceChanges = false) {
+      var hasChanges = forceChanges;
       if(this.validationErrors.TryGetValue(propertyName, out var oldErrors)) {
         if(errors.Count == 0) {
           if(oldErrors.Count > 0) {
             oldErrors.Clear();
-            this.OnErrorsChanged(propertyName);
+            hasChanges = true;
           }
         } else {
           oldErrors.Clear();
           oldErrors.AddRange(errors);
-          this.OnErrorsChanged(propertyName);
+          hasChanges = true;
         }
       } else if(errors.Count > 0) {
         _ = this.validationErrors.TryAdd(propertyName, new List<string>(errors));
+        hasChanges = true;
+      }
+      if(hasChanges) {
         this.OnErrorsChanged(propertyName);
       }
+      return hasChanges;
+    }
+
+    /// <summary>
+    /// Set the property value, perform property validation using Validate() and send a change notification when the value changed.
+    /// </summary>
+    /// <typeparam name="T">the value type</typeparam>
+    /// <param name="property">reference to the property, used to update the property value</param>
+    /// <param name="value">the new value</param>
+    /// <param name="subscribe">subsicibe to changes in the new property value, can be used to redirect change notification from the value object to this object</param>
+    /// <param name="propertyName">the name of the property, provided by the compiler when called from within the property</param>
+    /// <returns>true if the value has changed</returns>
+    protected bool SetValueAndValidate<T>(ref T property, T value, bool subscribe = false, [CallerMemberName] string propertyName = "") {
+      if(!this.SetValue(ref property, value, subscribe, propertyName)) {
+        // no changes
+        return false;
+      }
+      this.RequestValidation(propertyName);
+      return true;
     }
 
     /// <summary>
@@ -56,21 +80,12 @@ namespace HAF {
     /// <param name="subscribe">subsicibe to changes in the new property value, can be used to redirect change notification from the value object to this object</param>
     /// <param name="propertyName">the name of the property, provided by the compiler when called from within the property</param>
     /// <returns>true if the value has changed</returns>
-    protected bool SetValueAndValidate<T>(ref T property, T value, bool subscribe = false, [CallerMemberName] string propertyName = "") {
+    protected bool SetValueAndValidateObject<T>(ref T property, T value, bool subscribe = false, [CallerMemberName] string propertyName = "") {
       if(!this.SetValue(ref property, value, subscribe, propertyName)) {
+        // no changes
         return false;
       }
-      lock(this.validationLock) {
-        // prepare batch
-        var validationBatch = new ObjectValidationBatch(propertyName);
-        // execute validation
-        this.Validate(validationBatch);
-        // apply batch
-        foreach(var errorPropertyName in validationBatch.Properties.Keys) {
-          this.UpdateValidationErrors(errorPropertyName, validationBatch.Properties[errorPropertyName].Errors);
-        }
-        this.UpdateValidationErrors("", validationBatch.Errors);
-      }
+      this.RequestValidation(null);
       return true;
     }
 
@@ -98,19 +113,22 @@ namespace HAF {
     /// Request validation of the object and all validatable properties.
     /// <paramref name="targetPropertyName">Name of the property to validate. Use <c>""</c> to validate the object and <c>null</c> to validate everything.</paramref>
     /// </summary>
-    public void RequestValidation(string targetPropertyName = null) {
+    public bool RequestValidation(string targetPropertyName = null) {
       lock(this.validationLock) {
         // clear all validation errors to allow ignoring properties during object validation
-        this.validationErrors.Clear();
+        //this.validationErrors.Clear();
         // prepare batch
         var validationBatch = new ObjectValidationBatch(targetPropertyName);
         // execute validation
         this.Validate(validationBatch);
         // apply batch
+        var hasChanges = false;
         foreach(var errorPropertyName in validationBatch.Properties.Keys) {
-          this.UpdateValidationErrors(errorPropertyName, validationBatch.Properties[errorPropertyName].Errors);
+          if(this.UpdateValidationErrors(errorPropertyName, validationBatch.Properties[errorPropertyName].Errors)) {
+            hasChanges = true;
+          }
         }
-        this.UpdateValidationErrors("", validationBatch.Errors);
+        return this.UpdateValidationErrors("", validationBatch.Errors);
       }
     }
 
@@ -130,7 +148,7 @@ namespace HAF {
     public IEnumerable GetErrors(string propertyName) {
       // https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.inotifydataerrorinfo?view=net-5.0
       // empty propertyName or null indicates that entity level errors shell be retrieved
-      this.validationErrors.TryGetValue(propertyName  ?? "", out var errorsForProperty);
+      this.validationErrors.TryGetValue(propertyName ?? "", out var errorsForProperty);
       return errorsForProperty ?? Enumerable.Empty<string>();
     }
 
