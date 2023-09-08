@@ -83,7 +83,7 @@ namespace HAF {
     public WindowLayoutService(IDockingWindowService dockingWindow) {
       this.dockingWindow = dockingWindow;
       this.DoLoadWindowLayout = new RelayCommand<IWindowLayout>((windowLayout) => {
-        this.LoadWindowLayout(windowLayout);
+        this.LoadWindowLayout(windowLayout, false);
       }, this.CanChangeWindowLayout);
       this.DoDeleteWindowLayout = new RelayCommand<IWindowLayout>((windowLayout) => {
         this.windowLayouts.Remove(windowLayout);
@@ -110,9 +110,9 @@ namespace HAF {
       });
     }
 
-    private void LoadWindowLayout(IWindowLayout windowLayout) {
+    private void LoadWindowLayout(IWindowLayout windowLayout, bool clearDocumentHost) {
       HAF.Core.StageAction(ConfigurationStage.WindowInitialization, () => {
-        this.dockingWindow.SetWindowLayout(windowLayout.Layout);
+        this.dockingWindow.SetWindowLayout(windowLayout.Layout, clearDocumentHost);
         // set as current
         this.ActiveWindowLayout = windowLayout;
       });
@@ -172,7 +172,7 @@ namespace HAF {
       }
       if (defaultWindowLayout != null) {
         this.DefaultWindowLayout = defaultWindowLayout;
-        this.LoadWindowLayout(defaultWindowLayout);
+        this.LoadWindowLayout(defaultWindowLayout, false);
       } else {
         this.DefaultWindowLayout = null;
         this.ActiveWindowLayout = null;
