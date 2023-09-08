@@ -17,6 +17,7 @@ namespace HAF {
     new void Clear();
     new int Count { get; }
     new void RemoveAt(int index);
+    void RemoveAll(Predicate<T> predicate);
   }
 
   public class ObservableCollection<T>: System.Collections.ObjectModel.ObservableCollection<T>, IObservableCollection<T>, IReadOnlyObservableCollection<T> {
@@ -28,6 +29,17 @@ namespace HAF {
     }
 
     public ObservableCollection(List<T> list): base(list) {
+    }
+
+    public void RemoveAll(Predicate<T> predicate) {
+      var index = 0;
+      while(index < this.Count) {
+        if(predicate(this[index])) {
+          this.RemoveAt(index);
+        } else {
+          index++;
+        }
+      }
     }
   }
 }
