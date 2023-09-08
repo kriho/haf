@@ -193,7 +193,7 @@ namespace HAF {
     /// <summary>
     /// run on UI thread to notify changes
     /// </summary>
-    private void NotifyChanges() {
+    public void NotifyChanges() {
       var handledChanges = new List<SynchronizedCollectionChange<T>>();
       lock (this.Lock) {
         handledChanges.AddRange(this.changes);
