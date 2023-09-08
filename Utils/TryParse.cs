@@ -34,6 +34,10 @@ namespace HAF {
     }
 
     public static bool TryParseUnsignedInt(string value, out uint result) {
+      if(value == null) {
+        result = 0;
+        return false;
+      }
       if(value.ToLower().StartsWith("0x")) {
         return uint.TryParse(value.Substring(2), System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture, out result);
       }
@@ -48,6 +52,10 @@ namespace HAF {
     }
 
     public static bool TryParseInt(string value, out int result) {
+      if(value == null) {
+        result = 0;
+        return false;
+      }
       if(value.StartsWith("-")) {
         return int.TryParse(value, out result);
       } else {
