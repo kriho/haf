@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NET48
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
@@ -173,3 +174,4 @@ namespace HAF {
     }
   }
 }
+#endif
