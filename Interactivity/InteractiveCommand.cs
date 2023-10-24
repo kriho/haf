@@ -7,6 +7,8 @@ using System.Windows;
 using System.Windows.Input;
 using Microsoft.Xaml.Behaviors;
 
+#if NET48
+
 namespace HAF {
   public class InteractiveCommand : TriggerAction<DependencyObject> {
     protected override void Invoke(object parameter) {
@@ -25,3 +27,5 @@ namespace HAF {
     }
   }
 }
+
+#endif

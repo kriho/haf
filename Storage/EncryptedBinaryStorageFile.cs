@@ -12,7 +12,7 @@ using System.Xml.Serialization;
 
 namespace HAF.Storage {
   public class EncryptedBinaryStorageFile<T> : StorageFile<T> {
-    private readonly DESCryptoServiceProvider des = new DESCryptoServiceProvider();
+    private readonly DES des = DES.Create();
     public byte[] Key { get; set; }
     public byte[] InitializationVector { get; set; }
 

@@ -12,6 +12,8 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
+#if NET48
+
 namespace HAF.Converters {
   public class BitmapToImageSourceConverter: ValueConverter<Bitmap, ImageSource> {
 
@@ -29,3 +31,5 @@ namespace HAF.Converters {
     }
   }
 }
+
+#endif

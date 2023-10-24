@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Xaml.Behaviors;
 
+#if NET48
+
 namespace HAF {
   public class InteractiveMethod : TriggerAction<FrameworkElement> {
     protected override void Invoke(object parameter) {
@@ -24,3 +26,5 @@ namespace HAF {
     }
   }
 }
+
+#endif

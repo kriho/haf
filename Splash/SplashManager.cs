@@ -7,6 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
+#if NET48
+
 namespace HAF.Splash {
   public class SplashManager<T> where T : SplashWindow {
     private ManualResetEvent wait = new ManualResetEvent(false);
@@ -67,3 +69,5 @@ namespace HAF.Splash {
     }
   }
 }
+
+#endif

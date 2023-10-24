@@ -122,11 +122,8 @@ namespace HAF {
         // execute validation
         this.Validate(validationBatch);
         // apply batch
-        var hasChanges = false;
         foreach(var errorPropertyName in validationBatch.Properties.Keys) {
-          if(this.UpdateValidationErrors(errorPropertyName, validationBatch.Properties[errorPropertyName].Errors)) {
-            hasChanges = true;
-          }
+          this.UpdateValidationErrors(errorPropertyName, validationBatch.Properties[errorPropertyName].Errors);
         }
         return this.UpdateValidationErrors("", validationBatch.Errors);
       }

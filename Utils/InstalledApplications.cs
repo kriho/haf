@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Win32;
 
+#if NET48
+
 namespace HAF {
   public static partial class Utils {
 
@@ -52,3 +54,5 @@ namespace HAF {
     }
   }
 }
+
+#endif
