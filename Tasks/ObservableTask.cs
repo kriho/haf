@@ -19,13 +19,14 @@ namespace HAF {
     
     private Func<Task> work;
 
-    private CancellationTokenSource cancellationTokenSource;
+    private CancellationTokenSource lastCancellationTokenSource;
+    private Task lastTask;
 
     private State isRunning = new State(false);
     public IReadOnlyState IsRunning => this.isRunning;
 
     public bool IsCancelled {
-      get { return this.cancellationTokenSource?.IsCancellationRequested == true; }
+      get { return this.lastCancellationTokenSource?.IsCancellationRequested == true; }
     }
 
     public object Argument { get; set; }
@@ -41,19 +42,24 @@ namespace HAF {
 
     public ObservableTask(Func<Task> work, string description, IObservableTaskPool pool = null) {
       this.initialProgress = new ObservableTaskProgress(description);
-      this.Initialize(work, pool);
+      this.Initialize(async () => {
+        this.lastCancellationTokenSource = new CancellationTokenSource();
+        await work();
+      }, pool);
     }
 
     public ObservableTask(Func<CancellationToken, Task> work, string description, IObservableTaskPool pool = null) {
       this.initialProgress = new ObservableTaskProgress(description);
       this.Initialize(async () => {
-        await work(this.cancellationTokenSource.Token);
+        this.lastCancellationTokenSource = new CancellationTokenSource();
+        await work(this.lastCancellationTokenSource.Token);
       }, pool);
     }
 
     public ObservableTask(Func<IProgress<int>, Task> work, string description, int maximum = 0, int value = 0, IObservableTaskPool pool = null) {
       this.initialProgress = new ObservableTaskProgress(description, maximum, value);
       this.Initialize(async () => {
+        this.lastCancellationTokenSource = new CancellationTokenSource();
         await work(this.progress);
       }, pool);
     }
@@ -61,6 +67,7 @@ namespace HAF {
     public ObservableTask(Func<IObservableTaskProgress, Task> work, string description = "", int maximum = 0, int value = 0, IObservableTaskPool pool = null) {
       this.initialProgress = new ObservableTaskProgress(description, maximum, value);
       this.Initialize(async () => {
+        this.lastCancellationTokenSource = new CancellationTokenSource();
         await work(this.progress);
       }, pool);
     }
@@ -68,14 +75,16 @@ namespace HAF {
     public ObservableTask(Func<IProgress<int>, CancellationToken, Task> work, string description, int maximum = 0, int value = 0, IObservableTaskPool pool = null) {
       this.initialProgress = new ObservableTaskProgress(description, maximum, value);
       this.Initialize(async () => {
-        await work(this.progress, this.cancellationTokenSource.Token);
+        this.lastCancellationTokenSource = new CancellationTokenSource();
+        await work(this.progress, this.lastCancellationTokenSource.Token);
       }, pool);
     }
 
     public ObservableTask(Func<IObservableTaskProgress, CancellationToken, Task> work, string description = "", int maximum = 0, int value = 0, IObservableTaskPool pool = null) {
       this.initialProgress = new ObservableTaskProgress(description, maximum, value);
       this.Initialize(async () => {
-        await work(this.progress, this.cancellationTokenSource.Token);
+        this.lastCancellationTokenSource = new CancellationTokenSource();
+        await work(this.progress, this.lastCancellationTokenSource.Token);
       }, pool);
     }
 
@@ -85,22 +94,28 @@ namespace HAF {
       this.DoCancel = new RelayCommand(this.Cancel, this.isRunning);
       this.work = work;
       this.Pool = pool;
-      Core.Container.ComposeParts(this);
     }
 
     public async Task Run() {
       try {
+        if(this.lastTask != null) {
+          // request cancellation for previous run
+          this.lastCancellationTokenSource.Cancel();
+          try {
+            await this.lastTask;
+          } catch(TaskCanceledException) {
+          }
+        }
         // revert progress to make tast restartable
         this.RevertProgress();
         // add and indicate as running
         this.isRunning.Value = true;
-        // create new cancellation token source
-        this.cancellationTokenSource = new CancellationTokenSource();
-        await this.work.Invoke();
-      } catch(TaskCanceledException) {
+        this.lastTask = this.work.Invoke();
+        await this.lastTask;
       } finally {
-        this.isRunning.Value = false;
         this.Argument = null;
+        this.lastTask = null;
+        this.isRunning.Value = false;
       }
     }
 
@@ -113,8 +128,8 @@ namespace HAF {
     }
 
     public void Cancel() {
-      if (this.cancellationTokenSource != null && !this.cancellationTokenSource.IsCancellationRequested) {
-        this.cancellationTokenSource.Cancel();
+      if (this.lastCancellationTokenSource != null && !this.lastCancellationTokenSource.IsCancellationRequested) {
+        this.lastCancellationTokenSource.Cancel();
       }
     }
   }
