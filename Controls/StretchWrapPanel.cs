@@ -201,7 +201,7 @@ namespace HAF.Controls {
       var uMultipler = limitU / total;
       for (var i = start; i < end; i++) {
         var child = children[i];
-        if (child != null) {
+        if (child != null && child.DesiredSize.Width != 0 && child.DesiredSize.Height != 0) {
           var childSize = new UVSize(Orientation, child.DesiredSize.Width, child.DesiredSize.Height);
           var layoutSlotU = childSize.U * uMultipler;
           child.Arrange(new Rect(horizontal ? u : v, horizontal ? v : u, horizontal ? layoutSlotU : lineV, horizontal ? lineV : layoutSlotU));
